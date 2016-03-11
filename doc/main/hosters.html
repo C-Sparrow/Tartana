@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Tartana, advanced download manager</title>
+
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/highlight.tomorrow-night.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="//c-sparrow.github.io/Tartana/">
+                Tartana, advanced download manager
+                <small class="hidden-xs hidden-sm">
+                    Download manager for your files, fetches them locally or trough a Synology file station
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                                                    <p class="text-muted">
+                                Main documentation
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/getting_started.html">
+                                            Getting started
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/requirements.html">
+                                            Requirements
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/installation.html">
+                                            Installation
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/configuration.html">
+                                            Configuration
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/running.html">
+                                            Running
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/hosters.html">
+                                            Hosters
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/commandline.html">
+                                            Command line
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
+                                            Users
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/synology.html">
+                                            Synology
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
+                                            Support
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                    <p class="text-muted">
+                                Developer
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/developer/contribution.html">
+                                            Contribution
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
+                    </nav>
+
+                
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="tartana-hosters">Tartana Hosters</h1>
+<p>Tartana can download any HTTP url by default. Additinally it supports one click hosters with premium account support to fetch files from.
+All supported hosters are configured in the <em>app/config/hosters.yml</em> file. You can copy the dist file as reference. The list below shows the current status of the hosters available in Tartana.</p>
+<h3><i class="fa fa-check-square"></i> dropbox.com</h3>
+<p>Fully implemented with public and private links support. To be able to download private links, you need to get an access token. An app is required on <a href="https://www.dropbox.com/developers/apps">https://www.dropbox.com/developers/apps</a>. Create a new app and click on <em>Generate Access token</em>. Copy that string to the hoster.yml file.</p>
+<h3><i class="fa fa-check-square"></i> share-online.biz</h3>
+<p>Fully implemented with premium account support.</p>
+<h3><i class="fa fa-check-square"></i> uploaded.net</h3>
+<p>Fully implemented with premium account support.</p>
+<h3><i class="fa fa-minus-square"></i> mega.nz</h3>
+<p>Is planed for a next release.</p>
+<h3><i class="fa fa-minus-square"></i> drive.google.com</h3>
+<p>Is planed for a next release.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

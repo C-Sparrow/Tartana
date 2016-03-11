@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Tartana, advanced download manager</title>
+
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/highlight.tomorrow-night.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="//c-sparrow.github.io/Tartana/">
+                Tartana, advanced download manager
+                <small class="hidden-xs hidden-sm">
+                    Download manager for your files, fetches them locally or trough a Synology file station
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                                                    <p class="text-muted">
+                                Main documentation
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/getting_started.html">
+                                            Getting started
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/requirements.html">
+                                            Requirements
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/installation.html">
+                                            Installation
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/configuration.html">
+                                            Configuration
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/running.html">
+                                            Running
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/hosters.html">
+                                            Hosters
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/commandline.html">
+                                            Command line
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
+                                            Users
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/synology.html">
+                                            Synology
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
+                                            Support
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                    <p class="text-muted">
+                                Developer
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/developer/contribution.html">
+                                            Contribution
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
+                    </nav>
+
+                
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="tartana-command-line">Tartana Command Line</h1>
+<p>Tartana is made to run on command line without any interaction trough the web interface. Trough the <a href="configuration.html">configuration</a> you can fully configure Tartana.</p>
+<p>Tartana is designed to be controlled trough an external daeomon preferably a cron job. The command <code>php cli/app.php</code> is running all the neccessary tasks to full run Tartana.</p>
+<ol>
+<li>It scans the folder for link files (txt or dlc).</li>
+<li>It starts downloads in the queue, if run in local mode.</li>
+<li>It scans the processed downloads and extracts them.</li>
+</ol>
+<h2 id="commands">Commands</h2>
+<p>The <em>cli/app.php</em> PHP script accepts the two following main commands:</p>
+<ul>
+<li>
+<p><strong>default</strong></p>
+<p>The main command which runs all the tasks needed from Tartana.</p>
+<p>Example: <code>php cli/app.php default</code></p>
+</li>
+<li>
+<p><strong>server</strong></p>
+<p>Starts the built in web server as described (here)[running.md]. You can add the following arguments <em>start</em> or <em>stop</em> and <em>--port</em>.</p>
+<p>Example: <code>php cli/app.php server start --port=9009</code></p>
+</li>
+<li>
+<p><strong>update</strong></p>
+<p>Updates Tartana to the latest version. As default it updates from the latest release from Github. If you want to provide your own update server, set the parameter in the configuration.</p>
+<p>Example: <code>php cli/app.php update</code></p>
+</li>
+<li>
+<p><strong>download:control</strong></p>
+<p>Allows to control the downloads. The following actions are available:</p>
+<ul>
+<li>
+<p><strong>status</strong><br/>Displays a table of the downloads.</p>
+</li>
+<li>
+<p><strong>clearall</strong><br/>Removes all downloads.</p>
+</li>
+<li>
+<p><strong>clearcompleted</strong><br/>Removes all successfully processed downloads.</p>
+</li>
+<li>
+<p><strong>resumeall</strong><br/>Resumes all downloads.</p>
+</li>
+<li>
+<p><strong>resumefailed</strong><br/>Resumes the downloads which have failed downloading or processing.</p>
+</li>
+<li><strong>reprocess</strong><br/>Reprocesses the completed or processed downloads. This is handy if you want to extract the downloads again.</li>
+</ul>
+<p>The status and clearall actions do support a <em>--destination</em> (eg. --destination=demo) option. This options filters downloads by the destination string. The <em>--compact</em> (eg. --compact=1) option shows the status action in compact mode.</p>
+<p>Example: <code>php cli/app.php download:control status destination=test</code></p>
+</li>
+<li>
+<p><strong>fos:user:</strong></p>
+<p>Manages the users. More information can be found in the <a href="users.html">user</a> documentation.</p>
+<p>Example: <code>php cli/app.php fos:user:create john</code></p>
+</li>
+</ul>
+<h2 id="options">Options</h2>
+<p>You can add some options when running a command:</p>
+<ul>
+<li>
+<p><strong>-q, --quit</strong></p>
+<p>Do not output any message.</p>
+</li>
+<li>
+<p><strong>-e, --env=ENV</strong></p>
+<p>The Environment name. [default: &quot;prod&quot;]</p>
+</li>
+<li>
+<p><strong>-v|-vv|-vvv, --verbose</strong></p>
+<p>Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.</p>
+</li>
+</ul>
+                </section>
+
+            </div>
+        </main>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

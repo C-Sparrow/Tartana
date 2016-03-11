@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Tartana, advanced download manager</title>
+
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/highlight.tomorrow-night.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="//c-sparrow.github.io/Tartana/">
+                Tartana, advanced download manager
+                <small class="hidden-xs hidden-sm">
+                    Download manager for your files, fetches them locally or trough a Synology file station
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                                                    <p class="text-muted">
+                                Main documentation
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/getting_started.html">
+                                            Getting started
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/requirements.html">
+                                            Requirements
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/installation.html">
+                                            Installation
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/configuration.html">
+                                            Configuration
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/running.html">
+                                            Running
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/hosters.html">
+                                            Hosters
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/commandline.html">
+                                            Command line
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
+                                            Users
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/synology.html">
+                                            Synology
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
+                                            Support
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                    <p class="text-muted">
+                                Developer
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/developer/contribution.html">
+                                            Contribution
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
+                    </nav>
+
+                
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="tartana-configuration">Tartana Configuration</h1>
+<p>Before you can configure Tartana make sure you have <a href="installation.html">installed</a> it correctly.
+In the folder <em>app/config</em> you will find the whole configuration for Tartana. If you have started Tartana already then the file <em>app/config/parameters.yml</em> will be auto generated. If not you can copy it from <strong>parameters.dist.yml</strong> and adapt it to your needs. You can change the parameters also trough the web interface.</p>
+<p>The following list describes the parameters in more detail:</p>
+<ul>
+<li>
+<p><strong>tartana.dateFormat</strong> [m.d.Y h:i a]</p>
+<p>The date format to be displayed on the front.</p>
+</li>
+<li>
+<p><strong>tartana.links.folder</strong> [var/data/Links]</p>
+<p>The folder which will be monitored for the link files (txt or dlc).</p>
+</li>
+<li>
+<p><strong>tartana.links.convertToHttps</strong> [true]</p>
+<p>Should the links to download being converted to https.</p>
+</li>
+<li>
+<p><strong>tartana.links.hostFilter</strong> []</p>
+<p>Should only links being added which belong to the host (example** [drive.google.com).</p>
+</li>
+<li>
+<p><strong>tartana.extract.destination</strong> [var/data/New]</p>
+<p>Where to extract the downloads to.</p>
+</li>
+<li>
+<p><strong>tartana.extract.passwordFile</strong> [app/config/passwords.dist.txt]</p>
+<p>The password file which should be used during extract.</p>
+</li>
+<li>
+<p><strong>tartana.extract.deleteFiles</strong> [true]</p>
+<p>After the files have been extracted, should they be deleted.</p>
+</li>
+<li>
+<p><strong>tartana.local.enabled</strong> [true]</p>
+<p>If Tartana should run without a Synology back end set it to true (set tartana.synology.enabled to false!).</p>
+</li>
+<li>
+<p><strong>tartana.local.downloads</strong> [var/data/Downloads]</p>
+<p>When running the local download repository where should the downloads being saved to.</p>
+</li>
+<li>
+<p><strong>tartana.synology.enabled</strong> [false</p>
+<p>Should Tartana run with a synology back end  (set tartana.local.enabled to false!).</p>
+</li>
+<li>
+<p><strong>tartana.synology.address</strong> [<a href="https://localhost:5001/webapi">https://localhost:5001/webapi</a>]</p>
+<p>The address of the Synology server to connect to.</p>
+</li>
+<li>
+<p><strong>tartana.synology.username</strong> [admin]</p>
+<p>The username of the Synology server user to connect to.</p>
+</li>
+<li>
+<p><strong>tartana.synology.password</strong> [admin]</p>
+<p>The password of the Synology server user to connect to.</p>
+</li>
+<li>
+<p><strong>tartana.synology.downloads</strong> [/volume1/shares/Downloads]</p>
+<p>Where can the downloads being found.</p>
+</li>
+<li>
+<p><strong>tartana.synology.downloadShare</strong> [shares/Downloads]</p>
+<p>Synology needs a share folder to create the downloads in, this path
+should point to the same location as the downloads path above.</p>
+</li>
+<li>
+<p><strong>tartana.log.path</strong> [&quot;%kernel.logs_dir%/%kernel.environment%.log&quot;]</p>
+<p>The path to the log file.</p>
+</li>
+<li>
+<p><strong>tartana.log.level</strong> [debug]</p>
+<p>The log level.</p>
+</li>
+<li>
+<p><strong>tartana.update.url:</strong> [github]</p>
+<p>The update url to fetch the latest Tartana version from. If the path is a file on the server, you can define it also relative to the install directory.</p>
+</li>
+<li>
+<p><strong>secret</strong> [457152e95295f63116eb776d43ac3d0c41e58905]</p>
+<p><a href="http://symfony.com/doc/current/reference/configuration/framework.html#secret">http://symfony.com/doc/current/reference/configuration/framework.html#secret</a></p>
+</li>
+</ul>
+                </section>
+
+            </div>
+        </main>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

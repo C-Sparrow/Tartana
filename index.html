@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Tartana, advanced download manager</title>
+
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/highlight.tomorrow-night.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="//c-sparrow.github.io/Tartana/">
+                Tartana, advanced download manager
+                <small class="hidden-xs hidden-sm">
+                    Download manager for your files, fetches them locally or trough a Synology file station
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                                                    <p class="text-muted">
+                                Main documentation
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/getting_started.html">
+                                            Getting started
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/requirements.html">
+                                            Requirements
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/installation.html">
+                                            Installation
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/configuration.html">
+                                            Configuration
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/running.html">
+                                            Running
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/hosters.html">
+                                            Hosters
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/commandline.html">
+                                            Command line
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
+                                            Users
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/synology.html">
+                                            Synology
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
+                                            Support
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                    <p class="text-muted">
+                                Developer
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/developer/contribution.html">
+                                            Contribution
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
+                    </nav>
+
+                
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="tartana">Tartana</h1>
+<p><a href="https://travis-ci.org/C-Sparrow/Tartana"><img src="https://travis-ci.org/C-Sparrow/Tartana.svg" alt="Build Status" /></a> <a href="https://scrutinizer-ci.com/g/C-Sparrow/Tartana/"><img src="https://scrutinizer-ci.com/g/C-Sparrow/Tartana/badges/coverage.png" alt="Code Coverage" /></a> <a href="https://scrutinizer-ci.com/g/C-Sparrow/Tartana/"><img src="https://scrutinizer-ci.com/g/C-Sparrow/Tartana/badges/quality-score.png" alt="Scrutinizer Code Quality" /></a></p>
+<p>Open source PHP app which manages downloads for you on any PHP capable device (Raspberry Pi up to big servers). It supports link decryption as well as all important container formats like dlc and automatic file extraction. It just works and makes fun!</p>
+<h2 id="installation">Installation</h2>
+<p>The installation is as simple as 123. Head on to the <a href="doc/main/installation.html">installation guide</a>.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Runs on a simple low resource <a href="doc/main/requirements.html">environment</a></li>
+<li>Modern architecture with support for PHP 5.5 &gt; 7 and HHVM.</li>
+<li>Premium account support.</li>
+<li>Runs in <a href="doc/main/running.html">different modes</a>: command line, an existing web server infrastructure or as standalone web server.</li>
+<li>Scans a folder for link files and manages the downloads locally or trough a <a href="doc/main/synology.html">Synology Download Station</a>.</li>
+<li>Auto extract archive files which are downloaded.</li>
+<li>Made with stability in mind.</li>
+</ul>
+<h2 id="screenshot">Screenshot</h2>
+<p><img src="doc/images/downloads-list.png" alt="Download list" title="Download list" /></p>
+<p><img src="doc/images/downloads-list-cli.png" alt="Download list command line" title="Download list command line" /></p>
+<h2 id="credits">Credits</h2>
+<p>This project is inspired by the popular [<a href="https://github.com/pyload/pyload">PyLoad app</a>] but it should be not so buggy, as it has a decent unit test code coverage. Beside that we would like to say thanks to the following projects:</p>
+<ul>
+<li><a href="https://symfony.com">Symfony</a></li>
+<li><a href="https://angularjs.org">Angular JS</a></li>
+<li><a href="https://jquery.com">jQuery</a></li>
+<li><a href="http://getbootstrap.com">Bootstrap</a></li>
+<li><a href="http://www.doctrine-project.org">Doctrine</a></li>
+<li><a href="http://flysystem.thephpleague.com">Flysystems</a></li>
+<li><a href="http://guzzlephp.org">Guzzle</a></li>
+<li><a href="https://github.com/Seldaek/monolog">Monolog</a></li>
+<li><a href="https://getcomposer.org">Composer</a></li>
+<li>And all the other Open Source projects we are using</li>
+</ul>
+                </section>
+
+            </div>
+        </main>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

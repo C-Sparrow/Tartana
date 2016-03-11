@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Tartana, advanced download manager</title>
+
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/highlight.tomorrow-night.css">
+        <link rel="stylesheet" href="//c-sparrow.github.io/Tartana/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="//c-sparrow.github.io/Tartana/">
+                Tartana, advanced download manager
+                <small class="hidden-xs hidden-sm">
+                    Download manager for your files, fetches them locally or trough a Synology file station
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                                                    <p class="text-muted">
+                                Main documentation
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/">
+                                            Home
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/getting_started.html">
+                                            Getting started
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/requirements.html">
+                                            Requirements
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/installation.html">
+                                            Installation
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/configuration.html">
+                                            Configuration
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/running.html">
+                                            Running
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/hosters.html">
+                                            Hosters
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/commandline.html">
+                                            Command line
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
+                                            Users
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/synology.html">
+                                            Synology
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
+                                            Support
+                                        </a>
+                                    </li>
+                                                            </ul>
+                                                    <p class="text-muted">
+                                Developer
+                            </p>
+
+                            <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/developer/contribution.html">
+                                            Contribution
+                                        </a>
+                                    </li>
+                                                            </ul>
+                        
+                    </nav>
+
+                
+                <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="tartana-running">Tartana Running</h1>
+<p>Before you can run Tartana make sure you have <a href="installation.html">installed</a> it correctly.
+You can run Tartana in threee different modes:</p>
+<ul>
+<li>
+<p><strong>Command line only</strong></p>
+<p>This mode doesn't require any web server.</p>
+</li>
+<li>
+<p><strong>Built in web server</strong></p>
+<p>This mode offers a web server which doesn't require any set up.</p>
+</li>
+<li>
+<p><strong>Web server infrastructure</strong></p>
+<p>This mode allows to run Tartana in an existing web server infrastructure.</p>
+</li>
+</ul>
+<p>We are going to explain the threee different modes more deeply in the next chapters.</p>
+<h2 id="command-line">Command line</h2>
+<p>The simplest way to run Tartana is trough command line. The only thing you have to set up is a cron job which runs every minute. The following example can be placed into crontab:</p>
+<p><code>* * * * * /path/to/php /path/to/tartana/cli/app.php default</code></p>
+<h2 id="built-in-web-server">Built in web server</h2>
+<p>Since PHP 5.4 a stand alone web server is shipped with the default PHP installation. You can run Tartana with that web server. We are offering a simplified command to start it.</p>
+<p><code>php cli/app.php server start</code></p>
+<p>You can stop it at any time with the command</p>
+<p><code>php cli/app.php server stop</code></p>
+<p>The default port the web server is listening to is 8000. If you want to change it, add the <em>--port=9000</em> option to the start command.</p>
+<h2 id="web-server-infrastructure">Web server infrastructure</h2>
+<p>You can unzip Tartana on your web root and opening the web directory. You will see then the web interface of Tartana. As Tartana is mainly doing stuff in the background you need to set up a cron as described in the command line chapter:</p>
+<p><code>* * * * * /path/to/php /path/to/tartana/cli/app.php default</code></p>
+<p>This is needed because of the long running proceses which are downloading the files or extracting them. If they would be triggered during a web request, the process would die.
+For better security point your virtual host to the web folder og Tartana.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yandex.st/highlightjs/7.5/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
