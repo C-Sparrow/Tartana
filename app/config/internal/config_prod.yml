@@ -1,0 +1,31 @@
+imports:
+    - { resource: config.yml }
+    - { resource: security.yml }
+
+#framework:
+#    validation:
+#        cache: validator.mapping.cache.apc
+#    serializer:
+#        cache: serializer.mapping.cache.apc
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: "%tartana.log.level%"
+            handler:      nested
+            channels: [!event, !doctrine, !security, !request]
+        nested:
+            type:  stream
+            path:  "%tartana.log.path%"
+            level: "%tartana.log.level%"
+        console:
+            type:  console
+            level: error
+            channels: [!event, !doctrine, !security, !request]

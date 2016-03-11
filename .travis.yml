@@ -1,0 +1,25 @@
+language: php
+
+php:
+  - '5.5'
+  - '5.6'
+  - '7.0'
+  - hhvm
+
+addons:
+  apt:
+    packages:
+    - unzip
+    - unrar
+
+before_script:
+  - composer selfupdate
+  - composer install --prefer-dist
+  
+script:
+  - vendor/bin/phpunit
+  
+after_script:
+  - php scripts/coverage-checker.php
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml

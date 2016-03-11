@@ -1,0 +1,13 @@
+tools:
+    external_code_coverage:
+        timeout: 1000
+    sensiolabs_security_checker: true
+    
+checks:
+    php:
+        code_rating: true
+        duplication: true
+        
+filter:
+    paths:
+        - src/*

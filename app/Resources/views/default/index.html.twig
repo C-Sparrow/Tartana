@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav class="navbar navbar-default" role="navigation" bs-navbar ng-show="userAuth" class="ng-hide">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#tartana-navbar"
+				ng-click="navbarCollapsed = !navbarCollapsed"
+				aria-expanded="false">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<div class="navbar-brand" ng-show="user">{% trans %}TARTANA_TEXT_HI{% endtrans %} {[user.username]}</div>
+		</div>
+		<div class="collapse navbar-collapse" id="tartana-navbar" collapse="navbarCollapsed">
+			<ul class="nav navbar-nav">
+				<li data-match-route="/$"><a href="#/">{% trans %}TARTANA_NAV_LINK_HOME{% endtrans %}</a></li>
+				<li data-match-route="/downloads"><a href="#/downloads">{% trans %}TARTANA_NAV_LINK_DOWNLOADS{% endtrans %}</a></li>
+				<li data-match-route="/parameters"><a href="#/parameters">{% trans %}TARTANA_NAV_LINK_PARAMETERS{% endtrans %}</a></li>
+				<li data-match-route="/logs"><a href="#/logs">{% trans %}TARTANA_NAV_LINK_LOGS{% endtrans %}</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="alert alert-success alert-dismissible" role="alert" ng-show="successMsg">
+	<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+	{[successMsg]}
+</div>
+<div class="alert alert-warning alert-dismissible" role="alert" ng-show="errorMsg">
+	<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+	{[errorMsg]}
+</div>
+{% endblock %}

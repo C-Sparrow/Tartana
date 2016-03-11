@@ -1,0 +1,171 @@
+
+# The Di services, don't touch that file unless you know what you are doing!!
+services:
+    config:
+        class: Joomla\Registry\Registry
+        arguments: ['%tartana.config%']
+
+# aliases
+    CommandBus:
+        alias: command_bus
+    EventDispatcher:
+        alias: event_dispatcher
+# Common classes
+    CommandRunner:
+        class: Tartana\Component\Command\Runner
+        arguments: ['%kernel.environment%']
+        calls:
+            - [setLogger, ['@Logger']]
+    HostFactory:
+        class: Tartana\Host\HostFactory
+        calls:
+            - [setLogger, ['@Logger']]
+            - [setCommandBus, ['@CommandBus']]
+    DlcEncrypter:
+        class: Tartana\Component\Dlc\Decrypter
+        calls:
+            - [setLogger, ['@Logger']]
+    ClientInterface:
+        class: GuzzleHttp\Client
+        arguments: 
+            - {verify: false}
+    LogRepository:
+        class: Tartana\Domain\FileLogRepository
+        arguments: ['%tartana.log.path%']
+
+# Console commands
+    Tartana.DefaultCommand:
+        class: Tartana\Console\Command\DefaultCommand
+        arguments: ['@DownloadRepository', '@CommandBus', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.UnrarCommand:
+        class: Tartana\Console\Command\Extract\UnrarCommand
+        arguments: ['@EventDispatcher', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.UnzipCommand:
+        class: Tartana\Console\Command\Extract\UnzipCommand
+        arguments: ['@EventDispatcher', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.ServerCommand:
+        class: Tartana\Console\Command\ServerCommand
+        arguments: ['@CommandRunner']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.DownloadControlCommand:
+        class: Tartana\Console\Command\DownloadControlCommand
+        arguments: ['@DownloadRepository', '@CommandBus', '@Translator']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.UpdateCommand:
+        class: Tartana\Console\Command\UpdateCommand
+        arguments: ['@CommandRunner', '%tartana.update.url%', '@HostFactory']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+
+# Action classes
+    ParseLinksHandler:
+        class: Tartana\Handler\ParseLinksHandler
+        arguments: ['@DlcEncrypter', '@CommandBus', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\ParseLinks }
+    ProcessCompletedDownloadsHandler:
+        class: Tartana\Handler\ProcessCompletedDownloadsHandler
+        arguments: ['@EventDispatcher', '@CommandBus']
+        calls:
+           - [setLogger, ['@Logger']]
+        tags:
+           - { name: command_handler, handles: Tartana\Domain\Command\ProcessCompletedDownloads }
+    ChangeDownloadStateHandler:
+        class: Tartana\Handler\ChangeDownloadStateHandler
+        arguments: ['@CommandBus']
+        calls:
+           - [setLogger, ['@Logger']]
+        tags:
+           - { name: command_handler, handles: Tartana\Domain\Command\ChangeDownloadState }
+    DeleteFileLogsHandler:
+        class: Tartana\Handler\DeleteFileLogsHandler
+        arguments: ['%tartana.log.path%']
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\DeleteLogs }
+    SaveParametersHandler:
+        class: Tartana\Handler\SaveParametersHandler
+        arguments: ['%kernel.root_dir%/config/parameters.yml']
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\SaveParameters }
+    ExtractListener.Start:
+        class: Tartana\Event\Listener\ExtractListener
+        arguments: ['@CommandRunner', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: downloads.completed, method: onExtractDownloads}
+    ExtractListener.Finish:
+        class: Tartana\Event\Listener\ExtractListener
+        arguments: ['@CommandRunner', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: extract.completed, method: onExtractCompleted}
+    ExtractListener.Command:
+        class: Tartana\Event\Listener\ExtractListener
+        arguments: ['@CommandRunner', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
+    ConsoleExceptionListener:
+        class: Tartana\Event\Listener\ConsoleExceptionListener
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: console.exception, method: onConsoleException}
+    UpdateExtractStateListener.Progress:
+        class: Tartana\Event\Listener\UpdateExtractStateListener
+        arguments: ['@DownloadRepository', '@CommandBus']
+        tags:
+            - {name: kernel.event_listener, event: extract.progress, method: onExtractProgress}
+    UpdateExtractStateListener.Finish:
+        class: Tartana\Event\Listener\UpdateExtractStateListener
+        arguments: ['@DownloadRepository', '@CommandBus']
+        tags:
+            - {name: kernel.event_listener, event: extract.completed, method: onExtractCompleted}
+    MessageBusIgnoreNoHandler:
+        class: Tartana\Middleware\MessageBusIgnoreNoHandler
+        public: false
+        tags:
+            - { name: command_bus_middleware, priority: 1 }
+    MessageBusEventDispatcher:
+        class: Tartana\Middleware\MessageBusEventDispatcher
+        public: false
+        arguments: ['@EventDispatcher']
+        tags:
+            - { name: command_bus_middleware, priority: 2 }
+            
+# Security
+    wsse.security.authentication.provider:
+        class: Tartana\Security\Authentication\Provider\WsseProvider
+        arguments: [""]
+    wsse.security.authentication.listener:
+        class: Tartana\Security\Firewall\WsseListener
+        arguments: ["@security.token_storage", "@security.authentication.manager"]
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: monolog.logger, channel: wsse }

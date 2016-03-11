@@ -1,0 +1,27 @@
+{% block body %}
+
+<h3>{% trans %}TARTANA_NAV_LINK_DOWNLOADS{% endtrans %}</h3>
+<div ng-controller="DownloadsCtrl">
+	<p role="group">
+		<button type="button" ng-click="clearAll()" class="btn btn-primary">
+			{% trans %}TARTANA_VIEW_DOWNLOADS_BUTTON_CLEAR_ALL{% endtrans %}
+		</button>
+		<button type="button" ng-click="clearCompleted()"
+			class="btn btn-primary">
+			{% trans %}TARTANA_VIEW_DOWNLOADS_BUTTON_CLEAR_COMPLETED{% endtrans %}
+		</button>
+		<button type="button" ng-click="resumeAll()" class="btn btn-primary">
+			{% trans %}TARTANA_VIEW_DOWNLOADS_BUTTON_RESUME_ALL{% endtrans %}
+		</button>
+		<button type="button" ng-click="resumeFailed()"
+			class="btn btn-primary">
+			{% trans %}TARTANA_VIEW_DOWNLOADS_BUTTON_RESUME_FAILED{% endtrans %}
+		</button>
+		<button type="button" ng-click="reprocess()" class="btn btn-primary">
+			{% trans %}TARTANA_VIEW_DOWNLOADS_BUTTON_REPROCESS{% endtrans %}
+		</button>
+	</p>
+	<hr/>
+	{{ include('partials/downloads_table.html.twig') }}
+</div>
+{% endblock %}

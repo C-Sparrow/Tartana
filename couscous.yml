@@ -1,0 +1,72 @@
+title: Tartana, advanced download manager
+subTitle: Download manager for your files, fetches them locally or trough a Synology file station
+baseUrl: //c-sparrow.github.io/Tartana
+exclude:
+    - app
+    - build
+    - cli
+    - dist
+    - scripts
+    - src
+    - tests
+    - var
+    - vendor
+    - web
+template:
+    url: https://github.com/CouscousPHP/Template-Dark
+menu:
+    sections:
+        main:
+            name: Main documentation
+            items:
+                home:
+                    itemId: home
+                    text: Home
+                    relativeUrl: ""
+                getting_started:
+                    itemId: getting_started
+                    text: Getting started
+                    relativeUrl: doc/main/getting_started.html
+                requirements:
+                    itemId: requirements
+                    text: Requirements
+                    relativeUrl: doc/main/requirements.html
+                installation:
+                    itemId: installation
+                    text: Installation
+                    relativeUrl: doc/main/installation.html
+                configuration:
+                    itemId: configuration
+                    text: Configuration
+                    relativeUrl: doc/main/configuration.html
+                running:
+                    itemId: running
+                    text: Running
+                    relativeUrl: doc/main/running.html
+                hosters:
+                    itemId: hosters
+                    text: Hosters
+                    relativeUrl: doc/main/hosters.html
+                commandline:
+                    itemId: commandline
+                    text: Command line
+                    relativeUrl: doc/main/commandline.html
+                users:
+                    itemId: users
+                    text: Users
+                    relativeUrl: doc/main/users.html
+                synology:
+                    itemId: synology
+                    text: Synology
+                    relativeUrl: doc/main/synology.html
+                support:
+                    itemId: support
+                    text: Support
+                    relativeUrl: doc/main/support.html
+        developer:
+            name: Developer
+            items:
+                contribution:
+                    itemId: contribution
+                    text: Contribution
+                    relativeUrl: doc/developer/contribution.html

@@ -1,0 +1,60 @@
+# Tartana parameters
+parameters:
+    # The date format to be displayed on the front
+    tartana.dateFormat: m.d.Y h:i a
+    
+    # The folder which will be monitored for the link files (txt or dlc).
+    tartana.links.folder: var/data/Links
+    
+    # Should the links to download being converted to https
+    tartana.links.convertToHttps: false
+    
+    # Should only links being added which belong to the host (example: drive.google.com)
+    tartana.links.hostFilter: 
+    
+    # Where to extract the downloads to
+    tartana.extract.destination: var/data/New
+    
+    # The password file which should be used during extract
+    tartana.extract.passwordFile: app/config/passwords.dist.txt
+    
+    # After the files have been extracted, should they be deleted
+    tartana.extract.deleteFiles: true
+    
+    # If Tartana should run without a Synology back end set it to true (set tartana.synology.enabled to false!)
+    tartana.local.enabled: true
+    
+    # When running the local download repository where should the downloads being saved to
+    tartana.local.downloads: var/data/Downloads
+    
+    # Should Tartana run with a synology back end  (set tartana.local.enabled to false!)
+    tartana.synology.enabled: false
+    
+    # The address of the Synology server to connect to
+    tartana.synology.address: https://localhost:5001/webapi
+    
+    # The username of the Synology server user to connect to
+    tartana.synology.username: admin
+    
+    # The password of the Synology server user to connect to
+    tartana.synology.password: admin
+    
+    # Where can the downloads being found
+    tartana.synology.downloads: /volume1/shares/Downloads
+    
+    # Synology needs a share folder to create the downloads in, this path
+    # should point to the same location as the downloads path above
+    tartana.synology.downloadShare: shares/Downloads
+
+    # The path to the log file
+    tartana.log.path: "%kernel.logs_dir%/%kernel.environment%.log"
+
+    # The log level
+    tartana.log.level: debug
+
+    # Update url, the url to get the Tartana update package from, if github, then it will fetch
+    # the latest version from github. If empty, then it will ignore the update
+    tartana.update.url: github
+
+    # http://symfony.com/doc/current/reference/configuration/framework.html#secret
+    secret: 457152e95295f63116eb776d43ac3d0c41e58905

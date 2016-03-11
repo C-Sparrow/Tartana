@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="tartanaApp">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{% block title %}{% trans %}TARTANA_TEXT_HEADER{% endtrans %}{% endblock %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link href={{ asset('assets/bootstrap/css/bootstrap.min.css') }} rel=stylesheet>
+		<link href={{ asset('assets/font-awesome/css/font-awesome.min.css') }} rel=stylesheet>
+		<link href={{ asset('tartana/css/default.css') }} rel=stylesheet>
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<h1>
+					{% trans %}TARTANA_TEXT_HEADER{% endtrans %}
+					<i class="small fa fa-refresh fa-spin" ng-show="loading"></i>
+				</h1>
+			</div>
+			{% block body %}{% endblock %}
+			<div ng-view></div>
+		</div>
+
+		<script src="{{ asset('assets/jquery/js/jquery.min.js') }}"></script>
+		<script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('assets/moment/js/moment-with-locales.min.js') }}"></script>
+		<script src="{{ asset('assets/angular/js/angular.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-route/js/angular-route.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-animate/js/angular-animate.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-cookies/js/angular-cookies.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-local-storage/js/angular-local-storage.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-resource/js/angular-resource.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-strap/js/angular-strap.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-strap/js/angular-strap.tpl.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-bootstrap/js/ui-bootstrap-tpls.min.js') }}"></script>
+		<script src="{{ asset('assets/angular-poller/js/angular-poller.min.js') }}"></script>
+		<script src="{{ asset('assets/ng-file-upload/js/ng-file-upload-all.min.js') }}"></script>
+		<script src="{{ asset('assets/cryptojslib/js/md5.js') }}"></script>
+		<script src="{{ asset('assets/cryptojslib/js/sha1.js') }}"></script>
+		<script src="{{ asset('assets/cryptojslib/js/sha512.js') }}"></script>
+		<script src="{{ asset('assets/cryptojslib/js/enc-base64-min.js') }}"></script>
+		<script src="{{ asset('tartana/js/common.js') }}"></script>
+		<script src="{{ asset('tartana/js/services.js') }}"></script>
+		<script src="{{ asset('tartana/js/app.js') }}"></script>
+		<script src="{{ asset('tartana/js/controllers.js') }}"></script>
+
+		<script>
+		var GLOABL_ROUTES = [];
+		GLOABL_ROUTES['dashboard'] = '{{ path('dashboard') }}';
+		GLOABL_ROUTES['downloads'] = '{{ path('downloads') }}';
+		GLOABL_ROUTES['parameters'] = '{{ path('parameters') }}';
+		GLOABL_ROUTES['logs'] = '{{ path('logs') }}';
+		GLOABL_ROUTES['login'] = '{{ path('login') }}';
+		GLOABL_ROUTES['api_v1_file_add'] = '{{ path('api_v1_file_add') }}';
+		GLOABL_ROUTES['api_v1_download_find'] = '{{ path('api_v1_download_find') }}';
+		GLOABL_ROUTES['api_v1_download_clearall'] = '{{ path('api_v1_download_clearall') }}';
+		GLOABL_ROUTES['api_v1_download_clearcompleted'] = '{{ path('api_v1_download_clearcompleted') }}';
+		GLOABL_ROUTES['api_v1_download_resumefailed'] = '{{ path('api_v1_download_resumefailed') }}';
+		GLOABL_ROUTES['api_v1_download_resumeall'] = '{{ path('api_v1_download_resumeall') }}';
+		GLOABL_ROUTES['api_v1_download_reprocess'] = '{{ path('api_v1_download_reprocess') }}';
+		GLOABL_ROUTES['api_v1_parameter_find'] = '{{ path('api_v1_parameter_find') }}';
+		GLOABL_ROUTES['api_v1_parameter_set'] = '{{ path('api_v1_parameter_set') }}';
+		GLOABL_ROUTES['api_v1_user_find'] = '{{ path('api_v1_user_find') }}';
+		GLOABL_ROUTES['api_v1_user_salt'] = '{{ path('api_v1_user_salt') }}';
+		GLOABL_ROUTES['api_v1_log_find'] = '{{ path('api_v1_log_find') }}';
+		GLOABL_ROUTES['api_v1_log_deleteall'] = '{{ path('api_v1_log_deleteall') }}';
+
+		var GLOBALS = [];
+		GLOBALS['dateFormat'] = '{{ dateFormat }}';
+		GLOBALS['listLength'] = 5;
+
+		var GLOABL_STRINGS = [];
+		GLOABL_STRINGS['TARTANA_TEXT_NO_ITEMS_FOUND'] = '{% trans %}TARTANA_TEXT_NO_ITEMS_FOUND{% endtrans %}';
+		GLOABL_STRINGS['TARTANA_VIEW_LOGIN_TEXT_NEEDS_LOGIN'] = '{% trans %}TARTANA_VIEW_LOGIN_TEXT_NEEDS_LOGIN{% endtrans %}';
+		GLOABL_STRINGS['TARTANA_VIEW_DASHBOARD_MESSAGE_NO_RUNNING_DOWNLOADS_FOUND'] = '{% trans %}TARTANA_VIEW_DASHBOARD_MESSAGE_NO_RUNNING_DOWNLOADS_FOUND{% endtrans %}';
+		</script>
+		{% block javascript %}{% endblock %}
+	</body>
+</html>

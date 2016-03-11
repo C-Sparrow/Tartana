@@ -1,0 +1,65 @@
+{
+  "name": "Tartana",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "3.*",
+    "font-awesome": "4.5.*",
+    "moment": "2.11.*",
+    "angular": "1.4.*",
+    "angular-route": "1.4.*",
+    "angular-animate": "1.4.*",
+    "angular-strap": "2.3.*",
+    "angular-bootstrap": "1.1.*",
+    "angular-poller": "0.4.*",
+    "angular-cookies": "1.4.*",
+    "angular-resource": "1.4.*",
+    "ng-file-upload": "11.2.*",
+    "cryptojslib": "3.1.*",
+    "angular-local-storage": "0.2.*"
+  },
+  "install": {
+    "base": "web/assets",
+    "path": {
+      "js": "{name}/js",
+      "css": "{name}/css",
+      "eot": "{name}/fonts",
+      "svg": "{name}/fonts",
+      "ttf": "{name}/fonts",
+      "woff": "{name}/fonts",
+      "woff2": "{name}/fonts",
+      "otf": "{name}/fonts"
+    },
+    "sources": {
+      "jquery": "bower_components/jquery/dist/jquery.min.js",
+      "bootstrap": [
+        "bower_components/bootstrap/dist/css/bootstrap.min.css",
+        "bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "bower_components/bootstrap/dist/fonts/*"
+      ],
+      "font-awesome": [
+        "bower_components/font-awesome/css/font-awesome.min.css",
+        "bower_components/font-awesome/fonts/*"
+      ],
+      "moment": "bower_components/moment/min/moment-with-locales.min.js",
+      "angular": "bower_components/angular/angular.min.js",
+      "angular-route": "bower_components/angular-route/angular-route.min.js",
+      "angular-animate": "bower_components/angular-animate/angular-animate.min.js",
+      "angular-cookies": "bower_components/angular-cookies/angular-cookies.min.js",
+      "angular-local-storage": "bower_components/angular-local-storage/dist/angular-local-storage.min.js",
+      "angular-resource": "bower_components/angular-resource/angular-resource.min.js",
+      "angular-strap": [
+        "bower_components/angular-strap/dist/angular-strap.min.js",
+        "bower_components/angular-strap/dist/angular-strap.tpl.min.js"
+      ],
+      "angular-bootstrap": "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js",
+      "angular-poller": "bower_components/angular-poller/angular-poller.min.js",
+      "ng-file-upload": "bower_components/ng-file-upload/ng-file-upload-all.min.js",
+      "cryptojslib": [
+        "bower_components/cryptojslib/rollups/sha1.js",
+        "bower_components/cryptojslib/rollups/sha512.js",
+        "bower_components/cryptojslib/rollups/md5.js",
+        "bower_components/cryptojslib/components/enc-base64-min.js"
+      ]
+    }
+  }
+}

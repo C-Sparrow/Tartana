@@ -1,0 +1,52 @@
+imports:
+    - { resource: config.yml }
+    - { resource: ../parameters.dist.yml }
+
+framework:
+    test: ~
+    router:
+        resource: "%kernel.root_dir%/config/internal/routing_dev.yml"
+        strict_requirements: true
+    session:
+        storage_id: session.storage.mock_file
+    profiler:
+        collect: false
+
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        path:     "%database_path%.test"
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false
+
+monolog:
+    handlers:
+
+swiftmailer:
+    disable_delivery: true
+
+liip_functional_test: 
+    cache_sqlite_db: true
+
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: plaintext
+    providers:
+        in_memory:
+            memory: ~
+    firewalls:
+        wsse_secured:
+            pattern: ^/none/.*
+            stateless: true
+            wsse:      true
+            anonymous : false
+            wsse: { lifetime: 30}
+        main:
+            pattern: ^/
+            security: false
+            anonymous: true
+        user_stuff:
+            pattern: ^/
+            http_basic: ~

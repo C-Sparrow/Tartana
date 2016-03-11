@@ -1,0 +1,6 @@
+imports:
+    - { resource: config_test.yml }
+
+parameters:
+    tartana.local.enabled: false
+    tartana.synology.enabled: true

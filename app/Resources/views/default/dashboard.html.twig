@@ -1,0 +1,18 @@
+{% block body %}
+<div ng-controller="AddCtrl">
+	<form name="myForm" class="form-horizontal">
+		<div class="form-group">
+			<label for="file" class="col-sm-2 control-label">{% trans %}TARTANA_VIEW_DASHBOARD_DLC_FILE_LABEL{% endtrans %}:</label>
+			<div class="col-sm-10">
+				<input class="pull-left" type="file" id="file" ngf-select ng-model="dlcFile" name="file" ngf-max-size="2MB" required ngf-model-invalid="errorFiles">
+				<i ng-show="myForm.file.$error.maxSize">{% trans %}TARTANA_VIEW_DASHBOARD_MESSAGE_FILE_TOO_LARGE{% endtrans %}</i>
+				<button ng-disabled="!myForm.$valid" ng-click="uploadDlc(dlcFile)">{% trans %}TARTANA_TEXT_SUBMIT{% endtrans %}</button>
+			</div>
+		</div>
+	</form>
+</div>
+<hr/>
+<div ng-controller="DashboardCtrl">
+	{{ include('partials/downloads_table.html.twig') }}
+</div>
+{% endblock %}

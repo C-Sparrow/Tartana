@@ -1,0 +1,19 @@
+services:
+  synology_config:
+    class: Joomla\Registry\Registry
+    arguments: ['%synology.config%']
+  DownloadRepository:
+    class: Synology\Domain\SynologyDownloadRepository
+    arguments: ['@ClientInterface', '@synology_config']
+  SynologyProcessLinksHandler:
+    class: Synology\Handler\SynologyProcessLinksHandler
+    arguments: ['@ClientInterface', '@synology_config']
+    calls:
+      - [setLogger, ['@Logger']]
+    tags:
+       - { name: command_handler, handles: Tartana\Domain\Command\ProcessLinks }
+  SynologyProcessCompletedDownloadsHandler:
+    class: Synology\Handler\SynologyProcessCompletedDownloadsHandler
+    arguments: ['@EventDispatcher']
+    tags:
+       - { name: command_handler, handles: Tartana\Domain\Command\ProcessCompletedDownloads }

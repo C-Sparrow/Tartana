@@ -1,0 +1,308 @@
+<?php
+namespace Tartana\Host\Common;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\FileCookieJar;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
+use Joomla\Registry\Registry;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Config;
+use Tartana\Domain\Command\SaveDownloads;
+use Tartana\Entity\Download;
+use Tartana\Host\HostInterface;
+use Tartana\Mixins\CommandBusAwareTrait;
+use Tartana\Mixins\LoggerAwareTrait;
+
+class Http implements HostInterface
+{
+	use LoggerAwareTrait;
+	use CommandBusAwareTrait;
+
+	private $configuration = null;
+
+	private $client = null;
+
+	public function __construct (Registry $configuration, ClientInterface $client = null)
+	{
+		$this->configuration = $configuration;
+		$this->setClient($client);
+	}
+
+	public function download (array $downloads)
+	{
+		if (empty($downloads))
+		{
+			return [];
+		}
+
+		try
+		{
+			if (! $this->login())
+			{
+				foreach ($downloads as $download)
+				{
+					$download->setState(Download::STATE_DOWNLOADING_ERROR);
+					$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_LOGIN');
+				}
+				$this->handleCommand(new SaveDownloads($downloads));
+				return [];
+			}
+		}
+		catch (\Exception $e)
+		{
+			foreach ($downloads as $download)
+			{
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+				$download->setMessage($e->getMessage());
+			}
+			$this->handleCommand(new SaveDownloads($downloads));
+			return [];
+		}
+
+		$promises = [];
+		foreach ($downloads as $download)
+		{
+			try
+			{
+				$url = $this->getUrlToDownload($download);
+				if (! $url)
+				{
+					if (! $download->getMessage())
+					{
+						$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+					}
+					throw new \Exception($download->getMessage());
+				}
+
+				$tmpFileName = 'tmp-' . $download->getId() . '.bin';
+				$request = new Request('get', $url);
+
+				$originalFileName = $this->getOriginalFileName($url);
+				if (empty($download->getFileName()) && $originalFileName)
+				{
+					$download->setFileName($originalFileName);
+					$this->handleCommand(new SaveDownloads([
+							$download
+					]));
+				}
+
+				$me = $this;
+				$fs = new Local($download->getDestination());
+
+				// @codeCoverageIgnoreStart
+				$options = [
+						RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
+						RequestOptions::PROGRESS => function  ($totalSize, $downloadedSize) use ( $download, $me) {
+							if (! $downloadedSize || ! $totalSize)
+							{
+								return;
+							}
+							$progress = (100 / $totalSize) * $downloadedSize;
+
+							if ($progress < $download->getProgress() + (rand(100, 700) / 1000))
+							{
+								// Reducing write transactions on the
+								// repository
+								return;
+							}
+
+							$download->setProgress($progress);
+							$download->setSize($totalSize);
+							$me->handleCommand(new SaveDownloads([
+									$download
+							]));
+						}
+				];
+				// @codeCoverageIgnoreEnd
+
+				$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);
+				$promise = $this->getClient()->sendAsync($request, $options);
+
+				$promise->then(
+						function  (Response $resp) use ( $fs, $tmpFileName, $download, $me) {
+							$originalFileName = $this->parseFileName($resp);
+							if (empty($download->getFileName()) && $originalFileName)
+							{
+								$download->setFileName($originalFileName);
+							}
+
+							if (! empty($download->getFileName()))
+							{
+								$fs->rename($tmpFileName, $download->getFileName());
+							}
+							else
+							{
+								$download->setFileName($tmpFileName);
+							}
+							$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+							$download->setProgress(100);
+							$download->setFinishedAt(new \DateTime());
+							$me->handleCommand(new SaveDownloads([
+									$download
+							]));
+						},
+						function  (RequestException $e) use ( $download, $me) {
+							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+							$download->setMessage($e->getMessage());
+							$download->setFinishedAt(new \DateTime());
+							$me->handleCommand(new SaveDownloads([
+									$download
+							]));
+						});
+				$promises[] = $promise;
+			}
+			catch (\Exception $e)
+			{
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+				$download->setMessage($e->getMessage());
+				$download->setFinishedAt(new \DateTime());
+				$this->handleCommand(new SaveDownloads([
+						$download
+				]));
+				continue;
+			}
+		}
+
+		return $promises;
+	}
+
+	/**
+	 * If none is internaly configured a new instance will be created.
+	 *
+	 * @return \GuzzleHttp\ClientInterface
+	 */
+	public function getClient ()
+	{
+		if (! $this->client)
+		{
+			$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
+			$name = strtolower((new \ReflectionClass($this))->getShortName()) . '.cookie';
+			if (! $fs->has($name) || $this->getConfiguration()->get('clearSession', false))
+			{
+				$fs->write($name, '', new Config());
+			}
+			$this->client = new Client([
+					'cookies' => new FileCookieJar($fs->applyPathPrefix($name), true)
+			]);
+		}
+		return $this->client;
+	}
+
+	public function setClient (ClientInterface $client = null)
+	{
+		$this->client = $client;
+	}
+
+	/**
+	 * Returns the configuration.
+	 *
+	 * @return \Joomla\Registry\Registry
+	 */
+	protected function getConfiguration ()
+	{
+		return $this->configuration;
+	}
+
+	/**
+	 * Returns the real url to download, subclasses can do here some
+	 * preprocessing.
+	 *
+	 * @return string
+	 */
+	protected function getUrlToDownload (Download $download)
+	{
+		return $download->getLink();
+	}
+
+	/**
+	 * Login function which can be used on subclasses to authenticate before the
+	 * download is done.
+	 *
+	 * @return boolean
+	 */
+	protected function login ()
+	{
+		return true;
+	}
+
+	/**
+	 * Returns if the local client has a cookie with the given name and is not
+	 * expired.
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
+	protected function hasCookie ($name)
+	{
+		foreach ($this->getClient()->getConfig('cookies') as $cookie)
+		{
+			/** @var \GuzzleHttp\Cookie\SetCookie $cookie */
+			if ($cookie->getName() != $name)
+			{
+				continue;
+			}
+			if ($cookie->getExpires() > time())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Subclasses can define here the headers before the file is downloaded.
+	 * It must return an array of headers.
+	 *
+	 * @param Download $download
+	 * @return array
+	 */
+	protected function getHeadersForDownload (Download $download)
+	{
+		return [];
+	}
+
+	/**
+	 * Returns the original file name for the given url.
+	 * It makes a HEAH request and tries to parse from the response headers the
+	 * filename.
+	 *
+	 * @param string $url
+	 * @throws \Exception
+	 * @return NULL|string
+	 */
+	protected function getOriginalFileName ($url)
+	{
+		// Connection check
+		try
+		{
+			return $this->parseFileName($this->getClient()
+				->head($url));
+		}
+		catch (\Exception $e)
+		{
+			$this->log('Exception fetching head for connection test: ' . $e->getMessage());
+			throw new \Exception('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+		}
+	}
+
+	/**
+	 * Parses the file name from a response.
+	 * Mainly it tryes to analyze the headers.
+	 * * @param Response $response
+	 *
+	 * @return string|NULL
+	 */
+	protected function parseFileName (Response $response)
+	{
+		$dispHeader = $response->getHeader('Content-Disposition');
+		if ($dispHeader && preg_match('/.*filename=([^ ]+)/', $dispHeader[0], $matches))
+		{
+			return trim($matches[1], '";');
+		}
+		return null;
+	}
+}

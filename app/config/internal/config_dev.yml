@@ -1,0 +1,36 @@
+imports:
+    - { resource: config.yml }
+    - { resource: security.yml }
+
+framework:
+    router:
+        resource: "%kernel.root_dir%/config/internal/routing_dev.yml"
+        strict_requirements: true
+    profiler: { only_exceptions: false }
+
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+monolog:
+    handlers:
+        main:
+            type: stream
+            path: "%tartana.log.path%"
+            level: "%tartana.log.level%"
+            channels: [!event, !doctrine, !request, !translation, !security]
+        console:
+            type:   console
+            bubble: false
+            channels: [!event, !doctrine, !request, !translation]
+        # uncomment to get logging in your browser
+        # you may have to allow bigger header sizes in your Web server configuration
+        #firephp:
+        #    type:   firephp
+        #    level:  info
+        #chromephp:
+        #    type:   chromephp
+        #    level:  info
+
+#swiftmailer:
+#    delivery_address: me@example.com

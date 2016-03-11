@@ -1,0 +1,47 @@
+<div class="form-group form-group-sm form-inline">
+	<select class="form-control"
+		ng-options="download.state for download in (downloads | unique:'state') track by download.id"
+		ng-model="stateFilter">
+		<option value=""></option>
+	</select>
+	<select class="form-control"
+		ng-options="download.destination for download in (downloads | unique:'destination') track by download.id"
+		ng-model="destinationFilter">
+		<option value=""></option>
+	</select>
+</div>
+<table class="table table-striped table-responsive" wt-responsive-table>
+	<thead>
+		<tr>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_ID{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_FILE_NAME{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_LINK{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_SIZE{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_PROGRESS{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_STATE{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_STARTED_AT{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_FINISHED_AT{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_DESTINATION{% endtrans %}</th>
+			<th>{% trans %}TARTANA_ENTITY_DOWNLOAD_MESSAGE{% endtrans %}</th>
+		</tr>
+	</thead>
+	<tr ng-repeat="download in (downloads | filter:stateFilter.state | filter:destinationFilter.destination | startFrom:(currentPage-1)*numPerPage | limitTo:numPerPage) track by download.id">
+		<td>{[download.id]}</td>
+		<td>{[download.file_name]}</td>
+		<td>{[download.link]}</td>
+		<td>{[download.size]}</td>
+		<td>{[download.progress]}</td>
+		<td>{[download.state]}</td>
+		<td>{[download.started_at.dateFormated]}</td>
+		<td>{[download.finished_at.dateFormated]}</td>
+		<td>{[download.destination]}</td>
+		<td>{[download.message]}</td>
+	</tr>
+</table>
+<small class="clearfix">{% trans %}TARTANA_TEXT_TOTAL{% endtrans %}: {[(downloads | filter:stateFilter.state | filter:destinationFilter.destination).length]}</small>
+<uib-pagination ng-model="currentPage"
+	total-items="(downloads | filter:stateFilter.state | filter:destinationFilter.destination).length"
+	force-ellipses="true"  boundary-links="true" max-size="5"
+	boundary-link-numbers="true" previous-text="&lsaquo;" items-per-page="numPerPage"
+	next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+</uib-pagination>

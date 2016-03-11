@@ -1,0 +1,41 @@
+{% block body %}
+<h3>{% trans %}TARTANA_NAV_LINK_LOGS{% endtrans %}</h3>
+<div ng-controller="LogsCtrl">
+	<p role="group">
+		<button type="button" ng-click="deleteLogs()" class="btn btn-primary">{%
+			trans %}TARTANA_VIEW_LOGS_BUTTON_DELETE_LOGS{% endtrans %}</button>
+	</p>
+	<hr/>
+	<div class="form-group form-group-sm form-inline">
+		<select class="form-control"
+			ng-options="log.level for log in (logs | unique:'level') track by log.id"
+			ng-model="levelFilter">
+			<option value=""></option>
+		</select>
+	</div>
+	<table class="table table-striped" wt-responsive-table>
+		<thead>
+			<tr>
+				<th>{% trans %}TARTANA_ENTITY_LOG_LEVEL{% endtrans %}</th>
+				<th>{% trans %}TARTANA_ENTITY_LOG_CHANNEL{% endtrans %}</th>
+				<th>{% trans %}TARTANA_ENTITY_LOG_DATE{% endtrans %}</th>
+				<th>{% trans %}TARTANA_ENTITY_LOG_MESSAGE{% endtrans %}</th>
+				<th width="30%">{% trans %}TARTANA_ENTITY_LOG_CONTEXT{% endtrans %}</th>
+			</tr>
+		</thead>
+		<tr ng-repeat="log in (logs | filter:levelFilter.level | startFrom:(currentPage-1)*numPerPage | limitTo:numPerPage) track by log.id">
+			<td>{[log.level]}</td>
+			<td>{[log.channel]}</td>
+			<td>{[log.date.dateFormated]}</td>
+			<td>{[log.message]}</td>
+			<td>{[log.context]}</td>
+		</tr>
+	</table>
+	<small class="clearfix">{% trans %}TARTANA_TEXT_TOTAL{% endtrans %}: {[(logs | filter:levelFilter.level).length]}</small>
+	<uib-pagination ng-model="currentPage"
+		total-items="(logs | filter:levelFilter.level).length" max-size="5"
+		force-ellipses="true"  boundary-links="true"
+		boundary-link-numbers="true" previous-text="&lsaquo;" items-per-page="numPerPage"
+		next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+</div>
+{% endblock %}
