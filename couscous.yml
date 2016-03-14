@@ -1,5 +1,8 @@
 title: Tartana, advanced download manager
 subTitle: Download manager for your files, fetches them locally or trough a Synology file station
+github:
+    user: C-Sparrow
+    repo: Tartana
 baseUrl: //c-sparrow.github.io/Tartana
 exclude:
     - app

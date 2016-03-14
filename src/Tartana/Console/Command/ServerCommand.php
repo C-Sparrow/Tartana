@@ -74,6 +74,8 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 					$this->log('Default command returned with output, set log level to debug to get the reason', Logger::ERROR);
 					$this->log('Output was: ' . $output);
 				}
+
+				sleep(10);
 			}
 			while (! $output);
 		}

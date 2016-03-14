@@ -9,7 +9,7 @@ The installation is as simple as 123. Head on to the [installation guide](doc/ma
 
 ## Features
 - Runs on a simple low resource [environment](doc/main/requirements.md)
-- Modern architecture with support for PHP 5.5 > 7 and HHVM.
+- Modern architecture with support for PHP 5.5 up to 7 and HHVM.
 - Premium account support.
 - Runs in [different modes](doc/main/running.md): command line, an existing web server infrastructure or as standalone web server.
 - Scans a folder for link files and manages the downloads locally or trough a [Synology Download Station](doc/main/synology.md).
