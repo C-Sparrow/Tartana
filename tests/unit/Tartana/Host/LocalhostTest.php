@@ -9,6 +9,73 @@ use Tartana\Host\Localhost;
 class LocalhostTest extends \PHPUnit_Framework_TestCase
 {
 
+	public function testFetchDownloadInfo ()
+	{
+		$src = new Local(__DIR__ . '/test');
+		$dest = new Local(__DIR__ . '/test1');
+
+		$downloads = [];
+		foreach ($src->listContents() as $file)
+		{
+			$download = new Download();
+			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
+			$download->setDestination($dest->getPathPrefix());
+			$downloads[] = $download;
+		}
+
+		$downloader = new Localhost(new Registry());
+		$downloader->fetchDownloadInfo($downloads);
+
+		$this->assertEmpty($downloads[0]->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $downloads[0]->getState());
+
+		$this->assertCount(count($downloads), $src->listContents());
+		foreach ($src->listContents() as $file)
+		{
+			$contains = false;
+			foreach ($downloads as $d)
+			{
+				if ($file['path'] == $d->getFileName())
+				{
+					$contains = true;
+				}
+			}
+			$this->assertTrue($contains);
+		}
+	}
+
+	public function testFetchDownloadInfoInvalidLink ()
+	{
+		$download = new Download();
+		$download->setLink('file://localhost/invalid');
+		$download->setDestination(__DIR__ . '/test');
+
+		$downloader = new Localhost(new Registry());
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
+
+		$this->assertNotEmpty($download->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
+	}
+
+	public function testFetchDownloadInfoFileNameSet ()
+	{
+		$download = new Download();
+		$download->setLink('file://localhost/invalid');
+		$download->setDestination(__DIR__ . '/test');
+		$download->setFileName('hello.txt');
+
+		$downloader = new Localhost(new Registry());
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
+
+		$this->assertEquals('hello.txt', $download->getFileName());
+		$this->assertEmpty($download->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
+	}
+
 	public function testDownloadLinks ()
 	{
 		$src = new Local(__DIR__ . '/test');

@@ -1,10 +1,10 @@
 <?php
 namespace Tartana\Host;
+use GuzzleHttp\Psr7\Response;
 use Pdp\Parser;
 use Pdp\PublicSuffixListManager;
 use Tartana\Entity\Download;
 use Tartana\Host\Common\Http;
-use GuzzleHttp\Psr7\Response;
 
 class Dropboxcom extends Http
 {
@@ -32,18 +32,6 @@ class Dropboxcom extends Http
 		$headers['Dropbox-API-Arg'] = '{"url": "' . $this->fixUrl($download->getLink()) . '"}';
 
 		return $headers;
-	}
-
-	protected function getOriginalFileName ($url)
-	{
-		$token = trim($this->getConfiguration()->get('dropboxcom.token'));
-		if (empty($token))
-		{
-			return parent::getOriginalFileName($url);
-		}
-		// We are calling the api url only, so no header with the file name can
-		// be fetched
-		return null;
 	}
 
 	protected function parseFileName (Response $response)

@@ -3,14 +3,14 @@ namespace Tartana\Console\Command;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Monolog\Logger;
-use Tartana\Component\Command\Command;
-use Tartana\Component\Command\Runner;
-use Tartana\Mixins\LoggerAwareTrait;
-use Tartana\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tartana\Component\Command\Command;
+use Tartana\Component\Command\Runner;
+use Tartana\Mixins\LoggerAwareTrait;
+use Tartana\Util;
 
 class ServerCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -74,8 +74,12 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 					$this->log('Default command returned with output, set log level to debug to get the reason', Logger::ERROR);
 					$this->log('Output was: ' . $output);
 				}
-
-				sleep(10);
+				else
+				{
+					// @codeCoverageIgnoreStart
+					sleep(10);
+					// @codeCoverageIgnoreEnd
+				}
 			}
 			while (! $output);
 		}

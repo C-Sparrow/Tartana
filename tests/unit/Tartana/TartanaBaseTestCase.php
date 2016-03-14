@@ -1,9 +1,9 @@
 <?php
 namespace Tests\Unit\Tartana;
+use SimpleBus\Message\Bus\MessageBus;
 use Tartana\Component\Command\Runner;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
-use SimpleBus\Message\Bus\MessageBus;
 use Tartana\Host\HostFactory;
 
 class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
@@ -26,12 +26,19 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 		return $commandBus;
 	}
 
-	protected function getMockRunner ($callbacks = [])
+	protected function getMockRunner ($callbacks = [], $returnData = [])
 	{
+		foreach ($callbacks as $key => $callback)
+		{
+			$callbacks[$key] = [
+					$callback
+			];
+		}
 		$runner = $this->getMockBuilder(Runner::class)->getMock();
 
 		$method = $runner->expects($this->exactly(count($callbacks)))
-			->method('execute');
+			->method('execute')
+			->will($this->callOnConsecutiveCalls($returnData));
 		$this->callWithConsecutive($method, $callbacks);
 
 		return $runner;

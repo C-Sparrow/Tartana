@@ -33,12 +33,10 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(
-										function  (Command $command) {
-											return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
-										})
-						]
+						$this->callback(
+								function  (Command $command) {
+									return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
+								})
 				]);
 
 		$download = new Download();
@@ -81,18 +79,14 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(
-										function  (Command $command) {
-											return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
-										})
-						],
-						[
-								$this->callback(
-										function  (Command $command) {
-											return $command->getCommand() == 'php' && strpos($command, 'unzip') !== false;
-										})
-						]
+						$this->callback(
+								function  (Command $command) {
+									return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
+								}),
+						$this->callback(
+								function  (Command $command) {
+									return $command->getCommand() == 'php' && strpos($command, 'unzip') !== false;
+								})
 				]);
 
 		$download = new Download();
@@ -219,11 +213,9 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'pw.txt') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'pw.txt') !== false;
+						})
 				]);
 
 		$download = new Download();
@@ -258,11 +250,9 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'pw.txt') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'pw.txt') !== false;
+						})
 				]);
 
 		$download = new Download();
@@ -297,12 +287,10 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(
-										function  (Command $command) {
-											return strpos($command, 'invalid-password.txt') === false;
-										})
-						]
+						$this->callback(
+								function  (Command $command) {
+									return strpos($command, 'invalid-password.txt') === false;
+								})
 				]);
 
 		$download = new Download();
@@ -369,12 +357,10 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(
-										function  (Command $command) {
-											return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
-										})
-						]
+						$this->callback(
+								function  (Command $command) {
+									return $command->getCommand() == 'php' && strpos($command, 'unrar') !== false;
+								})
 				]);
 
 		$listener = new ExtractListener($runner, new Registry([

@@ -7,12 +7,14 @@ use League\Flysystem\Config;
 use Monolog\Logger;
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Entity\Download;
+use Tartana\Mixins\HostFactoryAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
 use Tartana\Util;
 
 class LocalProcessLinksHandler extends EntityManagerHandler
 {
 	use LoggerAwareTrait;
+	use HostFactoryAwareTrait;
 
 	private $configuration = null;
 
@@ -63,6 +65,14 @@ class LocalProcessLinksHandler extends EntityManagerHandler
 			$download->setLink($link);
 			$download->setDestination($destination);
 			$download->setState(Download::STATE_DOWNLOADING_NOT_STARTED);
+
+			$downloader = $this->getDownloader($link);
+			if (! empty($downloader))
+			{
+				$downloader->fetchDownloadInfo([
+						$download
+				]);
+			}
 
 			$this->persistEntity($download);
 		}

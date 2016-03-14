@@ -14,7 +14,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class DropboxcomTest extends TartanaBaseTestCase
 {
 
-	public function testToDownloadToken ()
+	public function testDownloadToken ()
 	{
 		$mock = new MockHandler(
 				[
@@ -66,15 +66,10 @@ class DropboxcomTest extends TartanaBaseTestCase
 		}
 	}
 
-	public function testToDownloadNoToken ()
+	public function testDownloadNoToken ()
 	{
 		$mock = new MockHandler(
 				[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'hello.txt'
-								]
-						]),
 						new Response(200, [
 								'Content-Disposition' => [
 										0 => 'filename="hello.txt"'

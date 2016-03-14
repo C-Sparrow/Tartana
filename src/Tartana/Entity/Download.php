@@ -406,8 +406,6 @@ class Download extends Base
 	public static function reset (Download $download)
 	{
 		$download->setState(Download::STATE_DOWNLOADING_NOT_STARTED);
-		$download->setFileName(null);
-		$download->setSize(0);
 		$download->setProgress(0, true);
 		$download->setMessage(null);
 		$download->setPid(0);

@@ -1,33 +1,33 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
 use League\Flysystem\Adapter\Local;
-use Tartana\Component\Command\Runner;
-use Tartana\Console\Command\ServerCommand;
+use League\Flysystem\Config;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tartana\Component\Command\Command;
-use League\Flysystem\Config;
+use Tartana\Component\Command\Runner;
+use Tartana\Console\Command\ServerCommand;
+use Tests\Unit\Tartana\TartanaBaseTestCase;
 
-class ServerCommandTest extends \PHPUnit_Framework_TestCase
+class ServerCommandTest extends TartanaBaseTestCase
 {
 
 	const PID_FILE_NAME = 'server_test.pid';
 
 	public function testStartServer ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->exactly(2))
-			->method('execute')
-			->withConsecutive([
-				$this->callback(function  (Command $command) {
-					return strpos($command, '-S 0.0.0.0:') !== false;
-				})
-		], [
-				$this->callback(function  (Command $command) {
-					return strpos($command, "app.php' 'default'") !== false;
-				})
-		])
-			->will($this->onConsecutiveCalls(20, 'Good job'));
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return strpos($command, '-S 0.0.0.0:') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, "app.php' 'default'") !== false;
+						})
+				], [
+						20,
+						'Good job'
+				]);
 
 		$command = new ServerCommand($runner);
 		$command->addOption('env', 'e');
@@ -50,20 +50,18 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStartServerWithPort ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->exactly(2))
-			->method('execute')
-			->withConsecutive(
+		$runner = $this->getMockRunner(
 				[
 						$this->callback(function  (Command $command) {
 							return strpos($command, '-S 0.0.0.0:9999') !== false;
-						})
-				], [
+						}),
 						$this->callback(function  (Command $command) {
 							return strpos($command, "app.php' 'default'") !== false;
 						})
-				])
-			->will($this->onConsecutiveCalls(20, 'Good job'));
+				], [
+						20,
+						'Good job'
+				]);
 
 		$command = new ServerCommand($runner);
 		$command->addOption('env', 'e');
@@ -87,19 +85,18 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStartServerNoActionSet ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->exactly(2))
-			->method('execute')
-			->withConsecutive([
-				$this->callback(function  (Command $command) {
-					return strpos($command, '-S 0.0.0.0:') !== false;
-				})
-		], [
-				$this->callback(function  (Command $command) {
-					return strpos($command, "app.php' 'default'") !== false;
-				})
-		])
-			->will($this->onConsecutiveCalls(20, 'Good job'));
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return strpos($command, '-S 0.0.0.0:') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, "app.php' 'default'") !== false;
+						})
+				], [
+						20,
+						'Good job'
+				]);
 
 		$command = new ServerCommand($runner);
 		$command->addOption('env', 'e');
@@ -121,11 +118,7 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStartServerHasRunningPid ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$command = new ServerCommand($runner);
+		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
 		$application = new Application();
 		$application->add($command);
@@ -147,19 +140,18 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStartServerHasDiedPid ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->exactly(2))
-			->method('execute')
-			->withConsecutive([
-				$this->callback(function  (Command $command) {
-					return strpos($command, '-S 0.0.0.0:') !== false;
-				})
-		], [
-				$this->callback(function  (Command $command) {
-					return strpos($command, "app.php' 'default'") !== false;
-				})
-		])
-			->will($this->onConsecutiveCalls(20, 'Good job'));
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return strpos($command, '-S 0.0.0.0:') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, "app.php' 'default'") !== false;
+						})
+				], [
+						20,
+						'Good job'
+				]);
 
 		$command = new ServerCommand($runner);
 		$command->addOption('env', 'e');
@@ -183,13 +175,14 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStopServer ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->once())
-			->method('execute')
-			->with($this->callback(function  (Command $command) {
-			return strpos($command, "kill '-9' '" . getmypid()) !== false;
-		}))
-			->will($this->returnValue('Killed'));
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return strpos($command, "kill '-9' '" . getmypid()) !== false;
+						})
+				], [
+						'Killed'
+				]);
 
 		$command = new ServerCommand($runner);
 		$command->addOption('env', 'e');
@@ -212,11 +205,7 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStopServerInvalidPid ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$command = new ServerCommand($runner);
+		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
 		$application = new Application();
 		$application->add($command);
@@ -237,11 +226,7 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testStopServerNoPidFile ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$command = new ServerCommand($runner);
+		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
 		$application = new Application();
 		$application->add($command);
@@ -266,11 +251,5 @@ class ServerCommandTest extends \PHPUnit_Framework_TestCase
 		{
 			$fs->delete(self::PID_FILE_NAME);
 		}
-	}
-
-	private function getMockRunner ()
-	{
-		$runner = $this->getMockBuilder(Runner::class)->getMock();
-		return $runner;
 	}
 }

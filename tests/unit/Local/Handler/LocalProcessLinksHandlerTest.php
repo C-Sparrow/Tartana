@@ -6,6 +6,7 @@ use League\Flysystem\Config;
 use Local\Handler\LocalProcessLinksHandler;
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Entity\Download;
+use Tartana\Host\HostInterface;
 use Tartana\Util;
 use Tests\Unit\Local\LocalBaseTestCase;
 
@@ -16,18 +17,12 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 	{
 		$entityManager = $this->getMockEntityManager(
 				[
-						[
-								$this->callback(
-										function  (Download $download) {
-											return $download->getLink() == 'http://foo.bar/kjashd';
-										})
-						],
-						[
-								$this->callback(
-										function  (Download $download) {
-											return $download->getLink() == 'http://bar.foo/uzwhka';
-										})
-						]
+						$this->callback(function  (Download $download) {
+							return $download->getLink() == 'http://foo.bar/kjashd';
+						}),
+						$this->callback(function  (Download $download) {
+							return $download->getLink() == 'http://bar.foo/uzwhka';
+						})
 				]);
 
 		$fs = new Local(__DIR__ . '/test');
@@ -50,12 +45,9 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$download->setLink('http://bar.foo/uzwhka');
 		$entityManager = $this->getMockEntityManager(
 				[
-						[
-								$this->callback(
-										function  (Download $download) {
-											return $download->getLink() == 'http://foo.bar/kjashd';
-										})
-						]
+						$this->callback(function  (Download $download) {
+							return $download->getLink() == 'http://foo.bar/kjashd';
+						})
 				], 1, [
 						$download
 				]);
@@ -101,18 +93,12 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 	{
 		$entityManager = $this->getMockEntityManager(
 				[
-						[
-								$this->callback(
-										function  (Download $download) {
-											return $download->getLink() == 'http://foo.bar/kjashd';
-										})
-						],
-						[
-								$this->callback(
-										function  (Download $download) {
-											return $download->getLink() == 'http://bar.foo/uzwhka';
-										})
-						]
+						$this->callback(function  (Download $download) {
+							return $download->getLink() == 'http://foo.bar/kjashd';
+						}),
+						$this->callback(function  (Download $download) {
+							return $download->getLink() == 'http://bar.foo/uzwhka';
+						})
 				]);
 
 		$fs = new Local(__DIR__ . '/test');
@@ -183,6 +169,55 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		{
 			$this->assertNotEquals('dir', $file['type']);
 		}
+	}
+
+	public function testProcessLinksWithFactory ()
+	{
+		$entityManager = $this->getMockEntityManager(
+				[
+						$this->callback(function  (Download $download) {
+							return ! $download->getFileName();
+						})
+				]);
+
+		$fs = new Local(__DIR__ . '/test');
+		$handler = new LocalProcessLinksHandler(new Registry([
+				'downloads' => $fs->getPathPrefix()
+		]), $entityManager);
+		$handler->setHostFactory($this->getMockHostFactory(null));
+		$handler->handle(new ProcessLinks([
+				'http://bar.foo/uzwhka'
+		]));
+
+		$this->assertNotEmpty($fs->listContents());
+		$this->assertCount(1, $fs->listContents());
+		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
+	}
+
+	public function testProcessLinksWithFactoryWithHost ()
+	{
+		$entityManager = $this->getMockEntityManager(
+				[
+						$this->callback(function  (Download $download) {
+							return ! $download->getFileName();
+						})
+				]);
+		$host = $this->getMockBuilder(HostInterface::class)->getMock();
+		$host->expects($this->once())
+			->method('fetchDownloadInfo');
+
+		$fs = new Local(__DIR__ . '/test');
+		$handler = new LocalProcessLinksHandler(new Registry([
+				'downloads' => $fs->getPathPrefix()
+		]), $entityManager);
+		$handler->setHostFactory($this->getMockHostFactory($host));
+		$handler->handle(new ProcessLinks([
+				'http://bar.foo/uzwhka'
+		]));
+
+		$this->assertNotEmpty($fs->listContents());
+		$this->assertCount(1, $fs->listContents());
+		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
 	public function testCreateJobDirFullPath ()

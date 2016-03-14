@@ -22,6 +22,27 @@ class Localhost implements HostInterface
 		$this->configuration = $configuration;
 	}
 
+	public function fetchDownloadInfo (array $downloads)
+	{
+		foreach ($downloads as $download)
+		{
+			if ($download->getFileName())
+			{
+				continue;
+			}
+
+			$path = $this->getFileName($download->getLink());
+			if (empty($path))
+			{
+				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH', Download::STATE_DOWNLOADING_ERROR);
+				continue;
+			}
+
+			$fs = new Local(dirname($path));
+			$download->setFileName($fs->removePathPrefix($path));
+		}
+	}
+
 	public function download (array $downloads)
 	{
 		foreach ($downloads as $download)
@@ -33,23 +54,11 @@ class Localhost implements HostInterface
 				continue;
 			}
 
-			$uri = parse_url($download->getLink());
-			if (! isset($uri['path']))
+			$path = $this->getFileName($download->getLink());
+			if (empty($path))
 			{
 				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
 				continue;
-			}
-
-			$path = Util::realPath($uri['path']);
-			if (empty($path))
-			{
-				// Perhaps relative
-				$path = Util::realPath(ltrim($uri['path'], '/'));
-				if (empty($path))
-				{
-					$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
-					continue;
-				}
 			}
 
 			$fs = new Local(dirname($path));
@@ -75,6 +84,28 @@ class Localhost implements HostInterface
 		}
 
 		return [];
+	}
+
+	private function getFileName ($link)
+	{
+		$uri = parse_url($link);
+		if (! isset($uri['path']))
+		{
+			return null;
+		}
+
+		$path = Util::realPath($uri['path']);
+		if (empty($path))
+		{
+			// Perhaps relative
+			$path = Util::realPath(ltrim($uri['path'], '/'));
+			if (empty($path))
+			{
+				return null;
+			}
+		}
+
+		return $path;
 	}
 
 	private function updateDownload ($download, $message, $state = Download::STATE_DOWNLOADING_ERROR)

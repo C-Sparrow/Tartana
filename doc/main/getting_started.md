@@ -14,7 +14,7 @@ To have Tartana up and running in no time follow the steps below on a SSH consol
 - `php cli/app.php download:control`
 - `ls var/data/Downloadsjob-{ts}`
 
-There is a file created in the folder *var/data/Downloadsjob-{ts}/tmp-1.bin* you can rename it to downloads-list.png. This is due the fact that Github doesn't send the correct headers for the file. But on a proper file hoster like share-online.biz or uploaded.net the files got renamed correctly after download.
+There is a file created in the folder *var/data/Downloadsjob-{ts}/tmp-1.bin*, you can rename it to downloads-list.png. This is due the fact that Github doesn't send the correct headers for the file. But on a proper file hoster like share-online.biz or uploaded.net the files got renamed correctly after download.
 
 ### Start built in web server
 These steps are only required if you want to access the web interface.

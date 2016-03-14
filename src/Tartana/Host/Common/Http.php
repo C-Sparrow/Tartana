@@ -31,6 +31,29 @@ class Http implements HostInterface
 		$this->setClient($client);
 	}
 
+	public function fetchDownloadInfo (array $downloads)
+	{
+		foreach ($downloads as $download)
+		{
+			// Connection check
+			try
+			{
+				$originalName = $this->parseFileName($this->getClient()
+					->head($download->getLink()));
+				if (! empty($originalName) && empty($download->getFileName()))
+				{
+					$download->setFileName($originalName);
+				}
+			}
+			catch (\Exception $e)
+			{
+				$this->log('Exception fetching head for connection test: ' . $e->getMessage());
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+			}
+		}
+	}
+
 	public function download (array $downloads)
 	{
 		if (empty($downloads))
@@ -78,16 +101,6 @@ class Http implements HostInterface
 				}
 
 				$tmpFileName = 'tmp-' . $download->getId() . '.bin';
-				$request = new Request('get', $url);
-
-				$originalFileName = $this->getOriginalFileName($url);
-				if (empty($download->getFileName()) && $originalFileName)
-				{
-					$download->setFileName($originalFileName);
-					$this->handleCommand(new SaveDownloads([
-							$download
-					]));
-				}
 
 				$me = $this;
 				$fs = new Local($download->getDestination());
@@ -119,6 +132,8 @@ class Http implements HostInterface
 				// @codeCoverageIgnoreEnd
 
 				$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);
+
+				$request = new Request('get', $url);
 				$promise = $this->getClient()->sendAsync($request, $options);
 
 				$promise->then(
@@ -208,8 +223,11 @@ class Http implements HostInterface
 
 	/**
 	 * Returns the real url to download, subclasses can do here some
-	 * preprocessing.
+	 * preprocessing of the given download.
+	 * The download will be saved after that operation. If null is returned, the
+	 * download will not be performed.
 	 *
+	 * @param Download $download
 	 * @return string
 	 */
 	protected function getUrlToDownload (Download $download)
@@ -263,30 +281,6 @@ class Http implements HostInterface
 	protected function getHeadersForDownload (Download $download)
 	{
 		return [];
-	}
-
-	/**
-	 * Returns the original file name for the given url.
-	 * It makes a HEAH request and tries to parse from the response headers the
-	 * filename.
-	 *
-	 * @param string $url
-	 * @throws \Exception
-	 * @return NULL|string
-	 */
-	protected function getOriginalFileName ($url)
-	{
-		// Connection check
-		try
-		{
-			return $this->parseFileName($this->getClient()
-				->head($url));
-		}
-		catch (\Exception $e)
-		{
-			$this->log('Exception fetching head for connection test: ' . $e->getMessage());
-			throw new \Exception('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
-		}
 	}
 
 	/**

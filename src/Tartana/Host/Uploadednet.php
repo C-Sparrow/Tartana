@@ -7,6 +7,54 @@ use Tartana\Host\Common\Http;
 class Uploadednet extends Http
 {
 
+	public function fetchDownloadInfo (array $downloads)
+	{
+		foreach ($downloads as $download)
+		{
+			try
+			{
+				if (preg_match("/file\/(.*?)\//", $download->getLink(), $matches))
+				{
+					// Getting the link information
+					$res = $this->getClient()->request('get',
+							'https://uploaded.net/api/filemultiple?apikey=lhF2IeeprweDfu9ccWlxXVVypA5nA3EL&id_0=' . $matches[1]);
+					$csv = explode(',', $res->getBody()->getContents(), 5);
+					if (count($csv) >= 5)
+					{
+						if ($csv[0] != 'online')
+						{
+							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+							$download->setMessage($csv[0]);
+						}
+						else
+						{
+							$download->setFileName($csv[4]);
+							$download->setSize($csv[2]);
+						}
+					}
+					else
+					{
+						parent::fetchDownloadInfo([
+								$download
+						]);
+					}
+				}
+				else
+				{
+					parent::fetchDownloadInfo([
+							$download
+					]);
+				}
+			}
+			catch (\Exception $e)
+			{
+				$this->log('Exception fetching head for connection test: ' . $e->getMessage());
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+			}
+		}
+	}
+
 	protected function getUrlToDownload (Download $download)
 	{
 		$res = $this->getClient()->request('get', $download->getLink());

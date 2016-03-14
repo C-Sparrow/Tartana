@@ -19,23 +19,17 @@ class UpdateCommandTest extends TartanaBaseTestCase
 				new UpdateCommand(
 						$this->getMockRunner(
 								[
-										[
-												$this->callback(function  (Command $command) {
-													return true;
+										$this->callback(function  (Command $command) {
+											return true;
+										}),
+										$this->callback(
+												function  (Command $command) {
+													return strpos($command, 'unzip') !== false;
+												}),
+										$this->callback(
+												function  (Command $command) {
+													return strpos($command, 'doctrine:migrations:migrate') !== false;
 												})
-										],
-										[
-												$this->callback(
-														function  (Command $command) {
-															return strpos($command, 'unzip') !== false;
-														})
-										],
-										[
-												$this->callback(
-														function  (Command $command) {
-															return strpos($command, 'doctrine:migrations:migrate') !== false;
-														})
-										]
 								]), 'github', new HostFactory()));
 
 		$command = $application->find('update');

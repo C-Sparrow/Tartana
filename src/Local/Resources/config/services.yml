@@ -21,6 +21,7 @@ services:
     arguments: ['@local_config', '@doctrine.orm.entity_manager']
     calls:
       - [setLogger, ['@Logger']]
+      - [setHostFactory, ['@HostFactory']]
     tags:
        - { name: command_handler, handles: Tartana\Domain\Command\ProcessLinks }
   LocalStartDownloadsHandler:

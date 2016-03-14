@@ -18,6 +18,7 @@ class LocalProcessLinksHandlerTest extends WebTestCase
 		$downloadsBeforeProcessing = $repository->findDownloads();
 
 		$handler = $client->getContainer()->get('LocalProcessLinksHandler');
+		$handler->setHostFactory(null);
 		$handler->handle(new ProcessLinks([
 				$downloadsBeforeProcessing[0]->getLink()
 		]));

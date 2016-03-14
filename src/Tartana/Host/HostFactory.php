@@ -15,7 +15,7 @@ class HostFactory
 	 *
 	 * @param string $link
 	 * @param Registry $config
-	 * @return Tartana\Host\HostInterface
+	 * @return \Tartana\Host\HostInterface
 	 */
 	public function createHostDownloader ($link, Registry $config = null)
 	{

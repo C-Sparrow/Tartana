@@ -139,10 +139,10 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals('http://foo.bar/sdfsf', $download->getLink());
 		$this->assertEquals(__DIR__, $download->getDestination());
-		$this->assertEmpty($download->getFileName());
+		$this->assertEquals('unit', $download->getFileName());
 		$this->assertEmpty($download->getPid());
 		$this->assertEquals(0.00, $download->getProgress());
-		$this->assertEmpty($download->getSize());
+		$this->assertEquals(1234, $download->getSize());
 		$this->assertEmpty($download->getMessage());
 		$this->assertEmpty($download->getFinishedAt());
 		$this->assertEmpty($download->getStartedAt());

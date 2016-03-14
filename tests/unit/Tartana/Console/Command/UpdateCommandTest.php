@@ -2,12 +2,12 @@
 namespace Tests\Unit\Tartana\Console\Command;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
 use Tartana\Console\Command\UpdateCommand;
 use Tartana\Host\HostInterface;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 class UpdateCommandTest extends TartanaBaseTestCase
@@ -17,22 +17,16 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'unzip') !== false;
+						}),
+						$this->callback(
+								function  (Command $command) {
+									return strpos($command, 'doctrine:migrations:migrate') !== false;
 								})
-						],
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'unzip') !== false;
-								})
-						],
-						[
-								$this->callback(
-										function  (Command $command) {
-											return strpos($command, 'doctrine:migrations:migrate') !== false;
-										})
-						]
 				]);
 
 		$host1 = $this->getMockBuilder(HostInterface::class)->getMock();
@@ -76,11 +70,9 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						})
 				]);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
@@ -114,22 +106,16 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'unzip') !== false;
+						}),
+						$this->callback(
+								function  (Command $command) {
+									return strpos($command, 'doctrine:migrations:migrate') !== false;
 								})
-						],
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'unzip') !== false;
-								})
-						],
-						[
-								$this->callback(
-										function  (Command $command) {
-											return strpos($command, 'doctrine:migrations:migrate') !== false;
-										})
-						]
 				]);
 
 		$application = new Application();
@@ -168,22 +154,16 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'unzip') !== false;
+						}),
+						$this->callback(
+								function  (Command $command) {
+									return strpos($command, 'doctrine:migrations:migrate') !== false;
 								})
-						],
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'unzip') !== false;
-								})
-						],
-						[
-								$this->callback(
-										function  (Command $command) {
-											return strpos($command, 'doctrine:migrations:migrate') !== false;
-										})
-						]
 				]);
 
 		$fs = new Local(__DIR__ . '/test');
@@ -204,11 +184,9 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						})
 				]);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
@@ -235,11 +213,9 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						})
 				]);
 
 		$application = new Application();
@@ -257,11 +233,9 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
-								})
-						]
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						})
 				]);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
@@ -287,22 +261,16 @@ class UpdateCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 				[
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'stop') !== false;
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'stop') !== false;
+						}),
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'unzip') !== false;
+						}),
+						$this->callback(
+								function  (Command $command) {
+									return strpos($command, 'doctrine:migrations:migrate') !== false;
 								})
-						],
-						[
-								$this->callback(function  (Command $command) {
-									return strpos($command, 'unzip') !== false;
-								})
-						],
-						[
-								$this->callback(
-										function  (Command $command) {
-											return strpos($command, 'doctrine:migrations:migrate') !== false;
-										})
-						]
 				]);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
@@ -354,7 +322,7 @@ class UpdateCommandTest extends TartanaBaseTestCase
 
 	public function testUpdateEmptyUrl ()
 	{
-		$runner = $this->getMockRunner([]);
+		$runner = $this->getMockRunner();
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, null, $this->getMockHostFactory([])));

@@ -10,6 +10,13 @@ class LocalBaseTestCase extends TartanaBaseTestCase
 
 	protected function getMockEntityManager ($callbacks = [], $flushCount = 1, $downloads = [])
 	{
+		foreach ($callbacks as $key => $callback)
+		{
+			$callbacks[$key] = [
+					$callback
+			];
+		}
+
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->method('merge')->willReturnCallback(function  (Download $e) {
 			return $e;
