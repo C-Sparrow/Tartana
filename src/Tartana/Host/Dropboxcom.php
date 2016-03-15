@@ -1,10 +1,9 @@
 <?php
 namespace Tartana\Host;
 use GuzzleHttp\Psr7\Response;
-use Pdp\Parser;
-use Pdp\PublicSuffixListManager;
 use Tartana\Entity\Download;
 use Tartana\Host\Common\Http;
+use Tartana\Util;
 
 class Dropboxcom extends Http
 {
@@ -46,11 +45,7 @@ class Dropboxcom extends Http
 
 	private function fixUrl ($url)
 	{
-		$pslManager = new PublicSuffixListManager();
-		$parser = new Parser($pslManager->getList());
-
-		$uri = null;
-		$uri = $parser->parseUrl($url)->toArray();
+		$uri = Util::parseUrl($url);
 		return $uri['scheme'] . '://' . $uri['host'] . $uri['path'] . '?dl=1';
 	}
 }

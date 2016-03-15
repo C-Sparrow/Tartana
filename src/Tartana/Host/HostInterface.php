@@ -14,14 +14,14 @@ interface HostInterface
 	/**
 	 * Prefetches download information like file name size, etc.
 	 *
-	 * @param Tartana\Entity\Download[] $downloads
+	 * @param \Tartana\Entity\Download[] $downloads
 	 */
 	public function fetchDownloadInfo (array $downloads);
 
 	/**
 	 * Downloads the given downloads objects.
 	 *
-	 * @param Tartana\Entity\Download[] $downloads
+	 * @param \Tartana\Entity\Download[] $downloads
 	 */
 	public function download (array $downloads);
 

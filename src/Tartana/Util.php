@@ -1,5 +1,7 @@
 <?php
 namespace Tartana;
+use Pdp\Parser;
+use Pdp\PublicSuffixListManager;
 
 final class Util
 {
@@ -118,5 +120,82 @@ final class Util
 			return substr($string, 0, $characters) . '...' . substr($string, - 1 * $characters);
 		}
 		return $string;
+	}
+
+	/**
+	 * Parses the given url and returns an array with the following properties
+	 * for that url:
+	 * http://user:pass@mirrors.kernel.org:8000/link/test.html?hello=foo#bar
+	 *
+	 * [scheme] => http
+	 * [user] => user
+	 * [pass] => pass
+	 * [host] => mirrors.kernel.org
+	 * [subdomain] => mirrors
+	 * [registerableDomain] => kernel.org
+	 * [publicSuffix] => org
+	 * [port] => 8000
+	 * [path] => /link/test.html
+	 * [query] => hello=foo
+	 * [fragment] => bar
+	 *
+	 * @param string $url
+	 * @return array
+	 */
+	public static function parseUrl ($url)
+	{
+		try
+		{
+			$pslManager = new PublicSuffixListManager();
+			$parser = new Parser($pslManager->getList());
+
+			return $parser->parseUrl($url)->toArray();
+		}
+		catch (\Exception $e)
+		{
+			return [
+					'scheme' => '',
+					'user' => '',
+					'pass' => '',
+					'host' => '',
+					'subdomain' => '',
+					'registerableDomain' => '',
+					'publicSuffix' => '',
+					'port' => '',
+					'path' => '',
+					'query' => '',
+					'fragment' => ''
+			];
+		}
+	}
+
+	/**
+	 * Cleans special characters from the uri which can be used as identifier in
+	 * YAMl files.
+	 *
+	 * @param array $uri
+	 * @return string
+	 * @see Util::parseUrl()
+	 */
+	public static function cleanHostName ($uri)
+	{
+		if (is_string($uri))
+		{
+			$uri = [
+					'host' => $uri
+			];
+		}
+		if (! isset($uri['registerableDomain']))
+		{
+			$uri['registerableDomain'] = '';
+		}
+		if (! isset($uri['host']))
+		{
+			$uri['host'] = '';
+		}
+		$hostName = $uri['registerableDomain'] ? $uri['registerableDomain'] : $uri['host'];
+		$hostName = preg_replace("/[^A-Za-z0-9 ]/", '', $hostName);
+
+		return $hostName;
 	}
 }

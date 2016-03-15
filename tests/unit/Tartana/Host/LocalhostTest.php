@@ -1,12 +1,16 @@
 <?php
 namespace Tests\Unit\Tartana\Host;
+use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use Tartana\Entity\Download;
 use Tartana\Host\Localhost;
+use Tests\Unit\Tartana\TartanaBaseTestCase;
+use League\Flysystem\MountManager;
+use League\Flysystem\Filesystem;
 
-class LocalhostTest extends \PHPUnit_Framework_TestCase
+class LocalhostTest extends TartanaBaseTestCase
 {
 
 	public function testFetchDownloadInfo ()
@@ -91,7 +95,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		$this->assertEmpty($downloads[0]->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
@@ -127,7 +131,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		$this->assertEmpty($downloads[0]->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
@@ -162,7 +166,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		$this->assertEmpty($downloads[0]->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
@@ -202,7 +206,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		$downloads[] = $download;
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		$this->assertFalse($dest->has('invalid.txt'));
 
@@ -214,7 +218,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 	public function testDownloadEmpty ()
 	{
 		$downloader = new Localhost();
-		$downloader->download([]);
+		Promise\unwrap($downloader->download([]));
 
 		$fs = new Local(__DIR__ . '/test1');
 		$this->assertEmpty($fs->listContents());
@@ -235,7 +239,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		foreach ($downloads as $download)
 		{
@@ -265,7 +269,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		foreach ($downloads as $download)
 		{
@@ -287,7 +291,7 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 		$downloads[] = $download;
 
 		$downloader = new Localhost(new Registry());
-		$downloader->download($downloads);
+		Promise\unwrap($downloader->download($downloads));
 
 		foreach ($downloads as $download)
 		{
@@ -295,6 +299,49 @@ class LocalhostTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 		}
 		$this->assertEmpty($dest->listContents());
+	}
+
+	public function testMountManager ()
+	{
+		$src = new Local(__DIR__ . '/test');
+		$dest = new Local(__DIR__ . '/test1');
+
+		$downloads = [];
+		foreach ($src->listContents() as $key => $file)
+		{
+			$download = new Download();
+			$download->setId($key);
+			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
+			$download->setDestination($dest->getPathPrefix());
+			$downloads[] = $download;
+		}
+
+		$tests = [];
+		foreach ($downloads as $d)
+		{
+			$tests[] = [
+					$this->equalTo('src-' . $d->getId()),
+					$this->callback(function  (Filesystem $f) {
+						return $f->getAdapter() instanceof Local;
+					})
+			];
+			$tests[] = [
+					$this->equalTo('dst-' . $d->getId()),
+					$this->callback(function  (Filesystem $f) {
+						return $f->getAdapter() instanceof Local;
+					})
+			];
+		}
+
+		$manager = $this->getMockBuilder(MountManager::class)->getMock();
+		$this->callWithConsecutive($manager->expects($this->exactly(2))
+			->method('mountFilesystem'), $tests);
+		$manager->expects($this->once())
+			->method('copy')
+			->willReturn(true);
+
+		$downloader = new Localhost(new Registry(), $manager);
+		Promise\unwrap($downloader->download($downloads));
 	}
 
 	protected function setUp ()

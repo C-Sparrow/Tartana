@@ -83,4 +83,46 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($text, Util::shorten($text, strlen($text) + 1));
 		$this->assertEquals('uni...est', Util::shorten($text, 7));
 	}
+
+	public function testParseUrl ()
+	{
+		$uri = Util::parseUrl('http://user:pass@mirrors.kernel.org:8000/link/test.html?hello=foo#bar');
+
+		$this->assertEquals('http', $uri['scheme']);
+		$this->assertEquals('user', $uri['user']);
+		$this->assertEquals('pass', $uri['pass']);
+		$this->assertEquals('mirrors.kernel.org', $uri['host']);
+		$this->assertEquals('mirrors', $uri['subdomain']);
+		$this->assertEquals('kernel.org', $uri['registerableDomain']);
+		$this->assertEquals('org', $uri['publicSuffix']);
+		$this->assertEquals('8000', $uri['port']);
+		$this->assertEquals('/link/test.html', $uri['path']);
+		$this->assertEquals('hello=foo', $uri['query']);
+		$this->assertEquals('bar', $uri['fragment']);
+	}
+
+	public function testParseInvalidUrl ()
+	{
+		$uri = Util::parseUrl('://invalid://');
+
+		$this->assertEquals('', $uri['scheme']);
+		$this->assertEquals('', $uri['user']);
+		$this->assertEquals('', $uri['pass']);
+		$this->assertEquals('', $uri['host']);
+		$this->assertEquals('', $uri['subdomain']);
+		$this->assertEquals('', $uri['registerableDomain']);
+		$this->assertEquals('', $uri['publicSuffix']);
+		$this->assertEquals('', $uri['port']);
+		$this->assertEquals('', $uri['path']);
+		$this->assertEquals('', $uri['query']);
+		$this->assertEquals('', $uri['fragment']);
+	}
+
+	public function testCleanHost ()
+	{
+		$this->assertEquals('foobar', Util::cleanHostName('foo.bar'));
+		$this->assertEquals('foobar', Util::cleanHostName(':foo-.bar'));
+		$this->assertEquals('foobar', Util::cleanHostName(Util::parseUrl('foo.bar')));
+		$this->assertEquals('', Util::cleanHostName([]));
+	}
 }

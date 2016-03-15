@@ -1,6 +1,10 @@
 # Tartana
 
-[![Build Status](https://travis-ci.org/C-Sparrow/Tartana.svg)](https://travis-ci.org/C-Sparrow/Tartana) [![Code Coverage](https://scrutinizer-ci.com/g/C-Sparrow/Tartana/badges/coverage.png)](https://scrutinizer-ci.com/g/C-Sparrow/Tartana/) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/C-Sparrow/Tartana/badges/quality-score.png)](https://scrutinizer-ci.com/g/C-Sparrow/Tartana/)
+[![Build Status](https://img.shields.io/travis/C-Sparrow/Tartana/master.svg?style=flat-square)](https://travis-ci.org/C-Sparrow/Tartana)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/C-Sparrow/Tartana.svg?style=flat-square)](https://scrutinizer-ci.com/g/C-Sparrow/Tartana/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/C-Sparrow/Tartana.svg?style=flat-square)](https://scrutinizer-ci.com/g/C-Sparrow/Tartana)
+[![Latest Version](https://img.shields.io/github/tag/C-Sparrow/Tartana.svg?style=flat-square)](https://github.com/C-Sparrow/Tartana/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/C-Sparrow/Tartana/blob/master/LICENSE)
 
 Open source PHP app which manages downloads for you on any PHP capable device (Raspberry Pi up to big servers). It supports link decryption as well as all important container formats like dlc and automatic file extraction. It just works and makes fun!
 

@@ -1,7 +1,9 @@
 <?php
 namespace Tartana\Host;
+use GuzzleHttp\Promise\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use Tartana\Domain\Command\SaveDownloads;
@@ -17,9 +19,17 @@ class Localhost implements HostInterface
 
 	private $configuration = null;
 
-	public function __construct (Registry $configuration = null)
+	private $manager = null;
+
+	public function __construct (Registry $configuration = null, MountManager $manager = null)
 	{
 		$this->configuration = $configuration;
+
+		if (empty($manager))
+		{
+			$manager = new MountManager();
+		}
+		$this->manager = $manager;
 	}
 
 	public function fetchDownloadInfo (array $downloads)
@@ -31,68 +41,92 @@ class Localhost implements HostInterface
 				continue;
 			}
 
-			$path = $this->getFileName($download->getLink());
-			if (empty($path))
+			$fs = $this->getSourceAdapter($download);
+			if (! empty($fs))
 			{
-				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH', Download::STATE_DOWNLOADING_ERROR);
-				continue;
+				$download->setFileName(basename($download->getLink()));
 			}
-
-			$fs = new Local(dirname($path));
-			$download->setFileName($fs->removePathPrefix($path));
+			else
+			{
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+			}
 		}
 	}
 
 	public function download (array $downloads)
 	{
+		$promises = [];
 		foreach ($downloads as $download)
 		{
 			$destination = Util::realPath($download->getDestination());
 			if (empty($destination))
 			{
-				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_DESTINATION');
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_DESTINATION');
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+				$this->handleCommand(new SaveDownloads([
+						$download
+				]));
+
 				continue;
 			}
 
-			$path = $this->getFileName($download->getLink());
-			if (empty($path))
+			$src = $this->getSourceAdapter($download);
+			if (empty($src))
 			{
-				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+				$this->handleCommand(new SaveDownloads([
+						$download
+				]));
 				continue;
 			}
 
-			$fs = new Local(dirname($path));
-			$fileName = $fs->removePathPrefix($path);
-
-			$src = new Filesystem($fs);
+			$src = new Filesystem($src);
 			$dest = new Filesystem(new Local($destination));
 
-			$manager = new MountManager([
-					'src' => $src,
-					'dest' => $dest
-			]);
+			$manager = $this->manager;
+			$manager->mountFilesystem('src-' . $download->getId(), $src);
+			$manager->mountFilesystem('dst-' . $download->getId(), $dest);
 
-			if (! @$manager->copy('src://' . $fileName, 'dest://' . ($download->getFileName() ? $download->getFileName() : $fileName)))
-			{
-				$this->updateDownload($download, 'TARTANA_DOWNLOAD_MESSAGE_COPY_FAILED');
-			}
-			else
-			{
-				$download->setFinishedAt(new \DateTime());
-				$this->updateDownload($download, null, Download::STATE_DOWNLOADING_COMPLETED);
-			}
+			$promise = new Promise(
+					function  () use ( &$promise, $download, $manager) {
+						$fileName = basename($download->getLink());
+						$id = $download->getId();
+						if (! @$manager->copy('src-' . $id . '://' . $fileName,
+								'dst-' . $id . '://' . ($download->getFileName() ? $download->getFileName() : $fileName)))
+						{
+							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_COPY_FAILED');
+							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+						}
+						else
+						{
+							$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+							$download->setFinishedAt(new \DateTime());
+						}
+
+						$this->handleCommand(new SaveDownloads([
+								$download
+						]));
+
+						$promise->resolve(true);
+					});
+			$promises[] = $promise;
 		}
 
-		return [];
+		return $promises;
 	}
 
-	private function getFileName ($link)
+	/**
+	 * Returns the source adapter to copy the download from.
+	 * If none can be created null is returned.
+	 *
+	 * @param Download $download
+	 * @return null|AdapterInterface
+	 */
+	protected function getSourceAdapter (Download $download)
 	{
-		$uri = parse_url($link);
-		if (! isset($uri['path']))
-		{
-			return null;
-		}
+		$uri = Util::parseUrl($download->getLink());
 
 		$path = Util::realPath($uri['path']);
 		if (empty($path))
@@ -105,15 +139,11 @@ class Localhost implements HostInterface
 			}
 		}
 
-		return $path;
+		return new Local(dirname($path));
 	}
 
-	private function updateDownload ($download, $message, $state = Download::STATE_DOWNLOADING_ERROR)
+	protected function getConfiguration ()
 	{
-		$download->setMessage($message);
-		$download->setState($state);
-		$this->handleCommand(new SaveDownloads([
-				$download
-		]));
+		return $this->configuration;
 	}
 }

@@ -1,8 +1,12 @@
+ftp:
+    localhost:
+        username: 
+        password: 
 shareonlinebiz:
-  username:
-  password:
+    username:
+    password:
 uploadednet:
-  username: 
-  password: 
+    username: 
+    password: 
 dropboxcom:
-  token: 
+    token: 

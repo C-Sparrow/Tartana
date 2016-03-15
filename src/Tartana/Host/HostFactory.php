@@ -1,10 +1,9 @@
 <?php
 namespace Tartana\Host;
 use Joomla\Registry\Registry;
-use Pdp\Parser;
-use Pdp\PublicSuffixListManager;
 use Tartana\Mixins\CommandBusAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
+use Tartana\Util;
 
 class HostFactory
 {
@@ -23,28 +22,16 @@ class HostFactory
 		{
 			$config = new Registry();
 		}
-		$pslManager = new PublicSuffixListManager();
-		$parser = new Parser($pslManager->getList());
+		$uri = Util::parseUrl($link);
 
-		$uri = null;
-		try
-		{
-			$uri = $parser->parseUrl($link);
-		}
-		catch (\Exception $e)
-		{
-			return null;
-		}
-
-		$hostName = $uri->host->registerableDomain ? $uri->host->registerableDomain : $uri->host->host;
-		$hostName = preg_replace("/[^A-Za-z0-9 ]/", '', $hostName);
+		$hostName = Util::cleanHostName($uri);
 		$hostName = ucfirst(strtolower($hostName));
 		$className = 'Tartana\\Host\\' . $hostName;
 
 		// Check if the class exists for the host to download
 		if (! class_exists($className))
 		{
-			$className = 'Tartana\\Host\\Common\\' . ucfirst(strtolower($uri->scheme));
+			$className = 'Tartana\\Host\\Common\\' . ucfirst(strtolower($uri['scheme']));
 			if (! class_exists($className))
 			{
 				return null;
