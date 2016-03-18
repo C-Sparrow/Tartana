@@ -52,7 +52,7 @@ class Shareonlinebiz extends Http
 
 		if (! preg_match(';var dl="(.+?)";s', $html, $match))
 		{
-			$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_MD5');
+			$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_FAILED_REAL_URL');
 			return null;
 		}
 

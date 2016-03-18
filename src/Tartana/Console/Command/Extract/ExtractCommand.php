@@ -122,7 +122,9 @@ abstract class ExtractCommand extends Command
 			];
 			flush();
 
-			$process = proc_open($this->getExtractCommand($pw, $source, $destination), $descriptorspec, $pipes);
+			$command = $this->getExtractCommand($pw, $source, $destination);
+			$this->log('Running pure command to extract the files: ' . $command);
+			$process = proc_open($command, $descriptorspec, $pipes);
 
 			// Outputting the preogress to stdout
 			$buffer = '';

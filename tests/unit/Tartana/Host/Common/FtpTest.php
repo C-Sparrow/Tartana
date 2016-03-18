@@ -15,6 +15,19 @@ class FtpTest extends TartanaBaseTestCase
 
 	private $scheme = 'ftp';
 
+	public function testInstantiable ()
+	{
+		// Flysystem can't run FTP properly on HHVM
+		// https://github.com/thephpleague/flysystem/blob/master/tests/FtpTests.php#L329
+		if (! defined('FTP_BINARY'))
+		{
+			$this->markTestSkipped('The FTP_BINARY constant is not defined');
+		}
+	}
+
+	/**
+	 * @depends testInstantiable
+	 */
 	public function testHasFtpAdapter ()
 	{
 		$download = new Download();
@@ -41,6 +54,9 @@ class FtpTest extends TartanaBaseTestCase
 		]));
 	}
 
+	/**
+	 * @depends testInstantiable
+	 */
 	public function testCredentialsInUrl ()
 	{
 		$download = new Download();
@@ -68,6 +84,9 @@ class FtpTest extends TartanaBaseTestCase
 		]));
 	}
 
+	/**
+	 * @depends testInstantiable
+	 */
 	public function testCredentialsInConfiguration ()
 	{
 		$download = new Download();
@@ -112,6 +131,9 @@ class FtpTest extends TartanaBaseTestCase
 		]));
 	}
 
+	/**
+	 * @depends testInstantiable
+	 */
 	public function testCredentialsInConfigurationSubDomain ()
 	{
 		$download = new Download();
@@ -152,6 +174,9 @@ class FtpTest extends TartanaBaseTestCase
 		]));
 	}
 
+	/**
+	 * @depends testInstantiable
+	 */
 	public function testNotHasFtpAdapter ()
 	{
 		$download = new Download();

@@ -30,12 +30,24 @@ class ChangeDownloadStateHandler
 		{
 			if ($command->getToState() == Download::STATE_DOWNLOADING_NOT_STARTED)
 			{
+				// Full reset here
 				$download = Download::reset($download);
 
-				if (file_exists($download->getDestination()))
+				if ($download->getFileName() && file_exists($download->getDestination()))
 				{
+					// If the downloaded file already exists, it will be deleted
 					$fs = new Local($download->getDestination());
-					$fs->deleteDir('');
+					if ($fs->has($download->getFileName()))
+					{
+						$fs->delete($download->getFileName());
+					}
+
+					// When there is no more files in the folder, it will be
+					// deleted
+					if (empty($fs->listContents()))
+					{
+						$fs->deleteDir('');
+					}
 				}
 			}
 			else
