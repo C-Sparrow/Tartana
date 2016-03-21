@@ -16,14 +16,14 @@ class Shareonlinebiz extends Http
 				// Getting the link information
 				$res = $this->getClient()->request('get', 'https://api.share-online.biz/linkcheck.php?md5=1&links=' . urlencode($download->getLink()));
 				$csv = explode(';', $res->getBody()->getContents());
-				if (count($csv) >= 5)
+				if (count($csv) >= 2)
 				{
 					if ($csv[1] != 'OK')
 					{
 						$download->setState(Download::STATE_DOWNLOADING_ERROR);
 						$download->setMessage($csv[1]);
 					}
-					else
+					else if (count($csv) >= 4)
 					{
 						$download->setFileName($csv[2]);
 						$download->setSize($csv[3]);

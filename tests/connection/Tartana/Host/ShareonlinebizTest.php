@@ -9,6 +9,59 @@ use Tartana\Host\Shareonlinebiz;
 class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 {
 
+	public function itestFetchDownloadInfo ()
+	{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
+		{
+			$this->markTestSkipped('No credentials found for host');
+			return;
+		}
+
+		$config = new Registry();
+		$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
+		$downloader = new Shareonlinebiz($config);
+
+		$dest = new Local(__DIR__ . '/test');
+
+		$download = new Download();
+		$download->setLink('http://www.share-online.biz/dl/EG5BWT3OO27');
+		$download->setDestination($dest->getPathPrefix());
+
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
+
+		$this->assertEmpty($download->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
+		$this->assertEquals('symfony.png', $download->getFileName());
+	}
+
+	public function itestFetchDownloadInfoDeleted ()
+	{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
+		{
+			$this->markTestSkipped('No credentials found for host');
+			return;
+		}
+
+		$config = new Registry();
+		$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
+		$downloader = new Shareonlinebiz($config);
+
+		$dest = new Local(__DIR__ . '/test');
+
+		$download = new Download();
+		$download->setLink('http://www.share-online.biz/dl/Z2ZG544OHIS');
+		$download->setDestination($dest->getPathPrefix());
+
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
+
+		$this->assertNotEmpty($download->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
+	}
+
 	public function testDownloadLinks ()
 	{
 		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
@@ -84,7 +137,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 		$promises = $downloader->download([]);
 
-		$this->assertEmpty($failed);
+		$this->assertEmpty($promises);
 		$this->assertEmpty($dest->listContents());
 	}
 

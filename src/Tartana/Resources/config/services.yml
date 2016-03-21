@@ -64,9 +64,10 @@ services:
             - { name: console.command }
     Tartana.DownloadControlCommand:
         class: Tartana\Console\Command\DownloadControlCommand
-        arguments: ['@DownloadRepository', '@CommandBus', '@Translator']
+        arguments: ['@DownloadRepository', '@Translator']
         calls:
             - [setLogger, ['@Logger']]
+            - [setCommandBus, ['@CommandBus']]
         tags:
             - { name: console.command }
     Tartana.UpdateCommand:
@@ -94,9 +95,9 @@ services:
            - { name: command_handler, handles: Tartana\Domain\Command\ProcessCompletedDownloads }
     ChangeDownloadStateHandler:
         class: Tartana\Handler\ChangeDownloadStateHandler
-        arguments: ['@CommandBus']
         calls:
            - [setLogger, ['@Logger']]
+           - [setCommandBus, ['@CommandBus']]
         tags:
            - { name: command_handler, handles: Tartana\Domain\Command\ChangeDownloadState }
     DeleteFileLogsHandler:

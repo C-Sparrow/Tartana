@@ -2,95 +2,92 @@
 namespace Test\Unit\Tartana\Handler;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
-use SimpleBus\Message\Bus\MessageBus;
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Domain\Command\SaveDownloads;
-use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
 use Tartana\Handler\ChangeDownloadStateHandler;
+use Tests\Unit\Tartana\TartanaBaseTestCase;
 
-class ChangeDownloadStateHandlerTest extends \PHPUnit_Framework_TestCase
+class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 {
 
 	public function testChangeState ()
 	{
-		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
-		$commandBus->expects($this->once())
-			->method('handle')
-			->with(
-				$this->callback(
-						function  (SaveDownloads $command) {
-							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
-						}));
+		$commandBus = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  (SaveDownloads $command) {
+									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
+								})
+				]);
 
-		$downloads = [
-				new Download()
-		];
-		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
+		$download = new Download();
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn($downloads);
+		$repositoryMock = $this->getMockRepository([
+				[
+						$download
+				]
+		]);
 		$repositoryMock->expects($this->once())
 			->method('findDownloads')
 			->with($this->callback(function  ($state) {
 			return $state == Download::STATE_DOWNLOADING_COMPLETED;
 		}));
 
-		$handler = new ChangeDownloadStateHandler($commandBus);
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($commandBus);
 		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_PROCESSING_COMPLETED));
 	}
 
 	public function testChangeStateNotAvailable ()
 	{
-		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
-		$commandBus->expects($this->never())
-			->method('handle');
-
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn([]);
-
-		$handler = new ChangeDownloadStateHandler($commandBus);
-		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_ERROR, Download::STATE_PROCESSING_COMPLETED));
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($this->getMockCommandBus());
+		$handler->handle(
+				new ChangeDownloadState($this->getMockRepository([]), Download::STATE_DOWNLOADING_ERROR, Download::STATE_PROCESSING_COMPLETED));
 	}
 
 	public function testChangeStateNotStartedReset ()
 	{
-		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
-		$commandBus->expects($this->once())
-			->method('handle')
-			->with(
-				$this->callback(
-						function  (SaveDownloads $command) {
-							$download = $command->getDownloads()[0];
-							return empty($download->getPid()) && $download->getProgress() == 0.00 &&
-									 $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
-						}));
+		$commandBus = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  (SaveDownloads $command) {
+									$download = $command->getDownloads()[0];
+									return empty($download->getPid()) && $download->getProgress() == 0.00 && $download->getFileName() == 'hello.txt' &&
+											 $download->getSize() == 123 && $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+								})
+				]);
 
-		$downloads = [
-				new Download()
-		];
-		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
-		$downloads[0]->setProgress(44.5);
-		$downloads[0]->setPid(12);
+		$download = new Download();
+		$download->setFileName('hello.txt');
+		$download->setSize(123);
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+		$download->setProgress(44.5);
+		$download->setPid(12);
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn($downloads);
+		$repositoryMock = $this->getMockRepository([
+				[
+						$download
+				]
+		]);
 
-		$handler = new ChangeDownloadStateHandler($commandBus);
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($commandBus);
 		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 	}
 
 	public function testChangeStateNotStartedDeleteFileAndFolder ()
 	{
-		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
-		$commandBus->expects($this->once())
-			->method('handle')
-			->with(
-				$this->callback(
-						function  (SaveDownloads $command) {
-							$download = $command->getDownloads()[0];
-							return $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
-						}));
+		$commandBus = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  (SaveDownloads $command) {
+									$download = $command->getDownloads()[0];
+									return $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+								})
+				]);
 
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'unit test', new Config());
@@ -100,12 +97,14 @@ class ChangeDownloadStateHandlerTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($fs->getPathPrefix());
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn([
-				$download
+		$repositoryMock = $this->getMockRepository([
+				[
+						$download
+				]
 		]);
 
-		$handler = new ChangeDownloadStateHandler($commandBus);
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($commandBus);
 		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 
 		$this->assertFalse($fs->has(''));
@@ -113,15 +112,14 @@ class ChangeDownloadStateHandlerTest extends \PHPUnit_Framework_TestCase
 
 	public function testChangeStateNotStartedDeleteFile ()
 	{
-		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
-		$commandBus->expects($this->once())
-			->method('handle')
-			->with(
-				$this->callback(
-						function  (SaveDownloads $command) {
-							$download = $command->getDownloads()[0];
-							return $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
-						}));
+		$commandBus = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  (SaveDownloads $command) {
+									$download = $command->getDownloads()[0];
+									return $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+								})
+				]);
 
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'unit test', new Config());
@@ -132,12 +130,14 @@ class ChangeDownloadStateHandlerTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($fs->getPathPrefix());
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn([
-				$download
+		$repositoryMock = $this->getMockRepository([
+				[
+						$download
+				]
 		]);
 
-		$handler = new ChangeDownloadStateHandler($commandBus);
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($commandBus);
 		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 
 		$this->assertFalse($fs->has('test.txt'));

@@ -5,19 +5,13 @@ use Tartana\Component\Command\Command;
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Domain\Command\SaveDownloads;
 use Tartana\Entity\Download;
+use Tartana\Mixins\CommandBusAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
-use SimpleBus\Message\Bus\MessageBus;
 
 class ChangeDownloadStateHandler
 {
 	use LoggerAwareTrait;
-
-	private $commandBus = null;
-
-	public function __construct (MessageBus $commandBus)
-	{
-		$this->commandBus = $commandBus;
-	}
+	use CommandBusAwareTrait;
 
 	public function handle (ChangeDownloadState $command)
 	{
@@ -56,6 +50,6 @@ class ChangeDownloadStateHandler
 				$download->setState($command->getToState());
 			}
 		}
-		$this->commandBus->handle(new SaveDownloads($downloads));
+		$this->handleCommand(new SaveDownloads($downloads));
 	}
 }

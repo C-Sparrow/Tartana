@@ -1,36 +1,34 @@
 <?php
 namespace Tartana\Console\Command;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Tartana\Component\Command\Command;
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Domain\Command\DeleteDownloads;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
+use Tartana\Mixins\CommandBusAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
 use Tartana\Util;
-use SimpleBus\Message\Bus\MessageBus;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Console\Input\InputOption;
 
 class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 {
 	use LoggerAwareTrait;
+	use CommandBusAwareTrait;
 
 	private $repository = null;
 
-	private $commandBus = null;
-
 	private $translator = null;
 
-	public function __construct (DownloadRepository $repository, MessageBus $commandBus, TranslatorInterface $translator)
+	public function __construct (DownloadRepository $repository, TranslatorInterface $translator)
 	{
 		parent::__construct('download:control');
 
 		$this->repository = $repository;
-		$this->commandBus = $commandBus;
 		$this->translator = $translator;
 	}
 
@@ -86,6 +84,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 							$data[$destination] = [
 									'count' => 0,
 									'size' => 0,
+									'downloaded-size' => 0,
 									'state' => [],
 									'name' => ''
 							];
@@ -97,6 +96,11 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						}
 						$data[$destination]['count'] ++;
 						$data[$destination]['size'] += $download->getSize();
+						if ($download->getState() != Download::STATE_DOWNLOADING_NOT_STARTED &&
+								 $download->getState() != Download::STATE_DOWNLOADING_STARTED)
+						{
+							$data[$destination]['downloaded-size'] += $download->getSize();
+						}
 
 						$data[$destination]['state'][$download->getState()] ++;
 
@@ -110,7 +114,8 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					$headers = [
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
 							$t->trans('TARTANA_TEXT_TOTAL'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
+							$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_TOTAL_SIZE'),
+							$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_DOWNLOADED_SIZE'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME')
 					];
 					foreach (Download::$STATES_ALL as $state)
@@ -143,13 +148,17 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						]);
 						$table->addRow([
 								$headers[3],
+								Util::readableSize($content['downloaded-size'], $sizes)
+						]);
+						$table->addRow([
+								$headers[4],
 								Util::shorten($content['name'], 30)
 						]);
 
 						foreach (Download::$STATES_ALL as $key => $state)
 						{
 							$table->addRow([
-									$headers[$key + 4],
+									$headers[$key + 5],
 									$content['state'][$state]
 							]);
 						}
@@ -252,7 +261,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 
 		if ($command !== null)
 		{
-			$this->commandBus->handle($command);
+			$this->handleCommand($command);
 			$output->writeln($t->trans('TARTANA_TEXT_COMMAND_RUN_SUCCESS'));
 		}
 	}

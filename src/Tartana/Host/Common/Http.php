@@ -286,8 +286,8 @@ class Http implements HostInterface
 	/**
 	 * Parses the file name from a response.
 	 * Mainly it tryes to analyze the headers.
-	 * * @param Response $response
 	 *
+	 * @param Response $response
 	 * @return string|NULL
 	 */
 	protected function parseFileName (Response $response)

@@ -1,14 +1,14 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
+use SimpleBus\Message\Bus\MessageBus;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Translation\TranslatorInterface;
 use Tartana\Console\Command\DownloadControlCommand;
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Domain\Command\DeleteDownloads;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
-use SimpleBus\Message\Bus\MessageBus;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Translation\TranslatorInterface;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 class DownloadControlCommandTest extends TartanaBaseTestCase
@@ -31,10 +31,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$download->setSize(53453);
 		$downloads[] = $download;
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->expects($this->once())
-			->method('findDownloads')
-			->willReturn($downloads);
+		$repositoryMock = $this->getMockRepository([
+				$downloads
+		]);
 
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 		$translator->expects($this->atLeast(5))
@@ -42,7 +41,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->onConsecutiveCalls('1111', '2222', '3333'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $this->getMockCommandBus(), $translator));
+		$application->add(new DownloadControlCommand($repositoryMock, $translator));
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -62,22 +61,21 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testStatusNoAction ()
 	{
-		$downloads = [];
 		$download = new Download();
 		$download->setLink('http://foo.bar/lkhasdu');
 		$download->setDestination(__DIR__);
 		$download->setProgress(20);
-		$downloads[] = $download;
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->expects($this->once())
-			->method('findDownloads')
-			->willReturn($downloads);
+		$repositoryMock = $this->getMockRepository([
+				[
+						$download
+				]
+		]);
 
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $this->getMockCommandBus(), $translator));
+		$application->add(new DownloadControlCommand($repositoryMock, $translator));
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -106,7 +104,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$download->setSize(53453);
 		$downloads[] = $download;
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
+		$repositoryMock = $this->getMockRepository([]);
 		$repositoryMock->expects($this->once())
 			->method('findDownloadsByDestination')
 			->willReturn($downloads)
@@ -115,7 +113,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $this->getMockCommandBus(), $translator));
+		$application->add(new DownloadControlCommand($repositoryMock, $translator));
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -156,18 +154,15 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$download->setState(Download::STATE_DOWNLOADING_ERROR);
 		$downloads[] = $download;
 
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->expects($this->once())
-			->method('findDownloads')
-			->willReturn($downloads);
-
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 		$translator->expects($this->atLeast(5))
 			->method('trans')
 			->will($this->onConsecutiveCalls('Destination', 'Total', 'Size', 'State', 'Name', 'Not started'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $this->getMockCommandBus(), $translator));
+		$application->add(new DownloadControlCommand($this->getMockRepository([
+				$downloads
+		]), $translator));
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -189,9 +184,6 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testClearAll ()
 	{
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn([]);
-
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle');
@@ -202,7 +194,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($this->getMockRepository(), $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -242,7 +236,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($repositoryMock, $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -258,13 +254,10 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testClearCompleted ()
 	{
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$repositoryMock->method('findDownloads')->willReturn([]);
-
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
-			->with($this->callback(function  (DeleteDownloads $command) use ( $repositoryMock) {
+			->with($this->callback(function  (DeleteDownloads $command) {
 			return true;
 		}));
 
@@ -274,7 +267,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($this->getMockRepository(), $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -289,8 +284,6 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testResumeFailed ()
 	{
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
@@ -304,7 +297,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($this->getMockRepository([]), $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -319,14 +314,25 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testResumeAll ()
 	{
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
+		$download = new Download();
+		$download->setFileName('hello.txt');
 
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
-			->with($this->callback(function  (ChangeDownloadState $command) {
-			return true;
-		}));
+			->with(
+				$this->callback(
+						function  (ChangeDownloadState $command) {
+							return $command->getFromState() == [
+									Download::STATE_DOWNLOADING_STARTED,
+									Download::STATE_DOWNLOADING_COMPLETED,
+									Download::STATE_DOWNLOADING_ERROR,
+									Download::STATE_PROCESSING_NOT_STARTED,
+									Download::STATE_PROCESSING_STARTED,
+									Download::STATE_PROCESSING_COMPLETED,
+									Download::STATE_PROCESSING_ERROR
+							] && $command->getToState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+						}));
 
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 		$translator->expects($this->once())
@@ -334,7 +340,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($this->getMockRepository([]
+
+		), $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
@@ -349,8 +359,6 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 	public function testReprocess ()
 	{
-		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
-
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
@@ -364,7 +372,9 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->will($this->returnValue('Success run!'));
 
 		$application = new Application();
-		$application->add(new DownloadControlCommand($repositoryMock, $messageBusMock, $translator));
+		$cmd = new DownloadControlCommand($this->getMockRepository([]), $translator);
+		$cmd->setCommandBus($messageBusMock);
+		$application->add($cmd);
 		$command = $application->find('download:control');
 
 		$commandTester = new CommandTester($command);
