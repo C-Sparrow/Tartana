@@ -9,7 +9,7 @@ use Tartana\Host\Shareonlinebiz;
 class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function itestFetchDownloadInfo ()
+	public function testFetchDownloadInfo ()
 	{
 		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
 		{
@@ -36,7 +36,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('symfony.png', $download->getFileName());
 	}
 
-	public function itestFetchDownloadInfoDeleted ()
+	public function testFetchDownloadInfoDeleted ()
 	{
 		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
 		{

@@ -3,7 +3,6 @@ namespace Tartana\Host;
 use GuzzleHttp\Promise\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use Tartana\Domain\Command\SaveDownloads;
@@ -122,7 +121,7 @@ class Localhost implements HostInterface
 	 * If none can be created null is returned.
 	 *
 	 * @param Download $download
-	 * @return null|AdapterInterface
+	 * @return null|\League\Flysystem\AdapterInterface
 	 */
 	protected function getSourceAdapter (Download $download)
 	{

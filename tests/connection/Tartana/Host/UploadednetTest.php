@@ -23,13 +23,11 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 
 		$dest = new Local(__DIR__ . '/test');
 
-		$downloads = [];
 		$download = new Download();
 		$download->setLink('http://uploaded.net/file/s8xowf0p');
 		$download->setDestination($dest->getPathPrefix());
-		$downloads[] = $download;
 
-		Promise\unwrap($downloader->download($downloads));
+		Promise\unwrap($downloader->download([$download]));
 	}
 
 	protected function setUp ()

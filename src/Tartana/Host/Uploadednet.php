@@ -48,7 +48,7 @@ class Uploadednet extends Http
 			}
 			catch (\Exception $e)
 			{
-				$this->log('Exception fetching head for connection test: ' . $e->getMessage());
+				$this->log('Exception fetching file info for connection test: ' . $e->getMessage());
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
 			}
@@ -73,7 +73,7 @@ class Uploadednet extends Http
 
 	protected function login ()
 	{
-		if ($this->hasCookie('login'))
+		if ($this->getCookie('login'))
 		{
 			return true;
 		}

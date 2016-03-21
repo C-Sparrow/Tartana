@@ -139,7 +139,7 @@ class Http implements HostInterface
 				$promise->then(
 						function  (Response $resp) use ( $fs, $tmpFileName, $download, $me) {
 							$originalFileName = $this->parseFileName($resp);
-							if (empty($download->getFileName()) && $originalFileName)
+							if (empty($download->getFileName()) && ! empty($originalFileName))
 							{
 								$download->setFileName($originalFileName);
 							}
@@ -251,24 +251,31 @@ class Http implements HostInterface
 	 * expired.
 	 *
 	 * @param string $name
-	 * @return boolean
+	 * @return \GuzzleHttp\Cookie\SetCookie
 	 */
-	protected function hasCookie ($name)
+	protected function getCookie ($name)
 	{
-		foreach ($this->getClient()->getConfig('cookies') as $cookie)
+		$cookies = $this->getClient()->getConfig('cookies');
+
+		if (! $cookies instanceof \Traversable)
+		{
+			return null;
+		}
+
+		foreach ($cookies as $cookie)
 		{
 			/** @var \GuzzleHttp\Cookie\SetCookie $cookie */
 			if ($cookie->getName() != $name)
 			{
 				continue;
 			}
-			if ($cookie->getExpires() > time())
+			if (! $cookie->getExpires() || $cookie->getExpires() > time())
 			{
-				return true;
+				return $cookie;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
