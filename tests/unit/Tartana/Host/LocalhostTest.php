@@ -32,6 +32,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 		$this->assertEmpty($downloads[0]->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $downloads[0]->getState());
+		$this->assertEquals(md5_file(str_replace('file://localhost', '', $downloads[0]->getLink())), $downloads[0]->getHash());
 
 		$this->assertCount(count($downloads), $src->listContents());
 		foreach ($src->listContents() as $file)
@@ -91,6 +92,7 @@ class LocalhostTest extends TartanaBaseTestCase
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
+			$download->setHash(md5_file($src->applyPathPrefix($file['path'])));
 			$downloads[] = $download;
 		}
 
@@ -113,6 +115,30 @@ class LocalhostTest extends TartanaBaseTestCase
 			}
 			$this->assertTrue($contains);
 		}
+	}
+
+	public function testDownloadLinkInvalidHash ()
+	{
+		$src = new Local(__DIR__ . '/test');
+		$dest = new Local(__DIR__ . '/test1');
+
+		$downloads = [];
+		foreach ($src->listContents() as $file)
+		{
+			$download = new Download();
+			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
+			$download->setDestination($dest->getPathPrefix());
+			$download->setHash(123);
+			$downloads[] = $download;
+		}
+
+		$downloader = new Localhost(new Registry());
+		Promise\unwrap($downloader->download($downloads));
+
+		$this->assertNotEmpty($downloads[0]->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $downloads[0]->getState());
+
+		$this->assertEmpty($dest->listContents());
 	}
 
 	public function testDownloadLinksNewFileName ()

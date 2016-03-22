@@ -76,22 +76,27 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$dest = new Local(__DIR__ . '/test');
 
-		$downloads = [];
 		$download = new Download();
 		$download->setLink('http://www.share-online.biz/dl/EG5BWT3OO27');
 		$download->setDestination($dest->getPathPrefix());
-		$downloads[] = $download;
 
-		Promise\unwrap($downloader->download($downloads));
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
 
-		$this->assertEmpty($downloads[0]->getMessage());
-		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
+		Promise\unwrap($downloader->download([
+				$download
+		]));
+
+		$this->assertEmpty($download->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());
 
 		$this->assertNotEmpty($dest->listContents());
-		$this->assertCount(count($downloads), $dest->listContents());
+		$this->assertCount(1, $dest->listContents());
 		foreach ($dest->listContents() as $file)
 		{
 			$this->assertEquals('symfony.png', $file['path']);
+			$this->assertEquals(md5_file($dest->applyPathPrefix($file['path'])), $download->getHash());
 		}
 	}
 

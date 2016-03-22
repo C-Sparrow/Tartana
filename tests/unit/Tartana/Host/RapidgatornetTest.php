@@ -25,7 +25,8 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 										[
 												'response' => [
 														'filename' => 'hello.txt',
-														'size' => 123
+														'size' => 123,
+														'hash' => 1234
 												],
 												'response_status' => 200
 										]))
@@ -51,6 +52,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
 		$this->assertEquals('hello.txt', $download->getFileName());
 		$this->assertEquals(123, $download->getSize());
+		$this->assertEquals(1234, $download->getHash());
 	}
 
 	public function testFetchDownloadInfoInvalidResponseStatus ()
@@ -191,12 +193,11 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownloadInvalidDownloadUrl ()
 	{
-		$mock = new MockHandler(
-				[
-						new Response(200, [], json_encode([
-								'response_status' => 404
-						]))
-				]);
+		$mock = new MockHandler([
+				new Response(200, [], json_encode([
+						'response_status' => 404
+				]))
+		]);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),

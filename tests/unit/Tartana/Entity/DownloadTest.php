@@ -14,6 +14,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($download->getDestination());
 		$this->assertEmpty($download->getFileName());
 		$this->assertEmpty($download->getPid());
+		$this->assertEmpty($download->getHash());
 		$this->assertEquals(0.00, $download->getProgress());
 		$this->assertEmpty($download->getSize());
 		$this->assertEmpty($download->getMessage());
@@ -121,6 +122,14 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(345, $download->getSize());
 	}
 
+	public function testSetGetHash ()
+	{
+		$hash = md5(345);
+		$download = new Download();
+		$this->assertEquals($download, $download->setHash($hash));
+		$this->assertEquals($hash, $download->getHash());
+	}
+
 	public function testReset ()
 	{
 		$download = new Download();
@@ -133,6 +142,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$download->setPid(123);
 		$download->setProgress(23);
 		$download->setSize(1234);
+		$download->setHash(1234);
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$download = Download::reset($download);
@@ -143,6 +153,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($download->getPid());
 		$this->assertEquals(0.00, $download->getProgress());
 		$this->assertEquals(1234, $download->getSize());
+		$this->assertEquals(1234, $download->getHash());
 		$this->assertEmpty($download->getMessage());
 		$this->assertEmpty($download->getFinishedAt());
 		$this->assertEmpty($download->getStartedAt());

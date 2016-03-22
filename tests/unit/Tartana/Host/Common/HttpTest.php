@@ -96,6 +96,7 @@ class HttpTest extends TartanaBaseTestCase
 		$download = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
+		$download->setHash(md5('hello'));
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry(), $client);
@@ -112,6 +113,41 @@ class HttpTest extends TartanaBaseTestCase
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $downloads[0]->getFileName());
 		}
+	}
+
+	public function testDownloadLinkInvalidHash ()
+	{
+		$mock = new MockHandler(
+				[
+						new Response(200, [
+								'Content-Disposition' => [
+										0 => 'filename="hello.txt"'
+								]
+						], 'hello')
+				]);
+
+		$client = new Client([
+				'handler' => HandlerStack::create($mock)
+		]);
+
+		$dest = new Local(__DIR__ . '/test');
+
+		$downloads = [];
+		$download = new Download();
+		$download->setLink($this->scheme . '://foo.bar/ldlsls');
+		$download->setDestination($dest->getPathPrefix());
+		$download->setHash(md5('hello123'));
+		$downloads[] = $download;
+
+		$downloader = $this->getHttp(new Registry(), $client);
+		$promises = $downloader->download($downloads);
+		Promise\unwrap($promises);
+
+		$this->assertNotEmpty($promises);
+		$this->assertNotEmpty($downloads[0]->getMessage());
+		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $downloads[0]->getState());
+
+		$this->assertEmpty($dest->listContents());
 	}
 
 	public function testDownloadLinkTmpFileName ()

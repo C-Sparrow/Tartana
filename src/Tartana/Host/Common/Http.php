@@ -294,6 +294,24 @@ class Http implements HostInterface
 					{
 						$download->setFileName($tmpFileName);
 					}
+
+					// Hash check
+					if (! empty($download->getHash()))
+					{
+						$hash = md5_file($fs->applyPathPrefix($download->getFileName()));
+						if ($download->getHash() != $hash)
+						{
+							$fs->delete($download->getFileName());
+							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_HASH');
+							$download->setFinishedAt(new \DateTime());
+							$me->handleCommand(new SaveDownloads([
+									$download
+							]));
+							return;
+						}
+					}
+
 					$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 					$download->setProgress(100);
 					$download->setFinishedAt(new \DateTime());

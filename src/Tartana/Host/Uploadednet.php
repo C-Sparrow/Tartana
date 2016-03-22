@@ -28,7 +28,8 @@ class Uploadednet extends Http
 						}
 						else
 						{
-							$download->setFileName($csv[4]);
+							$download->setHash($csv[3]);
+							$download->setFileName(trim($csv[4]));
 							$download->setSize($csv[2]);
 						}
 					}

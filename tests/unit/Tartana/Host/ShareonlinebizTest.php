@@ -41,6 +41,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('hello.txt', $download->getFileName());
 		$this->assertEmpty($download->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
+		$this->assertEquals('hfasdzwgh27hs7', $download->getHash());
 	}
 
 	public function testFetchDownloadInfoNoOkStatus ()

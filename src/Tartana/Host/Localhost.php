@@ -44,6 +44,11 @@ class Localhost implements HostInterface
 			if (! empty($fs))
 			{
 				$download->setFileName(basename($download->getLink()));
+
+				if ($fs instanceof Local)
+				{
+					$download->setHash(md5_file($download->getLink()));
+				}
 			}
 			else
 			{
@@ -91,18 +96,31 @@ class Localhost implements HostInterface
 			$promise = new Promise(
 					function  () use ( &$promise, $download, $manager) {
 						$fileName = basename($download->getLink());
+						$destFileName = $download->getFileName() ? $download->getFileName() : $fileName;
 						$id = $download->getId();
-						if (! @$manager->copy('src-' . $id . '://' . $fileName,
-								'dst-' . $id . '://' . ($download->getFileName() ? $download->getFileName() : $fileName)))
+						if (! @$manager->copy('src-' . $id . '://' . $fileName, 'dst-' . $id . '://' . $destFileName))
 						{
 							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_COPY_FAILED');
 							$download->setState(Download::STATE_DOWNLOADING_ERROR);
 						}
+						else if (! empty($download->getHash()) && $download->getHash() != md5_file(
+								$manager->getFilesystem('dst-' . $id)
+									->getAdapter()
+									->applyPathPrefix($destFileName)))
+						{
+							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_HASH');
+							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+
+							if ($manager->has('dst-' . $id . '://' . $destFileName))
+							{
+								$manager->delete('dst-' . $id . '://' . $destFileName);
+							}
+						}
 						else
 						{
 							$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
-							$download->setFinishedAt(new \DateTime());
 						}
+						$download->setFinishedAt(new \DateTime());
 
 						$this->handleCommand(new SaveDownloads([
 								$download

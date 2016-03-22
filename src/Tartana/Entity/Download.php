@@ -95,6 +95,11 @@ class Download extends Base
 	protected $message;
 
 	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	protected $hash;
+
+	/**
 	 * Get id
 	 *
 	 * @return integer
@@ -393,6 +398,30 @@ class Download extends Base
 	public function getPid ()
 	{
 		return $this->pid;
+	}
+
+	/**
+	 * Set hash
+	 *
+	 * @param string $hash
+	 *
+	 * @return Download
+	 */
+	public function setHash ($hash)
+	{
+		$this->hash = $hash;
+
+		return $this;
+	}
+
+	/**
+	 * Get hash
+	 *
+	 * @return string
+	 */
+	public function getHash ()
+	{
+		return $this->hash;
 	}
 
 	/**

@@ -31,6 +31,7 @@ class Rapidgatornet extends Http
 				{
 					$download->setFileName($info->response->filename);
 					$download->setSize($info->response->size);
+					$download->setHash($info->response->hash);
 				}
 				else
 				{

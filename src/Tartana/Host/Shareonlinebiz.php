@@ -23,10 +23,11 @@ class Shareonlinebiz extends Http
 						$download->setState(Download::STATE_DOWNLOADING_ERROR);
 						$download->setMessage($csv[1]);
 					}
-					else if (count($csv) >= 4)
+					else if (count($csv) >= 5)
 					{
 						$download->setFileName($csv[2]);
 						$download->setSize($csv[3]);
+						$download->setHash(trim($csv[4]));
 					}
 				}
 				else
