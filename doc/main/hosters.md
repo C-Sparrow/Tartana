@@ -28,6 +28,9 @@ Fully implemented with premium account support.
 ### <i class="fa fa-check-square"></i> rapidgator.net
 Fully implemented with premium account support.
 
+### <i class="fa fa-check-square"></i> youtube.com
+Fully implemented, downloads all kinds of different urls from youtube.
+
 ### <i class="fa fa-minus-square"></i> mega.nz
 Is planed for a next release.
 
