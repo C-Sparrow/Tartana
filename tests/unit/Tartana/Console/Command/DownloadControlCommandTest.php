@@ -298,11 +298,18 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 			->method('trans')
 			->will($this->returnValue('Success run!'));
 
+		$downloads = [];
+		$d = new Download();
+		$d->setState(Download::STATE_DOWNLOADING_ERROR);
+		$downloads[] = $d;
+		$downloads = [];
+		$d = new Download();
+		$d->setState(Download::STATE_DOWNLOADING_COMPLETED);
+		$downloads[] = $d;
+
 		$application = new Application();
 		$cmd = new DownloadControlCommand($this->getMockRepository([
-				[
-						new Download()
-				]
+				$downloads
 		]), $translator);
 		$cmd->setCommandBus($messageBusMock);
 		$application->add($cmd);

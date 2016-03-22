@@ -32,6 +32,21 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_PROCESSING_COMPLETED));
 	}
 
+	public function testChangeStateOtherDownloads ()
+	{
+		$commandBus = $this->getMockCommandBus([]);
+
+		$download = new Download();
+		$download->setState(Download::STATE_DOWNLOADING_ERROR);
+
+		$handler = new ChangeDownloadStateHandler();
+		$handler->setCommandBus($commandBus);
+		$handler->handle(
+				new ChangeDownloadState([
+						$download
+				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_PROCESSING_COMPLETED));
+	}
+
 	public function testChangeStateNotAvailable ()
 	{
 		$handler = new ChangeDownloadStateHandler();

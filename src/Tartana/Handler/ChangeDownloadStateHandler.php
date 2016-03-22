@@ -20,8 +20,18 @@ class ChangeDownloadStateHandler
 			return;
 		}
 
+		$fromStates = (array) $command->getFromState();
+
+		$hasChanged = false;
 		foreach ($command->getDownloads() as $download)
 		{
+			if (! in_array($download->getState(), $fromStates))
+			{
+				continue;
+			}
+
+			$hasChanged = true;
+
 			if ($command->getToState() == Download::STATE_DOWNLOADING_NOT_STARTED)
 			{
 				// Full reset here
@@ -50,6 +60,9 @@ class ChangeDownloadStateHandler
 				$download->setState($command->getToState());
 			}
 		}
-		$this->handleCommand(new SaveDownloads($command->getDownloads()));
+		if ($hasChanged)
+		{
+			$this->handleCommand(new SaveDownloads($command->getDownloads()));
+		}
 	}
 }
