@@ -90,84 +90,7 @@ class Http implements HostInterface
 		{
 			try
 			{
-				$url = $this->getUrlToDownload($download);
-				if (! $url)
-				{
-					if (! $download->getMessage())
-					{
-						$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
-					}
-					throw new \Exception($download->getMessage());
-				}
-
-				$tmpFileName = 'tmp-' . $download->getId() . '.bin';
-
-				$me = $this;
-				$fs = new Local($download->getDestination());
-
-				// @codeCoverageIgnoreStart
-				$options = [
-						RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
-						RequestOptions::PROGRESS => function  ($totalSize, $downloadedSize) use ( $download, $me) {
-							if (! $downloadedSize || ! $totalSize)
-							{
-								return;
-							}
-							$progress = (100 / $totalSize) * $downloadedSize;
-
-							if ($progress < $download->getProgress() + (rand(100, 700) / 1000))
-							{
-								// Reducing write transactions on the
-								// repository
-								return;
-							}
-
-							$download->setProgress($progress);
-							$download->setSize($totalSize);
-							$me->handleCommand(new SaveDownloads([
-									$download
-							]));
-						}
-				];
-				// @codeCoverageIgnoreEnd
-
-				$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);
-
-				$request = new Request('get', $url);
-				$promise = $this->getClient()->sendAsync($request, $options);
-
-				$promise->then(
-						function  (Response $resp) use ( $fs, $tmpFileName, $download, $me) {
-							$originalFileName = $this->parseFileName($resp);
-							if (empty($download->getFileName()) && ! empty($originalFileName))
-							{
-								$download->setFileName($originalFileName);
-							}
-
-							if (! empty($download->getFileName()))
-							{
-								$fs->rename($tmpFileName, $download->getFileName());
-							}
-							else
-							{
-								$download->setFileName($tmpFileName);
-							}
-							$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
-							$download->setProgress(100);
-							$download->setFinishedAt(new \DateTime());
-							$me->handleCommand(new SaveDownloads([
-									$download
-							]));
-						},
-						function  (RequestException $e) use ( $download, $me) {
-							$download->setState(Download::STATE_DOWNLOADING_ERROR);
-							$download->setMessage($e->getMessage());
-							$download->setFinishedAt(new \DateTime());
-							$me->handleCommand(new SaveDownloads([
-									$download
-							]));
-						});
-				$promises[] = $promise;
+				$promises[] = $this->createPremise($download);
 			}
 			catch (\Exception $e)
 			{
@@ -305,5 +228,87 @@ class Http implements HostInterface
 			return trim($matches[1], '";');
 		}
 		return null;
+	}
+
+	private function createPremise (Download $download)
+	{
+		$url = $this->getUrlToDownload($download);
+		if (! $url)
+		{
+			if (! $download->getMessage())
+			{
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+			}
+			throw new \Exception($download->getMessage());
+		}
+
+		$tmpFileName = 'tmp-' . $download->getId() . '.bin';
+
+		$me = $this;
+		$fs = new Local($download->getDestination());
+
+		// @codeCoverageIgnoreStart
+		$options = [
+				RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
+				RequestOptions::PROGRESS => function  ($totalSize, $downloadedSize) use ( $download, $me) {
+					if (! $downloadedSize || ! $totalSize)
+					{
+						return;
+					}
+					$progress = (100 / $totalSize) * $downloadedSize;
+
+					if ($progress < $download->getProgress() + (rand(100, 700) / 1000))
+					{
+						// Reducing write transactions on the
+						// repository
+						return;
+					}
+
+					$download->setProgress($progress);
+					$download->setSize($totalSize);
+					$me->handleCommand(new SaveDownloads([
+							$download
+					]));
+				}
+		];
+		// @codeCoverageIgnoreEnd
+
+		$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);
+
+		$request = new Request('get', $url);
+		$promise = $this->getClient()->sendAsync($request, $options);
+
+		$promise->then(
+				function  (Response $resp) use ( $fs, $tmpFileName, $download, $me) {
+					$originalFileName = $this->parseFileName($resp);
+					if (empty($download->getFileName()) && ! empty($originalFileName))
+					{
+						$download->setFileName($originalFileName);
+					}
+
+					if (! empty($download->getFileName()))
+					{
+						$fs->rename($tmpFileName, $download->getFileName());
+					}
+					else
+					{
+						$download->setFileName($tmpFileName);
+					}
+					$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+					$download->setProgress(100);
+					$download->setFinishedAt(new \DateTime());
+					$me->handleCommand(new SaveDownloads([
+							$download
+					]));
+				},
+				function  (RequestException $e) use ( $download, $me) {
+					$download->setState(Download::STATE_DOWNLOADING_ERROR);
+					$download->setMessage($e->getMessage());
+					$download->setFinishedAt(new \DateTime());
+					$me->handleCommand(new SaveDownloads([
+							$download
+					]));
+				});
+		return $promise;
 	}
 }

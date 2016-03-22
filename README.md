@@ -12,9 +12,9 @@ Open source PHP app which manages downloads for you on any PHP capable device (R
 The installation is as simple as 123. Head on to the [installation guide](doc/main/installation.md).
 
 ## Features
-- Runs on a simple low resource [environment](doc/main/requirements.md)
+- Runs on a simple low resource [environment](doc/main/requirements.md).
 - Modern architecture with support for PHP 5.5 up to 7 and HHVM.
-- Premium account support.
+- Premium account support for [one click hosters](doc/main/hosters.md).
 - Runs in [different modes](doc/main/running.md): command line, an existing web server infrastructure or as standalone web server.
 - Scans a folder for link files and manages the downloads locally or trough a [Synology Download Station](doc/main/synology.md).
 - Auto extract archive files which are downloaded.

@@ -76,6 +76,7 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$repositoryMock->method('findDownloads')->will($this->callOnConsecutiveCalls($downloads));
+		$repositoryMock->method('findDownloadsByDestination')->will($this->callOnConsecutiveCalls($downloads));
 
 		return $repositoryMock;
 	}

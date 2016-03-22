@@ -183,21 +183,10 @@ class ExtractListener
 			return;
 		}
 
-		$downloads = $event->getCommand()
-			->getRepository()
-			->findDownloads([
-				Download::STATE_DOWNLOADING_NOT_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED
-		]);
-		if (empty($downloads))
-		{
-			return;
-		}
-
 		$this->log('Cleaning up the destination ' . $destination->getPathPrefix() . ' for downloads', Logger::INFO);
 
 		$dirNames = [];
-		foreach ($downloads as $download)
+		foreach ($event->getCommand()->getDownloads() as $download)
 		{
 			$dirNames[basename($download->getDestination())] = basename($download->getDestination());
 		}

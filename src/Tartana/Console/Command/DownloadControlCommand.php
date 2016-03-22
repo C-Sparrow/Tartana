@@ -40,7 +40,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				'The action, can be: status, clearall, clearcompleted, resumefailed, resumeall or reprocess.', 'status');
 
 		$this->addOption('destination', 'd', InputOption::VALUE_OPTIONAL,
-				'The status and clearall action can take a destination option to show or clear only downloads with the given destination.');
+				'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.');
 		$this->addOption('compact', 'c', InputOption::VALUE_OPTIONAL, 'Shows a compact list of downloads for the status action.', false);
 	}
 
@@ -53,19 +53,19 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		$t = $this->translator;
 
 		$command = null;
+		/** @var Download[] $downloads **/
+		$downloads = [];
+		if (! empty($destination))
+		{
+			$downloads = $this->repository->findDownloadsByDestination($destination);
+		}
+		else
+		{
+			$downloads = $this->repository->findDownloads();
+		}
 		switch ($action)
 		{
 			case 'status':
-				/** @var Download[] $downloads **/
-				$downloads = [];
-				if (! empty($destination))
-				{
-					$downloads = $this->repository->findDownloadsByDestination($destination);
-				}
-				else
-				{
-					$downloads = $this->repository->findDownloads();
-				}
 				if (! empty($downloads))
 				{
 					usort($downloads,
@@ -217,27 +217,28 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				}
 				break;
 			case 'clearall':
-				if ($destination)
-				{
-					$command = new DeleteDownloads($this->repository->findDownloadsByDestination($destination));
-				}
-				else
-				{
-					$command = new DeleteDownloads($this->repository->findDownloads());
-				}
+				$command = new DeleteDownloads($downloads);
 				break;
 			case 'clearcompleted':
-				$command = new DeleteDownloads($this->repository->findDownloads(Download::STATE_PROCESSING_COMPLETED));
+				$toDelete = [];
+				foreach ($downloads as $d)
+				{
+					if ($d->getState() == Download::STATE_PROCESSING_COMPLETED)
+					{
+						$toDelete[] = $d;
+					}
+				}
+				$command = new DeleteDownloads($toDelete);
 				break;
 			case 'resumefailed':
-				$command = new ChangeDownloadState($this->repository,
+				$command = new ChangeDownloadState($downloads,
 						[
 								Download::STATE_DOWNLOADING_ERROR,
 								Download::STATE_PROCESSING_ERROR
 						], Download::STATE_DOWNLOADING_NOT_STARTED);
 				break;
 			case 'resumeall':
-				$command = new ChangeDownloadState($this->repository,
+				$command = new ChangeDownloadState($downloads,
 						[
 								Download::STATE_DOWNLOADING_STARTED,
 								Download::STATE_DOWNLOADING_COMPLETED,
@@ -249,7 +250,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						], Download::STATE_DOWNLOADING_NOT_STARTED);
 				break;
 			case 'reprocess':
-				$command = new ChangeDownloadState($this->repository,
+				$command = new ChangeDownloadState($downloads,
 						[
 								Download::STATE_PROCESSING_NOT_STARTED,
 								Download::STATE_PROCESSING_STARTED,

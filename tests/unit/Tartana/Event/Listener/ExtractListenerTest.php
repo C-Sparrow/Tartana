@@ -287,10 +287,9 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(
-								function  (Command $command) {
-									return strpos($command, 'invalid-password.txt') === false;
-								})
+						$this->callback(function  (Command $command) {
+							return strpos($command, 'invalid-password.txt') === false;
+						})
 				]);
 
 		$download = new Download();
@@ -391,21 +390,36 @@ class ExtractListenerTest extends TartanaBaseTestCase
 		];
 		$downloads[0]->setDestination(__DIR__ . '/test');
 
-		$repository = $this->getMockRepository();
-		$repository->expects($this->once())
-			->method('findDownloads')
-			->willReturn($downloads)
-			->with($this->equalTo([
-				Download::STATE_DOWNLOADING_NOT_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED
-		]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState($repository, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+				new CommandEvent(new ChangeDownloadState($downloads, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+
+		$this->assertFalse($dst->has('test'));
 	}
 
 	public function testCleanUpDirectoryDestinationHasNoDirectory ()
 	{
 		$dst = new Local(__DIR__ . '/test1');
+
+		$listener = new ExtractListener($this->getMockRunner(),
+				new Registry([
+						'extract' => [
+								'destination' => $dst->getPathPrefix()
+						]
+				]));
+
+		$downloads = [
+				new Download()
+		];
+		$downloads[0]->setDestination(__DIR__ . '/test');
+
+		$listener->onChangeDownloadStateAfter(
+				new CommandEvent(new ChangeDownloadState($downloads, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+	}
+
+	public function testCleanUpDirectoryWrongState ()
+	{
+		$dst = new Local(__DIR__ . '/test1');
+		$dst->createDir('test', new Config());
 
 		$runner = $this->getMockRunner();
 		$runner->expects($this->never())
@@ -422,88 +436,41 @@ class ExtractListenerTest extends TartanaBaseTestCase
 		];
 		$downloads[0]->setDestination(__DIR__ . '/test');
 
-		$repository = $this->getMockRepository();
-		$repository->expects($this->once())
-			->method('findDownloads')
-			->willReturn($downloads)
-			->with($this->equalTo([
-				Download::STATE_DOWNLOADING_NOT_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED
-		]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState($repository, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
-	}
+				new CommandEvent(new ChangeDownloadState($downloads, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_STARTED)));
 
-	public function testCleanUpDirectoryWrongState ()
-	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
-				'extract' => [
-						'destination' => __DIR__ . '/test'
-				]
-		]));
-
-		$repository = $this->getMockRepository();
-		$repository->expects($this->never())
-			->method('findDownloads');
-		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState($repository, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_STARTED)));
+		$this->assertTrue($dst->has('test'));
 	}
 
 	public function testCleanUpDirectoryWrongDestination ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
+		$listener = new ExtractListener($this->getMockRunner(), new Registry([
 				'extract' => [
 						'destination' => __DIR__ . '/test'
 				]
 		]));
 
-		$repository = $this->getMockRepository();
-		$repository->expects($this->never())
-			->method('findDownloads');
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState($repository, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+				new CommandEvent(new ChangeDownloadState([], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
 	}
 
 	public function testCleanUpDirectoryNoDownloads ()
 	{
 		$dst = new Local(__DIR__ . '/test');
 
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
-		]));
-
-		$repository = $this->getMockRepository([]);
-		$repository->expects($this->once())
-			->method('findDownloads')
-			->with($this->equalTo([
-				Download::STATE_DOWNLOADING_NOT_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED
-		]));
+		$listener = new ExtractListener($this->getMockRunner(),
+				new Registry([
+						'extract' => [
+								'destination' => $dst->getPathPrefix()
+						]
+				]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState($repository, Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+				new CommandEvent(new ChangeDownloadState([], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
 	}
 
 	public function testCleanUpDirectoryWrongEvent ()
 	{
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
+		$listener = new ExtractListener($this->getMockRunner(), new Registry([
 				'extract' => [
 						'destination' => __DIR__ . '/test'
 				]

@@ -24,28 +24,19 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 		$download = new Download();
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockRepository([
-				[
-						$download
-				]
-		]);
-		$repositoryMock->expects($this->once())
-			->method('findDownloads')
-			->with($this->callback(function  ($state) {
-			return $state == Download::STATE_DOWNLOADING_COMPLETED;
-		}));
-
 		$handler = new ChangeDownloadStateHandler();
 		$handler->setCommandBus($commandBus);
-		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_PROCESSING_COMPLETED));
+		$handler->handle(
+				new ChangeDownloadState([
+						$download
+				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_PROCESSING_COMPLETED));
 	}
 
 	public function testChangeStateNotAvailable ()
 	{
 		$handler = new ChangeDownloadStateHandler();
 		$handler->setCommandBus($this->getMockCommandBus());
-		$handler->handle(
-				new ChangeDownloadState($this->getMockRepository([]), Download::STATE_DOWNLOADING_ERROR, Download::STATE_PROCESSING_COMPLETED));
+		$handler->handle(new ChangeDownloadState([], Download::STATE_DOWNLOADING_ERROR, Download::STATE_PROCESSING_COMPLETED));
 	}
 
 	public function testChangeStateNotStartedReset ()
@@ -67,15 +58,12 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 		$download->setProgress(44.5);
 		$download->setPid(12);
 
-		$repositoryMock = $this->getMockRepository([
-				[
-						$download
-				]
-		]);
-
 		$handler = new ChangeDownloadStateHandler();
 		$handler->setCommandBus($commandBus);
-		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
+		$handler->handle(
+				new ChangeDownloadState([
+						$download
+				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 	}
 
 	public function testChangeStateNotStartedDeleteFileAndFolder ()
@@ -97,15 +85,12 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 		$download->setDestination($fs->getPathPrefix());
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockRepository([
-				[
-						$download
-				]
-		]);
-
 		$handler = new ChangeDownloadStateHandler();
 		$handler->setCommandBus($commandBus);
-		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
+		$handler->handle(
+				new ChangeDownloadState([
+						$download
+				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 
 		$this->assertFalse($fs->has(''));
 	}
@@ -130,15 +115,12 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 		$download->setDestination($fs->getPathPrefix());
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
-		$repositoryMock = $this->getMockRepository([
-				[
-						$download
-				]
-		]);
-
 		$handler = new ChangeDownloadStateHandler();
 		$handler->setCommandBus($commandBus);
-		$handler->handle(new ChangeDownloadState($repositoryMock, Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
+		$handler->handle(
+				new ChangeDownloadState([
+						$download
+				], Download::STATE_DOWNLOADING_COMPLETED, Download::STATE_DOWNLOADING_NOT_STARTED));
 
 		$this->assertFalse($fs->has('test.txt'));
 		$this->assertTrue($fs->has('test1.txt'));

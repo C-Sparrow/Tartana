@@ -1,26 +1,29 @@
 <?php
 namespace Tartana\Domain\Command;
-use Tartana\Domain\DownloadRepository;
 
 class ChangeDownloadState
 {
 
-	private $repository = null;
+	private $downloads = null;
 
 	private $fromState = null;
 
 	private $toState = null;
 
-	public function __construct (DownloadRepository $repository, $fromState, $toState)
+	public function __construct (array $downloads, $fromState, $toState)
 	{
-		$this->repository = $repository;
+		$this->downloads = $downloads;
 		$this->fromState = $fromState;
 		$this->toState = $toState;
 	}
 
-	public function getRepository ()
+	/**
+	 *
+	 * @return \Tartana\Entity\Download[]
+	 */
+	public function getDownloads ()
 	{
-		return $this->repository;
+		return $this->downloads;
 	}
 
 	public function getFromState ()

@@ -80,12 +80,13 @@ class ApiDownloadController extends Controller
 	 */
 	public function resumefailedAction ()
 	{
+		$states = [
+				Download::STATE_DOWNLOADING_ERROR,
+				Download::STATE_PROCESSING_ERROR
+		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository'),
-						[
-								Download::STATE_DOWNLOADING_ERROR,
-								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_NOT_STARTED));
+				new ChangeDownloadState($this->container->get('DownloadRepository')
+					->findDownloads($states), $states, Download::STATE_DOWNLOADING_NOT_STARTED));
 	}
 
 	/**
@@ -94,17 +95,18 @@ class ApiDownloadController extends Controller
 	 */
 	public function resumeallAction ()
 	{
+		$states = [
+				Download::STATE_DOWNLOADING_STARTED,
+				Download::STATE_DOWNLOADING_COMPLETED,
+				Download::STATE_DOWNLOADING_ERROR,
+				Download::STATE_PROCESSING_NOT_STARTED,
+				Download::STATE_PROCESSING_STARTED,
+				Download::STATE_PROCESSING_COMPLETED,
+				Download::STATE_PROCESSING_ERROR
+		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository'),
-						[
-								Download::STATE_DOWNLOADING_STARTED,
-								Download::STATE_DOWNLOADING_COMPLETED,
-								Download::STATE_DOWNLOADING_ERROR,
-								Download::STATE_PROCESSING_NOT_STARTED,
-								Download::STATE_PROCESSING_STARTED,
-								Download::STATE_PROCESSING_COMPLETED,
-								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_NOT_STARTED));
+				new ChangeDownloadState($this->container->get('DownloadRepository')
+					->findDownloads($states), $states, Download::STATE_DOWNLOADING_NOT_STARTED));
 	}
 
 	/**
@@ -113,14 +115,15 @@ class ApiDownloadController extends Controller
 	 */
 	public function reprocessAction ()
 	{
+		$states = [
+				Download::STATE_PROCESSING_NOT_STARTED,
+				Download::STATE_PROCESSING_STARTED,
+				Download::STATE_PROCESSING_COMPLETED,
+				Download::STATE_PROCESSING_ERROR
+		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository'),
-						[
-								Download::STATE_PROCESSING_NOT_STARTED,
-								Download::STATE_PROCESSING_STARTED,
-								Download::STATE_PROCESSING_COMPLETED,
-								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_COMPLETED));
+				new ChangeDownloadState($this->container->get('DownloadRepository')
+					->findDownloads($states), $states, Download::STATE_DOWNLOADING_COMPLETED));
 	}
 
 	private function handleCommand ($command)

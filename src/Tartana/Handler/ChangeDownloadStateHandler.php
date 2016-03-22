@@ -15,12 +15,12 @@ class ChangeDownloadStateHandler
 
 	public function handle (ChangeDownloadState $command)
 	{
-		$downloads = $command->getRepository()->findDownloads($command->getFromState());
-		if (empty($downloads))
+		if (empty($command->getDownloads()))
 		{
 			return;
 		}
-		foreach ($downloads as $download)
+
+		foreach ($command->getDownloads() as $download)
 		{
 			if ($command->getToState() == Download::STATE_DOWNLOADING_NOT_STARTED)
 			{
@@ -50,6 +50,6 @@ class ChangeDownloadStateHandler
 				$download->setState($command->getToState());
 			}
 		}
-		$this->handleCommand(new SaveDownloads($downloads));
+		$this->handleCommand(new SaveDownloads($command->getDownloads()));
 	}
 }
