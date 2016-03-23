@@ -241,7 +241,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		]);
 	}
 
-	public function testExecuteHosterConfiguration ()
+	public function testExecuteWithSpeedLimit ()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 		if ($fs->has('hosters.yml'))
@@ -250,14 +250,16 @@ class DownloadCommandTest extends LocalBaseTestCase
 		}
 
 		$fs->write('hosters.yml', Yaml::dump([
-				'setmessage' => 'test'
+				'parameters' => [
+						'tartana.local.downloads.speedlimit' => 10
+				]
 		]), new Config());
 
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
 		$factory->method('createHostDownloader')->with($this->anything(),
 				$this->callback(function  (Registry $config) {
-					return $config->get('setmessage') == 'test';
+					return $config->get('speedlimit') == 2;
 				}));
 		$application = new Application();
 		$application->add(new DownloadCommand($this->getMockRepository(), $factory));

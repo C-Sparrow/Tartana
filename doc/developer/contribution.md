@@ -7,5 +7,8 @@ Before you start, make sure your system meets the [requirements](../main/require
 
 - `git clone https://github.com/C-Sparrow/Tartana.git`
 - `cd Tartana`
-- `composer install`
-- `phpunit tests/unit`
+- `wget https://getcomposer.org/composer.phar`
+- `php composer.phar install`
+- `vendor/bin/phpunit tests/unit`
+
+If composer is installed globaly the wget command is not needed, but then you know anyway what to do.

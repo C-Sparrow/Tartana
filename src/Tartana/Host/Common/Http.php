@@ -15,6 +15,7 @@ use Tartana\Entity\Download;
 use Tartana\Host\HostInterface;
 use Tartana\Mixins\CommandBusAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
+use Tartana\Util;
 
 class Http implements HostInterface
 {
@@ -88,6 +89,7 @@ class Http implements HostInterface
 		$promises = [];
 		foreach ($downloads as $download)
 		{
+			$download->setStartedAt(new \DateTime());
 			try
 			{
 				$promises[] = $this->createPremise($download);
@@ -256,6 +258,9 @@ class Http implements HostInterface
 						return;
 					}
 					$progress = (100 / $totalSize) * $downloadedSize;
+					$me->log(
+							'Progress of ' . $download->getFileName() . ' is ' . $progress . '. Downloaded already ' .
+									 Util::readableSize($downloadedSize) . ' of ' . Util::readableSize($totalSize));
 
 					if ($progress < $download->getProgress() + (rand(100, 700) / 1000))
 					{
@@ -272,6 +277,13 @@ class Http implements HostInterface
 				}
 		];
 		// @codeCoverageIgnoreEnd
+
+		if ($this->getConfiguration()->get('speedlimit') > 0)
+		{
+			$options['curl'] = [
+					CURLOPT_MAX_RECV_SPEED_LARGE => $this->getConfiguration()->get('speedlimit') * 1000
+			];
+		}
 
 		$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);
 

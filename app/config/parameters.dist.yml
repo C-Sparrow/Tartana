@@ -27,6 +27,9 @@ parameters:
     # When running the local download repository where should the downloads being saved to
     tartana.local.downloads: var/data/Downloads
     
+    # The total max speed of the downloads in kb, if it is < 1 no download speed will be set
+    tartana.local.downloads.speedlimit: 0
+    
     # Should Tartana run with a synology back end  (set tartana.local.enabled to false!)
     tartana.synology.enabled: false
     

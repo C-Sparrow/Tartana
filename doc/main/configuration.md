@@ -41,6 +41,10 @@ The following list describes the parameters in more detail:
 
   When running the local download repository where should the downloads being saved to.
 
+- **tartana.local.downloads.speedlimit** [0]
+
+  The total max speed of the downloads in kb, if it is < 1 no download speed will be set.
+
 - **tartana.synology.enabled** [false
 
   Should Tartana run with a synology back end  (set tartana.local.enabled to false!).

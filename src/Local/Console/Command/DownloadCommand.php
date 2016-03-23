@@ -49,6 +49,10 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 
 		// Loading configuration for the hosters if it exists
 		$config = new Registry();
+		if (file_exists(TARTANA_PATH_ROOT . '/app/config/parameters.yml'))
+		{
+			$config->loadFile(TARTANA_PATH_ROOT . '/app/config/parameters.yml', 'yaml');
+		}
 		if (file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
 		{
 			$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
@@ -84,6 +88,14 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 		}
 
 		$concurrentDownloads = 5;
+
+		// Set download speed limit
+		if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
+				 $config->get('parameters')->{'tartana.local.downloads.speedlimit'} > 0)
+		{
+			$config->set('speedlimit', $config->get('parameters')->{'tartana.local.downloads.speedlimit'} / $concurrentDownloads);
+		}
+
 		$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
 
 		$this->log('Found ' . $counter . ' started downloads.');
