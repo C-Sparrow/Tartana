@@ -237,7 +237,7 @@ class Http implements HostInterface
 		{
 			if (! $download->getMessage())
 			{
-				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
+				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_FAILED_REAL_URL');
 			}
 			throw new \Exception($download->getMessage());
 		}

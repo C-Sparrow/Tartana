@@ -38,31 +38,6 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($fs->has('test'));
 	}
 
-	public function testExecuteWildcard ()
-	{
-		if (! $this->copyArchives())
-		{
-			return;
-		}
-
-		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
-		$application->add($command);
-
-		$commandTester = new CommandTester($command);
-
-		$fs = new Local(__DIR__);
-		$commandTester->execute(
-				array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1'
-				));
-
-		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
-		$this->assertFalse($fs->has('test'));
-	}
-
 	public function testExecuteMultipart ()
 	{
 		if (! $this->copyArchives('multipart'))
@@ -140,6 +115,7 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test/test.txt'));
+		$this->assertFalse($fs->has('test/extract.out'));
 		$this->assertEquals('Hello unit test', $fs->read('test/test.txt')['contents']);
 	}
 
@@ -171,6 +147,7 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test'));
+		$this->assertFalse($fs->has('test/extract.out'));
 	}
 
 	public function testExtractWithOtherFiles ()
@@ -200,6 +177,7 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test/test.txt'));
+		$this->assertFalse($fs->has('test/extract.out'));
 		$this->assertEquals('Hello unit test', $fs->read('test/test.txt')['contents']);
 		$this->assertEquals('Hello unit test 2', $fs->read('test1/test.txt')['contents']);
 	}
@@ -227,6 +205,7 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 
 		$this->assertFalse($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test'));
+		$this->assertTrue($fs->has('test/extract.out'));
 	}
 
 	public function testExecuteWithDispatcher ()

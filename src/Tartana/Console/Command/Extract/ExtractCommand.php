@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use League\Flysystem\Config;
 
 abstract class ExtractCommand extends Command
 {
@@ -126,7 +127,7 @@ abstract class ExtractCommand extends Command
 			$this->log('Running pure command to extract the files: ' . $command);
 			$process = proc_open($command, $descriptorspec, $pipes);
 
-			// Outputting the preogress to stdout
+			// Outputting the progress to stdout
 			$buffer = '';
 			if (is_resource($process))
 			{
@@ -147,6 +148,14 @@ abstract class ExtractCommand extends Command
 			$buffer = trim($buffer);
 
 			$success = $this->isSuccessfullFinished($buffer);
+
+			// Delete the output file
+			if ($source->has('extract.out'))
+			{
+				$source->delete('extract.out');
+			}
+
+			// If the fiels should be deleted on success
 			if ($success && $delete)
 			{
 				$files = $this->getFilesToDelete($source);
@@ -168,6 +177,11 @@ abstract class ExtractCommand extends Command
 			if ($success)
 			{
 				break;
+			}
+			else
+			{
+				// If we failed, write the output to the file
+				$source->write('extract.out', $buffer, new Config());
 			}
 		}
 		if ($this->dispatcher)

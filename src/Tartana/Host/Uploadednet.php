@@ -63,7 +63,6 @@ class Uploadednet extends Http
 
 		if (! preg_match("#https?://[0-9a-z\-]*stor\d+.uploaded.net/dl/([0-9a-z\-]+)#mi", $html, $matches))
 		{
-			$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_FAILED_REAL_URL');
 			return null;
 		}
 
