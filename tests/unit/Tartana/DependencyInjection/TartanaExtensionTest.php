@@ -49,6 +49,7 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('Tartana.DefaultCommand');
 		$this->assertContainerBuilderHasService('Tartana.UnrarCommand');
 		$this->assertContainerBuilderHasService('Tartana.UnzipCommand');
+		$this->assertContainerBuilderHasService('Tartana.SevenzCommand');
 		$this->assertContainerBuilderHasService('Tartana.ServerCommand');
 		$this->assertContainerBuilderHasService('Tartana.DownloadControlCommand');
 		$this->assertContainerBuilderHasService('Tartana.UpdateCommand');

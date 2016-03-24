@@ -16,6 +16,7 @@ addons:
     packages:
     - unzip
     - unrar
+    - p7zip-full
 
 before_script:
   - composer selfupdate

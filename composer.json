@@ -20,7 +20,7 @@
 		"guzzlehttp/guzzle": "*",
 		"league/flysystem": "*",
 		"joomla/registry": "*",
-		"jeremykendall/php-domain-parser": "3.0.x"
+		"jeremykendall/php-domain-parser": "dev-tartana"
 	},
 	"require-dev": {
         "phpunit/phpunit": "4.x",
@@ -29,6 +29,12 @@
         "liip/functional-test-bundle": "*",
         "doctrine/doctrine-fixtures-bundle": "*"
     },
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/C-Sparrow/php-domain-parser"
+		}
+	],
 	"autoload": {
         "psr-4": {
             "": "src/"

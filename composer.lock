@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bd2a89c63617f7b819a144a4e0c7d8d7",
-    "content-hash": "020d8c8514137b6fd8670fa1c3e69776",
+    "hash": "f461ed4d0e2c45d0302c0445b70a1149",
+    "content-hash": "5a3d8a41c813a6add9a2e4df5f1b9c20",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1386,16 +1386,16 @@
         },
         {
             "name": "jeremykendall/php-domain-parser",
-            "version": "3.0.0",
+            "version": "dev-tartana",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jeremykendall/php-domain-parser.git",
-                "reference": "896e7e70f02bd4fd77190052799bc61e4d779672"
+                "url": "https://github.com/C-Sparrow/php-domain-parser.git",
+                "reference": "4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeremykendall/php-domain-parser/zipball/896e7e70f02bd4fd77190052799bc61e4d779672",
-                "reference": "896e7e70f02bd4fd77190052799bc61e4d779672",
+                "url": "https://api.github.com/repos/C-Sparrow/php-domain-parser/zipball/4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c",
+                "reference": "4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c",
                 "shasum": ""
             },
             "require": {
@@ -1405,24 +1405,22 @@
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "jeremykendall/debug-die": "0.0.1.*",
-                "mikey179/vfsstream": "~1.4",
-                "phpunit/phpunit": "~4.4"
+                "mikey179/vfsstream": "1.2.*",
+                "phpunit/phpunit": "4.*"
             },
             "bin": [
                 "bin/parse",
-                "bin/update-psl"
+                "bin/pdp-psl"
             ],
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Pdp\\": "src/"
+                    "Pdp\\": "library/"
                 },
                 "files": [
-                    "src/pdp-parse-url.php"
+                    "library/mb-parse-url.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1431,20 +1429,18 @@
                     "name": "Jeremy Kendall",
                     "homepage": "http://about.me/jeremykendall",
                     "role": "Developer"
-                },
-                {
-                    "name": "Contributors",
-                    "homepage": "https://github.com/jeremykendall/php-domain-parser/graphs/contributors"
                 }
             ],
             "description": "Public Suffix List based URL parsing implemented in PHP.",
-            "homepage": "https://github.com/jeremykendall/php-domain-parser",
             "keywords": [
                 "Public Suffix List",
                 "domain parsing",
                 "url parsing"
             ],
-            "time": "2015-03-30 12:49:45"
+            "support": {
+                "source": "https://github.com/C-Sparrow/php-domain-parser/tree/tartana"
+            },
+            "time": "2016-03-24 14:56:14"
         },
         {
             "name": "joomla/compat",
@@ -4408,7 +4404,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofsymfony/user-bundle": 20
+        "friendsofsymfony/user-bundle": 20,
+        "jeremykendall/php-domain-parser": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

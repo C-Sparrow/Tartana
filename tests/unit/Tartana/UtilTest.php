@@ -122,7 +122,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals('foobar', Util::cleanHostName('foo.bar'));
 		$this->assertEquals('foobar', Util::cleanHostName(':foo-.bar'));
-		$this->assertEquals('foobar', Util::cleanHostName(Util::parseUrl('foo.bar')));
+		$this->assertEquals('foobar', Util::cleanHostName(Util::parseUrl('http://foo.bar')));
 		$this->assertEquals('', Util::cleanHostName([]));
 	}
 }

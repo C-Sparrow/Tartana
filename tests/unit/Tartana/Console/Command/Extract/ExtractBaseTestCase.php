@@ -7,8 +7,9 @@ use Tartana\Event\ExtractProgressEvent;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tests\Unit\Tartana\TartanaBaseTestCase;
 
-abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
+abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 {
 
 	protected $archivesPath = null;
@@ -306,7 +307,13 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 		$fs->deleteDir('test');
 	}
 
-	private function copyArchives ($folder = 'simple')
+	protected function getMockDispatcher ()
+	{
+		$runner = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+		return $runner;
+	}
+
+	protected function copyArchives ($folder = 'simple')
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
@@ -327,11 +334,5 @@ abstract class ExtractBaseTestCase extends \PHPUnit_Framework_TestCase
 			$fs->copy($rar['path'], str_replace($this->archivesPath . '/' . $folder, 'test/', $rar['path']));
 		}
 		return true;
-	}
-
-	private function getMockDispatcher ()
-	{
-		$runner = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-		return $runner;
 	}
 }

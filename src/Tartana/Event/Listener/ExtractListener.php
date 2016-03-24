@@ -96,6 +96,19 @@ class ExtractListener
 				$processed = true;
 				break;
 			}
+
+			foreach ($files as $file)
+			{
+				if (! Util::endsWith($file['path'], '.7z'))
+				{
+					continue;
+				}
+
+				$this->runCommand('7z', $path, $destination->applyPathPrefix($dirName));
+
+				$processed = true;
+				break;
+			}
 		}
 		foreach ($event->getDownloads() as $download)
 		{
@@ -206,8 +219,8 @@ class ExtractListener
 	{
 		$this->log('Starting with ' . $cmd . ' of the folder: ' . $path, Logger::INFO);
 
-		// Because unrar can't handle a password file we need to do our
-		// own wrapper script
+		// Because the extract commands can't handle a password file we need to
+		// do our own wrapper script
 		$command = Command::getAppCommand($cmd);
 		$command->setCaptureErrorInOutput(true);
 		$command->setAsync($this->configuration->get('async', true));

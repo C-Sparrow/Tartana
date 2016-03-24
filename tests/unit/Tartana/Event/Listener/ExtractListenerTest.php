@@ -74,6 +74,14 @@ class ExtractListenerTest extends TartanaBaseTestCase
 			}
 			$fs->copy($rar['path'], str_replace('../../Console/Command/Extract/zips/simple/', 'test/', $rar['path']));
 		}
+		foreach ($fs->listContents('../../Console/Command/Extract/zips/simple', false) as $rar)
+		{
+			if ($rar['type'] != 'file')
+			{
+				continue;
+			}
+			$fs->copy($rar['path'], str_replace('.zip', '.7z', str_replace('../../Console/Command/Extract/zips/simple/', 'test/', $rar['path'])));
+		}
 
 		$dst = new Local(__DIR__ . '/test1');
 
@@ -86,6 +94,10 @@ class ExtractListenerTest extends TartanaBaseTestCase
 						$this->callback(
 								function  (Command $command) {
 									return $command->getCommand() == 'php' && strpos($command, 'unzip') !== false;
+								}),
+						$this->callback(
+								function  (Command $command) {
+									return $command->getCommand() == 'php' && strpos($command, '7z') !== false;
 								})
 				]);
 

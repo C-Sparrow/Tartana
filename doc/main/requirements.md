@@ -10,7 +10,7 @@ Tartana is a PHP application which can run on the [command line only or with a w
 - Unzip installed
 - Unrar installed
 
-## Ubuntu setup
+## Debian/Ubuntu setup
 
 To prepare a bare Ubuntu system run the following commands before you install Tartana:
 

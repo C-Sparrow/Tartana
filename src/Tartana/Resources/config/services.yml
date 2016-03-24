@@ -50,6 +50,13 @@ services:
             - { name: console.command }
     Tartana.UnzipCommand:
         class: Tartana\Console\Command\Extract\UnzipCommand
+        arguments: ['@EventDispatcher', '@config', '@CommandRunner']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
+    Tartana.SevenzCommand:
+        class: Tartana\Console\Command\Extract\SevenzCommand
         arguments: ['@EventDispatcher', '@config']
         calls:
             - [setLogger, ['@Logger']]
