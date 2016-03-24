@@ -244,12 +244,8 @@ class DownloadCommandTest extends LocalBaseTestCase
 	public function testExecuteWithSpeedLimit ()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
-		if ($fs->has('hosters.yml'))
-		{
-			$fs->rename('hosters.yml', 'hosters.yml.backup.for.test');
-		}
 
-		$fs->write('hosters.yml', Yaml::dump([
+		$fs->write('parameters.yml', Yaml::dump([
 				'parameters' => [
 						'tartana.local.downloads.speedlimit' => 10
 				]
@@ -260,6 +256,98 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$factory->method('createHostDownloader')->with($this->anything(),
 				$this->callback(function  (Registry $config) {
 					return $config->get('speedlimit') == 2;
+				}));
+		$application = new Application();
+		$application->add(new DownloadCommand($this->getMockRepository(), $factory));
+
+		$command = $application->find('download');
+		$commandTester = new CommandTester($command);
+
+		$commandTester->execute([
+				'command' => $command->getName()
+		]);
+	}
+
+	public function testExecuteWithDayLimitNotReached ()
+	{
+		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
+
+		$fs->write('parameters.yml', Yaml::dump([
+				'parameters' => [
+						'tartana.local.downloads.daylimit' => 10
+				]
+		]), new Config());
+
+		$downloads = [];
+		$download = new Download();
+		$download->setSize(20000);
+		$download->setFinishedAt(new \DateTime());
+		$download->getFinishedAt()->modify('-1 day');
+		$downloads[] = $download;
+		$download = new Download();
+		$download->setSize(5000);
+		$download->setFinishedAt(new \DateTime());
+		$downloads[] = $download;
+
+		$application = new Application();
+		$application->add(
+				new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads),
+						$this->getMockHostFactory(
+								[
+										$this->getMockBuilder(HostInterface::class)
+											->getMock(),
+										$this->getMockBuilder(HostInterface::class)
+											->getMock()
+								])));
+
+		$command = $application->find('download');
+		$commandTester = new CommandTester($command);
+
+		$commandTester->execute([
+				'command' => $command->getName()
+		]);
+	}
+
+	public function testExecuteWithDayLimitReached ()
+	{
+		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
+
+		$fs->write('parameters.yml', Yaml::dump([
+				'parameters' => [
+						'tartana.local.downloads.daylimit' => 10
+				]
+		]), new Config());
+
+		$downloads = [];
+		$download = new Download();
+		$download->setSize(20000);
+		$download->setFinishedAt(new \DateTime());
+		$downloads[] = $download;
+
+		$application = new Application();
+		$application->add(new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads), $this->getMockHostFactory()));
+
+		$command = $application->find('download');
+		$commandTester = new CommandTester($command);
+
+		$commandTester->execute([
+				'command' => $command->getName()
+		]);
+	}
+
+	public function testExecuteLoadHostersFile ()
+	{
+		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
+
+		$fs->write('hosters.yml', Yaml::dump([
+				'message' => 'unit-test'
+		]), new Config());
+
+		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
+			->getMock());
+		$factory->method('createHostDownloader')->with($this->anything(),
+				$this->callback(function  (Registry $config) {
+					return $config->get('message') == 'unit-test';
 				}));
 		$application = new Application();
 		$application->add(new DownloadCommand($this->getMockRepository(), $factory));
@@ -340,16 +428,33 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester->execute([]);
 	}
 
+	protected function setUp ()
+	{
+		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
+		if ($fs->has('parameters.yml'))
+		{
+			$fs->rename('parameters.yml', 'parameters.yml.backup.for.test');
+		}
+		if ($fs->has('hosters.yml'))
+		{
+			$fs->rename('hosters.yml', 'hosters.yml.backup.for.test');
+		}
+	}
+
 	protected function tearDown ()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
+		if ($fs->has('parameters.yml.backup.for.test'))
+		{
+			$fs->rename('parameters.yml.backup.for.test', 'parameters.yml');
+		}
 		if ($fs->has('hosters.yml.backup.for.test'))
 		{
 			$fs->rename('hosters.yml.backup.for.test', 'hosters.yml');
 		}
 	}
 
-	protected function getMockRepository ($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null)
+	protected function getMockRepository ($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null, $new = [])
 	{
 		if ($downloadsNotStarted === null)
 		{
@@ -365,7 +470,8 @@ class DownloadCommandTest extends LocalBaseTestCase
 		return parent::getMockRepository([
 				$zombieDownloads,
 				$downloadsStarted,
-				$downloadsNotStarted
+				$downloadsNotStarted,
+				$new
 		]);
 	}
 }

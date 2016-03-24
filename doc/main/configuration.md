@@ -45,6 +45,10 @@ The following list describes the parameters in more detail:
 
   The total max speed of the downloads in kb, if it is < 1 no download speed will be set.
 
+- **tartana.local.downloads.daylimit** [0]
+
+ The total amount in kb which can be downloaded per day, if it is < 1 no download amount restriction will be set.
+
 - **tartana.synology.enabled** [false
 
   Should Tartana run with a synology back end  (set tartana.local.enabled to false!).

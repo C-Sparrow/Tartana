@@ -88,6 +88,7 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 		}
 
 		$concurrentDownloads = 5;
+		$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
 
 		// Set download speed limit
 		if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
@@ -96,7 +97,29 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 			$config->set('speedlimit', $config->get('parameters')->{'tartana.local.downloads.speedlimit'} / $concurrentDownloads);
 		}
 
-		$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
+		// Check day limit
+		if (isset($config->get('parameters')->{'tartana.local.downloads.daylimit'}) &&
+				 $config->get('parameters')->{'tartana.local.downloads.daylimit'} > 0)
+		{
+			$dayLimit = $config->get('parameters')->{'tartana.local.downloads.daylimit'} * 1000;
+
+			$today = (new \DateTime())->format('D');
+			foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED) as $download)
+			{
+				if ($download->getFinishedAt() && $download->getFinishedAt()->format('D') != $today)
+				{
+					continue;
+				}
+
+				$dayLimit -= $download->getSize();
+			}
+
+			if ($dayLimit <= 0)
+			{
+				$this->log('Reached day limit, not starting any download');
+				$counter = $concurrentDownloads;
+			}
+		}
 
 		$this->log('Found ' . $counter . ' started downloads.');
 

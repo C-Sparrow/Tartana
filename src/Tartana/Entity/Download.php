@@ -185,8 +185,7 @@ class Download extends Base
 	}
 
 	/**
-	 * Set progress, if allow reset is set, then a progress smaller than the
-	 * actual one can be set.
+	 * Set size in bytes.
 	 *
 	 * @param string $size
 	 *
