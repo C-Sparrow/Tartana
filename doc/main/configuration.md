@@ -86,6 +86,10 @@ The following list describes the parameters in more detail:
 
   The update url to fetch the latest Tartana version from. If the path is a file on the server, you can define it also relative to the install directory.
 
+- **database.path** ["%kernel.root_dir%/../var/data.db"]
+
+  The path to the local database file.
+
 - **secret** [457152e95295f63116eb776d43ac3d0c41e58905]
 
   http://symfony.com/doc/current/reference/configuration/framework.html#secret

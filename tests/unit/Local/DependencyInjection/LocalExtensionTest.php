@@ -24,6 +24,7 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('LocalProcessLinksHandler');
 		$this->assertContainerBuilderHasService('LocalSaveDownloadsHandler');
 		$this->assertContainerBuilderHasService('LocalStartDownloadsHandler');
+		$this->assertContainerBuilderHasService('ChangeDownloadStateListener.Command');
 	}
 
 	public function testLoadDisabled ()
@@ -44,8 +45,6 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderNotHasService('LocalProcessLinksHandler');
 		$this->assertContainerBuilderNotHasService('LocalSaveDownloadsHandler');
 		$this->assertContainerBuilderNotHasService('LocalStartDownloadsHandler');
-		$this->assertContainerBuilderNotHasService('UpdateExtractStateListener.Progress');
-		$this->assertContainerBuilderNotHasService('UpdateExtractStateListener.Finish');
 	}
 
 	protected function getContainerExtensions ()

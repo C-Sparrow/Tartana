@@ -1,47 +1,57 @@
 services:
-  local_config:
-    class: Joomla\Registry\Registry
-    arguments: ['%local.config%']
-  DownloadRepository:
-    class: Local\Domain\LocalDownloadRepository
-    arguments: ['@doctrine.orm.entity_manager']
-    
+    local_config:
+        class: Joomla\Registry\Registry
+        arguments: ['%local.config%']
+    DownloadRepository:
+        class: Local\Domain\LocalDownloadRepository
+        arguments: ['@doctrine.orm.entity_manager']
+        
 # Console commands
-  Local.DownloadCommand:
-    class: Local\Console\Command\DownloadCommand
-    arguments: ['@DownloadRepository', '@HostFactory']
-    calls:
-      - [setLogger, ['@Logger']]
-      - [setCommandBus, ['@CommandBus']]
-    tags:
-      -  { name: console.command }
+    Local.DownloadCommand:
+        class: Local\Console\Command\DownloadCommand
+        arguments: ['@DownloadRepository', '@HostFactory']
+        calls:
+            - [setLogger, ['@Logger']]
+            - [setCommandBus, ['@CommandBus']]
+        tags:
+            -    { name: console.command }
 # Handlers
-  LocalProcessLinksHandler:
-    class: Local\Handler\LocalProcessLinksHandler
-    arguments: ['@local_config', '@doctrine.orm.entity_manager']
-    calls:
-      - [setLogger, ['@Logger']]
-      - [setHostFactory, ['@HostFactory']]
-    tags:
-       - { name: command_handler, handles: Tartana\Domain\Command\ProcessLinks }
-  LocalStartDownloadsHandler:
-    class: Local\Handler\LocalStartDownloadsHandler
-    arguments: ['@CommandRunner']
-    calls:
-      - [setLogger, ['@Logger']]
-    tags:
-       - { name: command_handler, handles: Tartana\Domain\Command\StartDownloads }
-  LocalSaveDownloadsHandler:
-    class: Local\Handler\LocalSaveDownloadsHandler
-    arguments: ['@doctrine.orm.entity_manager']
-    calls:
-      - [setLogger, ['@Logger']]
-    tags:
-       - { name: command_handler, handles: Tartana\Domain\Command\SaveDownloads }
-  LocalDeleteDownloadsHandler:
-    class: Local\Handler\LocalDeleteDownloadsHandler
-    arguments: ['@doctrine.orm.entity_manager']
-    calls:
-      - [setLogger, ['@Logger']]
-    tags:
-       - { name: command_handler, handles: Tartana\Domain\Command\DeleteDownloads }
+    LocalProcessLinksHandler:
+        class: Local\Handler\LocalProcessLinksHandler
+        arguments: ['@local_config', '@doctrine.orm.entity_manager']
+        calls:
+            - [setLogger, ['@Logger']]
+            - [setHostFactory, ['@HostFactory']]
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\ProcessLinks }
+    LocalStartDownloadsHandler:
+        class: Local\Handler\LocalStartDownloadsHandler
+        arguments: ['@CommandRunner']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\StartDownloads }
+    LocalSaveDownloadsHandler:
+        class: Local\Handler\LocalSaveDownloadsHandler
+        arguments: ['@doctrine.orm.entity_manager']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\SaveDownloads }
+    LocalDeleteDownloadsHandler:
+        class: Local\Handler\LocalDeleteDownloadsHandler
+        arguments: ['@doctrine.orm.entity_manager']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+             - { name: command_handler, handles: Tartana\Domain\Command\DeleteDownloads }
+
+# Events
+    ChangeDownloadStateListener.Command:
+        class: Local\Event\Listener\ChangeDownloadStateListener
+        arguments: ['@local_config']
+        calls:
+            - [setLogger, ['@Logger']]
+            - [setCommandBus, ['@CommandBus']]
+        tags:
+            - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
