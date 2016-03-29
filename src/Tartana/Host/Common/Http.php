@@ -15,7 +15,6 @@ use Tartana\Entity\Download;
 use Tartana\Host\HostInterface;
 use Tartana\Mixins\CommandBusAwareTrait;
 use Tartana\Mixins\LoggerAwareTrait;
-use Tartana\Util;
 
 class Http implements HostInterface
 {
@@ -249,6 +248,8 @@ class Http implements HostInterface
 		$me = $this;
 		$fs = new Local($download->getDestination());
 
+		$this->log('Downloading download ' . $download->getId() . ' to ' . $fs->applyPathPrefix($tmpFileName));
+
 		// @codeCoverageIgnoreStart
 		$options = [
 				RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
@@ -258,9 +259,6 @@ class Http implements HostInterface
 						return;
 					}
 					$progress = (100 / $totalSize) * $downloadedSize;
-					$me->log(
-							'Progress of ' . $download->getFileName() . ' is ' . $progress . '. Downloaded already ' .
-									 Util::readableSize($downloadedSize) . ' of ' . Util::readableSize($totalSize));
 
 					if ($progress < $download->getProgress() + (rand(100, 700) / 1000))
 					{

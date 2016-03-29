@@ -64,3 +64,6 @@ parameters:
 
     # http://symfony.com/doc/current/reference/configuration/framework.html#secret
     secret: 457152e95295f63116eb776d43ac3d0c41e58905
+    
+    # The path to the local database file
+    database.path: "%kernel.root_dir%/../var/data.db"
