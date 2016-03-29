@@ -118,18 +118,28 @@
 <li>PHP command line executable</li>
 <li>PHP Sqlite extension</li>
 <li>PHP Curl extension</li>
-<li>PHP Intl extension</li>
 <li>Unzip installed</li>
 <li>Unrar installed</li>
 </ul>
-<h2 id="ubuntu-setup">Ubuntu setup</h2>
-<p>To prepare a bare Ubuntu system run the following commands before you install Tartana:</p>
+<h2 id="debianubuntu-setup">Debian/Ubuntu setup</h2>
+<p>To prepare a bare Ubuntu system run the following commands before you <a href="installation.html">install Tartana</a>:</p>
 <ul>
 <li>sudo apt-get install php5-cli</li>
 <li>sudo apt-get install php5-curl</li>
-<li>sudo apt-get install php5-intl</li>
+<li>sudo apt-get install php5-sqlite</li>
 <li>sudo apt-get install unzip</li>
 <li>sudo apt-get install unrar</li>
+</ul>
+<h2 id="raspberry-pi-setup">Raspberry Pi setup</h2>
+<p>On a raspberry pi the unrar command needs to be built by source, becasue of license issues. You can run the following commands after you have done the set up as mentioned above.</p>
+<ul>
+<li>Uncomment the deb-src entry in the file <em>/etc/apt/sources.list</em>.</li>
+<li>Run <code>sudo apt-get update</code></li>
+<li>Run <code>mkdir ~/unrar-nonfree &amp;&amp; cd ~/unrar-nonfree</code></li>
+<li>Run <code>sudo apt-get build-dep unrar-nonfree</code></li>
+<li>Run <code>sudo apt-get source -b unrar-nonfree</code> // This command whill take a while, grab a coffe</li>
+<li>Run <code>sudo dpkg -i unrar*.deb</code></li>
+<li>Remove the working directory <code>cd &amp;&amp; sudo rm -rf ~/unrar-nonfree</code></li>
 </ul>
 <h2 id="web-server">Web server</h2>
 <p>If you are running Tartana with it's own web server then the basic requirements are enough as the PHP built in web server is part of the PHP cli package. If you have an existing web server like Apache or Nginx, then you can upload Tartana to a web accessible folder.</p>

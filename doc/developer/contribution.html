@@ -118,9 +118,11 @@
 <ul>
 <li><code>git clone https://github.com/C-Sparrow/Tartana.git</code></li>
 <li><code>cd Tartana</code></li>
-<li><code>composer install</code></li>
-<li><code>phpunit tests/unit</code></li>
+<li><code>wget https://getcomposer.org/composer.phar</code></li>
+<li><code>php composer.phar install</code></li>
+<li><code>vendor/bin/phpunit tests/unit</code></li>
 </ul>
+<p>If composer is installed globaly the wget command is not needed, but then you know anyway what to do.</p>
                 </section>
 
             </div>

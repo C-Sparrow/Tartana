@@ -153,6 +153,14 @@ In the folder <em>app/config</em> you will find the whole configuration for Tart
 <p>When running the local download repository where should the downloads being saved to.</p>
 </li>
 <li>
+<p><strong>tartana.local.downloads.speedlimit</strong> [0]</p>
+<p>The total max speed of the downloads in kb, if it is &lt; 1 no download speed will be set.</p>
+</li>
+<li>
+<p><strong>tartana.local.downloads.daylimit</strong> [0]</p>
+<p>The total amount in kb which can be downloaded per day, if it is &lt; 1 no download amount restriction will be set.</p>
+</li>
+<li>
 <p><strong>tartana.synology.enabled</strong> [false</p>
 <p>Should Tartana run with a synology back end  (set tartana.local.enabled to false!).</p>
 </li>
@@ -188,6 +196,10 @@ should point to the same location as the downloads path above.</p>
 <li>
 <p><strong>tartana.update.url:</strong> [github]</p>
 <p>The update url to fetch the latest Tartana version from. If the path is a file on the server, you can define it also relative to the install directory.</p>
+</li>
+<li>
+<p><strong>database.path</strong> [&quot;%kernel.root_dir%/../var/data.db&quot;]</p>
+<p>The path to the local database file.</p>
 </li>
 <li>
 <p><strong>secret</strong> [457152e95295f63116eb776d43ac3d0c41e58905]</p>
