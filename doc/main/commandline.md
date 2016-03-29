@@ -36,6 +36,8 @@ The *cli/app.php* PHP script accepts the two following main commands:
 
   - **status**<br/>Displays a table of the downloads.
 
+  - **details**<br/>Displays a table with details from a download, needs the *id=* parameter.
+
   - **clearall**<br/>Removes all downloads.
 
   - **clearcompleted**<br/>Removes all successfully processed downloads.

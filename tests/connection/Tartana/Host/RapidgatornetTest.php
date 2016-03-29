@@ -9,7 +9,7 @@ use Tartana\Host\Rapidgatornet;
 class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function itestFileInfo ()
+	public function testFileInfo ()
 	{
 		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
 		{

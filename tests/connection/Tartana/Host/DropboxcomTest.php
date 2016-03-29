@@ -10,7 +10,7 @@ use GuzzleHttp\Exception\RequestException;
 class DropboxcomTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function itestDownloadLinksUnauthorized ()
+	public function testDownloadLinksUnauthorized ()
 	{
 		$downloader = new Dropboxcom(new Registry());
 
@@ -35,7 +35,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function itestDownloadLinksAuthorized ()
+	public function testDownloadLinksAuthorized ()
 	{
 		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
 		{
@@ -92,7 +92,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		Promise\unwrap($downloader->download($downloads));
 	}
 
-	public function itestDownloadWrongAccessToken ()
+	public function testDownloadWrongAccessToken ()
 	{
 		$downloader = new Dropboxcom(new Registry([
 				'dropboxcom' => [

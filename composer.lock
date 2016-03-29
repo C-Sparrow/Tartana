@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f461ed4d0e2c45d0302c0445b70a1149",
-    "content-hash": "5a3d8a41c813a6add9a2e4df5f1b9c20",
+    "hash": "c70c3fce1f6955b84b8785ba3deecf98",
+    "content-hash": "27c3483c48ac52b7ea44f78c6cdfe8bb",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1386,16 +1386,16 @@
         },
         {
             "name": "jeremykendall/php-domain-parser",
-            "version": "dev-tartana",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/C-Sparrow/php-domain-parser.git",
-                "reference": "4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c"
+                "url": "https://github.com/jeremykendall/php-domain-parser.git",
+                "reference": "896e7e70f02bd4fd77190052799bc61e4d779672"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/C-Sparrow/php-domain-parser/zipball/4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c",
-                "reference": "4b8ffe00ff038c5a716ee40b6cacbdd257e0fc4c",
+                "url": "https://api.github.com/repos/jeremykendall/php-domain-parser/zipball/896e7e70f02bd4fd77190052799bc61e4d779672",
+                "reference": "896e7e70f02bd4fd77190052799bc61e4d779672",
                 "shasum": ""
             },
             "require": {
@@ -1405,22 +1405,24 @@
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "mikey179/vfsstream": "1.2.*",
-                "phpunit/phpunit": "4.*"
+                "jeremykendall/debug-die": "0.0.1.*",
+                "mikey179/vfsstream": "~1.4",
+                "phpunit/phpunit": "~4.4"
             },
             "bin": [
                 "bin/parse",
-                "bin/pdp-psl"
+                "bin/update-psl"
             ],
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Pdp\\": "library/"
+                    "Pdp\\": "src/"
                 },
                 "files": [
-                    "library/mb-parse-url.php"
+                    "src/pdp-parse-url.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1429,18 +1431,20 @@
                     "name": "Jeremy Kendall",
                     "homepage": "http://about.me/jeremykendall",
                     "role": "Developer"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/jeremykendall/php-domain-parser/graphs/contributors"
                 }
             ],
             "description": "Public Suffix List based URL parsing implemented in PHP.",
+            "homepage": "https://github.com/jeremykendall/php-domain-parser",
             "keywords": [
                 "Public Suffix List",
                 "domain parsing",
                 "url parsing"
             ],
-            "support": {
-                "source": "https://github.com/C-Sparrow/php-domain-parser/tree/tartana"
-            },
-            "time": "2016-03-24 14:56:14"
+            "time": "2015-03-30 12:49:45"
         },
         {
             "name": "joomla/compat",
@@ -2057,16 +2061,16 @@
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v3.0.15",
+            "version": "v3.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "40431d338da7ab4ef5f9edc1ba4551ea1d4d0782"
+                "reference": "507a15f56fa7699f6cc8c2c7de4080b19ce22546"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/40431d338da7ab4ef5f9edc1ba4551ea1d4d0782",
-                "reference": "40431d338da7ab4ef5f9edc1ba4551ea1d4d0782",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/507a15f56fa7699f6cc8c2c7de4080b19ce22546",
+                "reference": "507a15f56fa7699f6cc8c2c7de4080b19ce22546",
                 "shasum": ""
             },
             "require": {
@@ -2115,7 +2119,7 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2016-03-22 12:39:08"
+            "time": "2016-03-25 17:08:27"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -4404,8 +4408,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofsymfony/user-bundle": 20,
-        "jeremykendall/php-domain-parser": 20
+        "friendsofsymfony/user-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -272,15 +272,20 @@ class Http implements HostInterface
 					$me->handleCommand(new SaveDownloads([
 							$download
 					]));
-				}
+				},
+
+				// Needed to keep the session alive on slow downloads
+				$options['curl'] = [
+						CURLOPT_TCP_KEEPALIVE => 1,
+						CURLOPT_TCP_KEEPIDLE => 30,
+						CURLOPT_TCP_KEEPINTVL => 15
+				]
 		];
 		// @codeCoverageIgnoreEnd
 
 		if ($this->getConfiguration()->get('speedlimit') > 0)
 		{
-			$options['curl'] = [
-					CURLOPT_MAX_RECV_SPEED_LARGE => $this->getConfiguration()->get('speedlimit') * 1000
-			];
+			$options['curl'][CURLOPT_MAX_RECV_SPEED_LARGE] = $this->getConfiguration()->get('speedlimit') * 1000;
 		}
 
 		$options[RequestOptions::HEADERS] = $this->getHeadersForDownload($download);

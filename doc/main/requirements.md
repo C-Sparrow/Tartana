@@ -6,6 +6,7 @@ Tartana is a PHP application which can run on the [command line only or with a w
 - PHP command line executable
 - PHP Sqlite extension
 - PHP Curl extension
+- PHP Intl extension
 - Unzip installed
 - Unrar installed
 
@@ -16,6 +17,7 @@ To prepare a bare Ubuntu system run the following commands before you [install T
 - sudo apt-get install php5-cli
 - sudo apt-get install php5-curl
 - sudo apt-get install php5-sqlite
+- sudo apt-get install php5-intl
 - sudo apt-get install unzip
 - sudo apt-get install unrar
 
