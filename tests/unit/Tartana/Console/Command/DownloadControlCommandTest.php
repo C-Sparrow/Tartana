@@ -177,6 +177,53 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertContains('1', $content);
 	}
 
+	public function testDetails ()
+	{
+		$downloads = [];
+		$download = new Download();
+		$download->setId(2);
+		$download->setLink('http://foo.bar/lkhasdu');
+		$download->setDestination(__DIR__ . '/test');
+		$download->setProgress(20);
+		$download->setSize(1505);
+		$downloads[] = $download;
+
+		$download = new Download();
+		$download->setLink('http://foo.bar/3d23424');
+		$download->setDestination(__DIR__ . '/test1');
+		$download->setProgress(30);
+		$download->setSize(53453);
+		$downloads[] = $download;
+
+		$repositoryMock = $this->getMockRepository([
+				$downloads
+		]);
+
+		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
+		$translator->expects($this->atLeast(5))
+			->method('trans');
+
+		$application = new Application();
+		$application->add(new DownloadControlCommand($repositoryMock, $translator));
+		$command = $application->find('download:control');
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+				'command' => $command->getName(),
+				'action' => 'details',
+				'--id' => 2
+		));
+		$content = $commandTester->getDisplay();
+
+		$this->assertContains('20', $content);
+		$this->assertContains('http://foo.bar/lkhasdu', $content);
+		$this->assertContains(__DIR__ . '/test', $content);
+
+		$this->assertNotContains($download->getProgress(), $content);
+		$this->assertNotContains($download->getLink(), $content);
+		$this->assertNotContains($download->getDestination(), $content);
+	}
+
 	public function testClearAll ()
 	{
 		$messageBusMock = $this->getMockCommandBus([

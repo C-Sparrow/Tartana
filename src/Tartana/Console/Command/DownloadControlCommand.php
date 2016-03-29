@@ -42,6 +42,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		$this->addOption('destination', 'd', InputOption::VALUE_OPTIONAL,
 				'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.');
 		$this->addOption('compact', 'c', InputOption::VALUE_OPTIONAL, 'Shows a compact list of downloads for the status action.', false);
+		$this->addOption('id', null, InputOption::VALUE_OPTIONAL, 'Shows the details of the download with the given id.', false);
 	}
 
 	protected function execute (InputInterface $input, OutputInterface $output)
@@ -65,6 +66,66 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		}
 		switch ($action)
 		{
+			case 'details':
+				$id = $input->getOption('id');
+				foreach ($downloads as $download)
+				{
+					if ($download->getId() != $id)
+					{
+						continue;
+					}
+					$sizes = [
+							$t->trans('TARTANA_TEXT_SIZE_BYTE'),
+							$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
+							$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
+							$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
+							$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
+							$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
+					];
+
+					$table = new Table($output);
+
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
+							$download->getId()
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
+							$download->getDestination()
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME'),
+							$download->getFileName()
+					]);
+					$table->addRow(
+							[
+									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
+									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState())
+							]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
+							Util::readableSize($download->getSize(), $sizes)
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
+							$download->getProgress()
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_HASH'),
+							$download->getHash()
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_LINK'),
+							$download->getLink()
+					]);
+					$table->addRow([
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE'),
+							$download->getMessage()
+					]);
+
+					$table->render();
+				}
+				break;
 			case 'status':
 				if (! empty($downloads))
 				{
@@ -168,6 +229,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				else
 				{
 					$headers = [
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
@@ -202,6 +264,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						}
 						$table->addRow(
 								[
+										$download->getId(),
 										$download->getProgress(),
 										Util::readableSize($download->getSize(), $sizes),
 										$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState()),
