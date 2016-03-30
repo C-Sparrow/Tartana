@@ -54,7 +54,7 @@ class ParseLinksHandler
 			{
 				$links[$key] = str_replace('http://', 'https://', $value);
 			}
-			if (! empty($value) && (! $linksHostFilter || strpos($value, $linksHostFilter) !== false))
+			if (! empty($value) && (! $linksHostFilter || preg_match("/" . $linksHostFilter . "/", $value)))
 			{
 				continue;
 			}
@@ -64,7 +64,7 @@ class ParseLinksHandler
 		if (! empty($links))
 		{
 			$this->log('Sending process links command');
-			$this->commandBus->handle(new ProcessLinks($links));
+			$this->commandBus->handle(new ProcessLinks(array_values($links)));
 			$this->log('Deleting file');
 			$file->getFolder()->delete($file->getPath());
 		}

@@ -9,7 +9,7 @@ parameters:
     # Should the links to download being converted to https
     tartana.links.convertToHttps: false
     
-    # Should only links being added which belong to the host (example: drive.google.com)
+    # Should only links being added which belong to the regex pattern (example: drive.google.com or (youtube.com|google.com))
     tartana.links.hostFilter: 
     
     # Where to extract the downloads to

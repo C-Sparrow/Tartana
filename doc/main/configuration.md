@@ -19,7 +19,7 @@ The following list describes the parameters in more detail:
 
 - **tartana.links.hostFilter** []
 
-  Should only links being added which belong to the host (example** [drive.google.com).
+  Should only links being added which belong to the host (example*drive.google.com*). This setting supports regex as well. If you want to exclude hosts from google, then put ^((?!google.com).)*$ as host filter.
 
 - **tartana.extract.destination** [var/data/New]
 

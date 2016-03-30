@@ -67,15 +67,59 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 				[
-						$this->callback(function  ($command) {
-							return $command->getLinks()[0] == 'http://foo.bar/kjashd';
-						})
+						$this->callback(
+								function  ($command) {
+									return count($command->getLinks()) == 1 && $command->getLinks()[0] == 'http://foo.bar/kjashd';
+								})
 				]);
 
 		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock,
 				new Registry([
 						'links' => [
 								'hostFilter' => 'foo.bar'
+						]
+				]));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+	}
+
+	public function testParseLinksFilterHostsRegexExclude ()
+	{
+		$messageBusMock = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  ($command) {
+									return count($command->getLinks()) == 1 && $command->getLinks()[0] != 'http://foo.bar/kjashd';
+								})
+				]);
+
+		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock,
+				new Registry([
+						'links' => [
+								'hostFilter' => '^((?!kjashd).)*$'
+						]
+				]));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+	}
+
+	public function testParseLinksFilterHostsRegexMultiple ()
+	{
+		$messageBusMock = $this->getMockCommandBus(
+				[
+						$this->callback(
+								function  ($command) {
+									return count($command->getLinks()) == 2 && in_array('http://foo.bar/kjashd', $command->getLinks()) &&
+											 in_array('http://bar.foo/kjashd', $command->getLinks());
+								})
+				]);
+
+		$handler = new ParseLinksHandler(
+				$this->getDecrypter([
+						'http://foo.bar/kjashd',
+						'http://bar.foo/kjashd',
+						'http://invalid.not/kjashd'
+				]), $messageBusMock, new Registry([
+						'links' => [
+								'hostFilter' => '(foo.bar|bar.foo)'
 						]
 				]));
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
@@ -121,13 +165,17 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		}
 	}
 
-	private function getDecrypter ()
+	private function getDecrypter ($links = null)
 	{
+		if ($links == null)
+		{
+			$links = [
+					'http://foo.bar/kjashd',
+					'http://bar.foo/uzwhka'
+			];
+		}
 		$dlcDecrypter = $this->getMockBuilder(Decrypter::class)->getMock();
-		$dlcDecrypter->method('decrypt')->willReturn(array(
-				'http://foo.bar/kjashd',
-				'http://bar.foo/uzwhka'
-		));
+		$dlcDecrypter->method('decrypt')->willReturn($links);
 		return $dlcDecrypter;
 	}
 }
