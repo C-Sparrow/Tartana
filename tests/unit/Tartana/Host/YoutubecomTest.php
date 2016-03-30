@@ -18,6 +18,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfo ()
 	{
 		$mock = new MockHandler([
+				new Response(),
 				new Response(200, [], 'title=hello')
 		]);
 
@@ -44,6 +45,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoWrongUrl ()
 	{
 		$mock = new MockHandler([
+				new Response(),
 				new Response(200, [], 'title=hello')
 		]);
 
@@ -68,6 +70,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoErrorCode ()
 	{
 		$mock = new MockHandler([
+				new Response(),
 				new Response(200, [], 'errorcode=150&reason=unit-test')
 		]);
 
@@ -91,6 +94,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoException ()
 	{
 		$mock = new MockHandler([
+				new Response(),
 				new RequestException('Failed on unit test', new Request('GET', 'test'))
 		]);
 
@@ -115,6 +119,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 				[
+						new Response(),
 						new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('url=test')),
 						new Response(200, [], 'hello')
 				]);
@@ -150,6 +155,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 				[
+						new Response(),
 						new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('wrong=test')),
 						new Response(200, [], 'hello')
 				]);
@@ -178,10 +184,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownloadLinksNoStreamMap ()
 	{
-		$mock = new MockHandler([
-				new Response(200, [], 'hello=' . urlencode('url=test')),
-				new Response(200, [], 'hello')
-		]);
+		$mock = new MockHandler(
+				[
+						new Response(),
+						new Response(200, [], 'hello=' . urlencode('url=test')),
+						new Response(200, [], 'hello')
+				]);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock)

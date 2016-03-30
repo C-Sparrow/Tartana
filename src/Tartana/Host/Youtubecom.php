@@ -3,6 +3,7 @@ namespace Tartana\Host;
 use GuzzleHttp\Psr7\Request;
 use Tartana\Entity\Download;
 use Tartana\Host\Common\Http;
+use GuzzleHttp\RequestOptions;
 
 class Youtubecom extends Http
 {
@@ -20,7 +21,7 @@ class Youtubecom extends Http
 					$download->setFileName($this->makeSafe($data['title'] . '.mp4'));
 				}
 
-				if (key_exists('errorcode', $data) && $data['errorcode'] > 0&&key_exists('reason', $data))
+				if (key_exists('errorcode', $data) && $data['errorcode'] > 0 && key_exists('reason', $data))
 				{
 					$download->setMessage($data['reason']);
 					$download->setState(Download::STATE_DOWNLOADING_ERROR);
@@ -63,8 +64,31 @@ class Youtubecom extends Http
 		if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $download->getLink(),
 				$match))
 		{
-			// Getting the link information
-			$res = $this->getClient()->request('get', 'http://www.youtube.com/get_video_info?video_id=' . $match[1]);
+			$headers = [
+					RequestOptions::HEADERS => [
+							'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20150101 Firefox/44.0 (Chrome)',
+							'Referer' => $download->getLink(),
+							'Accept-Language' => 'en-us,en;q=0.5',
+							'Accept-Encoding' => 'gzip, deflate',
+							'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+							'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+							'Connection' => 'close',
+							'Origin' => 'https://www.youtube.com',
+							'Host' => 'www.youtube.com'
+					]
+			];
+			// Getting the link information initializing the cookie
+			$this->getClient()->request('get', $download->getLink() . '&gl=US&hl=en&has_verified=1&bpctr=9999999999',
+					[
+							RequestOptions::HEADERS => $headers
+					]);
+
+			// Fetching the video information
+			$res = $this->getClient()->request('get',
+					'http://www.youtube.com/get_video_info?video_id=' . $match[1] . '&el=info&ps=default&eurl=&gl=US&hl=en',
+					[
+							RequestOptions::HEADERS => $headers
+					]);
 
 			parse_str($res->getBody()->getContents(), $videoData);
 			return $videoData;
