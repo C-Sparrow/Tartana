@@ -41,7 +41,7 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('EventDispatcher');
 		$this->assertContainerBuilderHasService('HostFactory');
 		$this->assertContainerBuilderHasService('CommandRunner');
-		$this->assertContainerBuilderHasService('DlcEncrypter');
+		$this->assertContainerBuilderHasService('DecrypterFactory');
 		$this->assertContainerBuilderHasService('ClientInterface');
 		$this->assertContainerBuilderHasService('LogRepository');
 

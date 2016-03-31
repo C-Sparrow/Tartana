@@ -9,6 +9,7 @@ Tartana is a PHP application which can run on the [command line only or with a w
 - PHP Intl extension
 - Unzip installed
 - Unrar installed
+- Access to the internet
 
 ## Debian/Ubuntu setup
 

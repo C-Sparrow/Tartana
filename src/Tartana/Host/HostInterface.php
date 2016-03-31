@@ -6,7 +6,7 @@ use SimpleBus\Message\Bus\MessageBus;
 use Tartana\Entity\Download;
 
 /**
- * The repository interface which manages the environment.
+ * The interface for a downloader.
  */
 interface HostInterface
 {

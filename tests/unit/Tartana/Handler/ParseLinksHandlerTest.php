@@ -4,7 +4,8 @@ use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Config;
-use Tartana\Component\Dlc\Decrypter;
+use Tartana\Component\Decrypter\DecrypterFactory;
+use Tartana\Component\Decrypter\DecrypterInterface;
 use Tartana\Domain\Command\ParseLinks;
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Handler\ParseLinksHandler;
@@ -13,7 +14,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class ParseLinksHandlerTest extends TartanaBaseTestCase
 {
 
-	public function testDlcParseLinksFile ()
+	public function testParseLinksFile ()
 	{
 		$messageBusMock = $this->getMockCommandBus(
 				[
@@ -23,25 +24,8 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 								})
 				]);
 
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock, new Registry());
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
-	}
-
-	public function testTxtParseLinksFile ()
-	{
-		$messageBusMock = $this->getMockCommandBus(
-				[
-						$this->callback(
-								function  (ProcessLinks $command) {
-									return $command->getLinks()[0] == 'http://foo.bar/kjashd';
-								})
-				]);
-
-		$fs = new Local(__DIR__ . '/test');
-		$fs->write('simple.txt', 'http://foo.bar/kjashd', new Config());
-
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock, new Registry());
-		$handler->handle(new ParseLinks($fs, 'simple.txt'));
+		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock, new Registry());
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFileHttps ()
@@ -54,13 +38,13 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 								})
 				]);
 
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock,
+		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
 				new Registry([
 						'links' => [
 								'convertToHttps' => true
 						]
 				]));
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFilterHosts ()
@@ -73,13 +57,13 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 								})
 				]);
 
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock,
+		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
 				new Registry([
 						'links' => [
 								'hostFilter' => 'foo.bar'
 						]
 				]));
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFilterHostsRegexExclude ()
@@ -92,13 +76,13 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 								})
 				]);
 
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock,
+		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
 				new Registry([
 						'links' => [
 								'hostFilter' => '^((?!kjashd).)*$'
 						]
 				]));
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFilterHostsRegexMultiple ()
@@ -113,7 +97,7 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 				]);
 
 		$handler = new ParseLinksHandler(
-				$this->getDecrypter([
+				$this->getDecrypterFactory([
 						'http://foo.bar/kjashd',
 						'http://bar.foo/kjashd',
 						'http://invalid.not/kjashd'
@@ -122,7 +106,7 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 								'hostFilter' => '(foo.bar|bar.foo)'
 						]
 				]));
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.dlc'));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFileWithEmptyLines ()
@@ -137,13 +121,13 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('simple.txt', 'http://foo.bar/kjashd' . PHP_EOL . '' . PHP_EOL, new Config());
 
-		$handler = new ParseLinksHandler($this->getDecrypter(), $messageBusMock, new Registry());
+		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock, new Registry());
 		$handler->handle(new ParseLinks($fs, 'simple.txt'));
 	}
 
 	public function testNoValidFile ()
 	{
-		$handler = new ParseLinksHandler($this->getDecrypter(), $this->getMockCommandBus(), new Registry());
+		$handler = new ParseLinksHandler($this->getMockBuilder(DecrypterFactory::class)->getMock(), $this->getMockCommandBus(), new Registry());
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.file'));
 	}
 
@@ -165,7 +149,7 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		}
 	}
 
-	private function getDecrypter ($links = null)
+	private function getDecrypterFactory ($links = null)
 	{
 		if ($links == null)
 		{
@@ -174,8 +158,11 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 					'http://bar.foo/uzwhka'
 			];
 		}
-		$dlcDecrypter = $this->getMockBuilder(Decrypter::class)->getMock();
-		$dlcDecrypter->method('decrypt')->willReturn($links);
+
+		$dec = $this->getMockBuilder(DecrypterInterface::class)->getMock();
+		$dec->method('decrypt')->willReturn($links);
+		$dlcDecrypter = $this->getMockBuilder(DecrypterFactory::class)->getMock();
+		$dlcDecrypter->method('createDecryptor')->willReturn($dec);
 		return $dlcDecrypter;
 	}
 }

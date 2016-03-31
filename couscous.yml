@@ -26,6 +26,10 @@ menu:
                     itemId: home
                     text: Home
                     relativeUrl: ""
+                information:
+                    itemId: information
+                    text: Information
+                    relativeUrl: doc/main/information.html
                 getting_started:
                     itemId: getting_started
                     text: Getting started

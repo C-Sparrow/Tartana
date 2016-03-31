@@ -21,8 +21,8 @@ services:
         calls:
             - [setLogger, ['@Logger']]
             - [setCommandBus, ['@CommandBus']]
-    DlcEncrypter:
-        class: Tartana\Component\Dlc\Decrypter
+    DecrypterFactory:
+        class: Tartana\Component\Decrypter\DecrypterFactory
         calls:
             - [setLogger, ['@Logger']]
     ClientInterface:
@@ -88,7 +88,7 @@ services:
 # Action classes
     ParseLinksHandler:
         class: Tartana\Handler\ParseLinksHandler
-        arguments: ['@DlcEncrypter', '@CommandBus', '@config']
+        arguments: ['@DecrypterFactory', '@CommandBus', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:

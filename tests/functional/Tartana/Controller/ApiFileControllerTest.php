@@ -1,8 +1,9 @@
 <?php
 namespace Tests\Functional\Tartana\Controller;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Config;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use League\Flysystem\Adapter\Local;
 
 class ApiFileControllerTest extends WebTestCase
 {
@@ -12,8 +13,8 @@ class ApiFileControllerTest extends WebTestCase
 		$client = static::createClient();
 
 		$fs = new Local(__DIR__ . '/test');
-		$fs->copy('../../../../unit/Tartana/Component/Dlc/simple.dlc', 'simple.dlc');
-		$file = new UploadedFile($fs->applyPathPrefix('simple.dlc'), 'simple.dlc');
+		$fs->write('test.txt', 'http://github.com', new Config());
+		$file = new UploadedFile($fs->applyPathPrefix('test.txt'), 'test.txt');
 		$crawler = $client->request('GET', '/api/v1/file/add', [], [
 				$file
 		]);
@@ -31,7 +32,7 @@ class ApiFileControllerTest extends WebTestCase
 	protected function tearDown ()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/data/Links');
-		$fs->delete('simple.dlc');
+		$fs->delete('test.txt');
 
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');

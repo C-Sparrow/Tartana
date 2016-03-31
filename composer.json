@@ -24,7 +24,6 @@
 	},
 	"require-dev": {
         "phpunit/phpunit": "4.x",
-        "satooshi/php-coveralls": "1.x",
         "matthiasnoback/symfony-dependency-injection-test": "*",
         "liip/functional-test-bundle": "*",
         "doctrine/doctrine-fixtures-bundle": "*"

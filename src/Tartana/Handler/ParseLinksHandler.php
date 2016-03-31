@@ -1,27 +1,26 @@
 <?php
 namespace Tartana\Handler;
 use Joomla\Registry\Registry;
-use Tartana\Component\Dlc\Decrypter;
+use SimpleBus\Message\Bus\MessageBus;
+use Tartana\Component\Decrypter\DecrypterFactory;
 use Tartana\Domain\Command\ParseLinks;
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Mixins\LoggerAwareTrait;
-use Tartana\Util;
-use SimpleBus\Message\Bus\MessageBus;
 
 class ParseLinksHandler
 {
 
 	use LoggerAwareTrait;
 
-	private $dlcDecrypter = null;
+	private $factory = null;
 
 	private $commandBus = null;
 
 	private $configuration = null;
 
-	public function __construct (Decrypter $dlcDecrypter, MessageBus $commandBus, Registry $configuration)
+	public function __construct (DecrypterFactory $factory, MessageBus $commandBus, Registry $configuration)
 	{
-		$this->dlcDecrypter = $dlcDecrypter;
+		$this->factory = $factory;
 		$this->commandBus = $commandBus;
 		$this->configuration = $configuration;
 	}
@@ -32,16 +31,17 @@ class ParseLinksHandler
 			->applyPathPrefix($file->getPath()));
 
 		$links = [];
-		if (Util::endsWith($file->getPath(), '.dlc'))
+		$decrypter = $this->factory->createDecryptor($file->getPath());
+		if (empty($decrypter))
 		{
-			$content = $file->getFolder()->read($file->getPath())['contents'];
-			$links = array_merge($this->dlcDecrypter->decrypt($content));
+			$this->log('Found no decrypter for the file ' . $file->getPath());
 		}
-		if (Util::endsWith($file->getPath(), '.txt'))
+		else
 		{
-			$content = $file->getFolder()->read($file->getPath())['contents'];
-			$links = array_merge($links, explode(PHP_EOL, $content));
+			$links = $decrypter->decrypt($file->getFolder()
+				->read($file->getPath())['contents']);
 		}
+
 		$this->log('Found ' . count($links) . ' links to process');
 
 		$linksHostFilter = $this->configuration->get('links.hostFilter');

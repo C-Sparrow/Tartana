@@ -18,7 +18,7 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 	public function testExecuteWithDlcFile ()
 	{
 		$fs = new Local(__DIR__);
-		$fs->copy('../../Component/Dlc/simple.dlc', 'testdlcs/simple.dlc');
+		$fs->copy('../../Component/Decrypter/files/simple.dlc', 'testdlcs/simple.dlc');
 
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$repositoryMock->method('findDownloads')->willReturn([]);

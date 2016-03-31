@@ -95,10 +95,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 				$download
 		]));
 
-		$this->assertNotEmpty($download->getMessage());
-		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
-
-		$this->assertEmpty($dest->listContents());
+		$this->assertNotEmpty($dest->listContents());
+		$this->assertCount(1, $dest->listContents());
+		foreach ($dest->listContents() as $file)
+		{
+			$this->assertEquals('test.mp4', $file['path']);
+		}
 	}
 
 	protected function setUp ()

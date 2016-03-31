@@ -7,7 +7,7 @@
 [![Latest Version](https://img.shields.io/github/tag/C-Sparrow/Tartana.svg?style=flat-square)](https://github.com/C-Sparrow/Tartana/releases)
 [![Downloads](https://img.shields.io/github/downloads/C-Sparrow/Tartana/total.svg?style=flat-square)](https://github.com/C-Sparrow/Tartana/releases/latest)
 
-Open source PHP app which manages downloads for you on any PHP capable device (Raspberry Pi up to big servers). It supports link decryption as well as all important container formats like dlc and automatic file extraction. It just works and makes fun!
+Open source PHP app which manages downloads for you on any PHP capable device (Raspberry Pi up to big servers). It supports link decryption as well as all important container formats like dlc or rsdf and automatic file extraction. It just works and makes fun!
 
 ## Installation
 The installation is as simple as 123. Head on to the [installation guide](doc/main/installation.md).

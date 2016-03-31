@@ -1,15 +1,11 @@
 <?php
-namespace Tartana\Component\Dlc;
+namespace Tartana\Component\Decrypter;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use League\Flysystem\Adapter\Local;
 use Monolog\Logger;
-use Tartana\Mixins\LoggerAwareTrait;
 
-class Decrypter
+class Dlc extends BaseDecrypter
 {
-
-	use LoggerAwareTrait;
 
 	private $client = null;
 
@@ -34,47 +30,12 @@ class Decrypter
 		$this->client = $client;
 	}
 
-	/**
-	 * Decrypts the given string or path.
-	 *
-	 * @param string $dlc
-	 * @return string[]
-	 */
-	public function decrypt ($dlc)
+	public function getLinks ($content)
 	{
-		return $this->decDcryptit($dlc);
-	}
-
-	private function getDlcContents ($dlc)
-	{
-		if (@file_exists(realpath($dlc)))
-		{
-			$dlc = realpath($dlc);
-			$fs = new Local(dirname($dlc));
-			$dlcContents = $fs->read($fs->removePathPrefix($dlc))['contents'];
-		}
-		else
-		{
-			$dlcContents = $dlc;
-		}
-
-		return $dlcContents;
-	}
-
-	private function decDcryptit ($dlc)
-	{
-		$this->log('Started DLC decrypting on http://dcrypt.it', Logger::INFO);
-		$dlcContents = $this->getDlcContents($dlc);
-
-		if (! $dlcContents)
-		{
-			throw new \RuntimeException('Empty content.');
-		}
-
 		$this->log('Calling http://dcrypt.it/decrypt/paste', Logger::INFO);
 		$res = $this->client->request('post', 'http://dcrypt.it/decrypt/paste', [
 				'form_params' => [
-						'content' => $dlcContents
+						'content' => $content
 				]
 		]);
 
