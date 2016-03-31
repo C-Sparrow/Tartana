@@ -116,101 +116,26 @@
 
                 
                 <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="tartana-configuration">Tartana Configuration</h1>
-<p>Before you can configure Tartana make sure you have <a href="installation.html">installed</a> it correctly.
-In the folder <em>app/config</em> you will find the whole configuration for Tartana. If you have started Tartana already then the file <em>app/config/parameters.yml</em> will be auto generated. If not you can copy it from <strong>parameters.dist.yml</strong> and adapt it to your needs. You can change the parameters also trough the web interface.</p>
-<p>The following list describes the parameters in more detail:</p>
-<ul>
-<li>
-<p><strong>tartana.dateFormat</strong> [m.d.Y h:i a]</p>
-<p>The date format to be displayed on the front.</p>
-</li>
-<li>
-<p><strong>tartana.links.folder</strong> [var/data/Links]</p>
-<p>The folder which will be monitored for the link files (txt or dlc).</p>
-</li>
-<li>
-<p><strong>tartana.links.convertToHttps</strong> [true]</p>
-<p>Should the links to download being converted to https.</p>
-</li>
-<li>
-<p><strong>tartana.links.hostFilter</strong> []</p>
-<p>Should only links being added which belong to the host (example<em>drive.google.com</em>). This setting supports regex as well. If you want to exclude hosts from google, then put ^((?!google.com).)*$ as host filter.</p>
-</li>
-<li>
-<p><strong>tartana.extract.destination</strong> [var/data/New]</p>
-<p>Where to extract the downloads to.</p>
-</li>
-<li>
-<p><strong>tartana.extract.passwordFile</strong> [app/config/passwords.dist.txt]</p>
-<p>The password file which should be used during extract.</p>
-</li>
-<li>
-<p><strong>tartana.extract.deleteFiles</strong> [true]</p>
-<p>After the files have been extracted, should they be deleted.</p>
-</li>
-<li>
-<p><strong>tartana.local.enabled</strong> [true]</p>
-<p>If Tartana should run without a Synology back end set it to true (set tartana.synology.enabled to false!).</p>
-</li>
-<li>
-<p><strong>tartana.local.downloads</strong> [var/data/Downloads]</p>
-<p>When running the local download repository where should the downloads being saved to.</p>
-</li>
-<li>
-<p><strong>tartana.local.downloads.speedlimit</strong> [0]</p>
-<p>The total max speed of the downloads in kb, if it is &lt; 1 no download speed will be set.</p>
-</li>
-<li>
-<p><strong>tartana.local.downloads.daylimit</strong> [0]</p>
-<p>The total amount in kb which can be downloaded per day, if it is &lt; 1 no download amount restriction will be set.</p>
-</li>
-<li>
-<p><strong>tartana.synology.enabled</strong> [false</p>
-<p>Should Tartana run with a synology back end  (set tartana.local.enabled to false!).</p>
-</li>
-<li>
-<p><strong>tartana.synology.address</strong> [<a href="https://localhost:5001/webapi">https://localhost:5001/webapi</a>]</p>
-<p>The address of the Synology server to connect to.</p>
-</li>
-<li>
-<p><strong>tartana.synology.username</strong> [admin]</p>
-<p>The username of the Synology server user to connect to.</p>
-</li>
-<li>
-<p><strong>tartana.synology.password</strong> [admin]</p>
-<p>The password of the Synology server user to connect to.</p>
-</li>
-<li>
-<p><strong>tartana.synology.downloads</strong> [/volume1/shares/Downloads]</p>
-<p>Where can the downloads being found.</p>
-</li>
-<li>
-<p><strong>tartana.synology.downloadShare</strong> [shares/Downloads]</p>
-<p>Synology needs a share folder to create the downloads in, this path
-should point to the same location as the downloads path above.</p>
-</li>
-<li>
-<p><strong>tartana.log.path</strong> [&quot;%kernel.logs_dir%/%kernel.environment%.log&quot;]</p>
-<p>The path to the log file.</p>
-</li>
-<li>
-<p><strong>tartana.log.level</strong> [debug]</p>
-<p>The log level.</p>
-</li>
-<li>
-<p><strong>tartana.update.url:</strong> [github]</p>
-<p>The update url to fetch the latest Tartana version from. If the path is a file on the server, you can define it also relative to the install directory.</p>
-</li>
-<li>
-<p><strong>database.path</strong> [&quot;%kernel.root_dir%/../var/data.db&quot;]</p>
-<p>The path to the local database file.</p>
-</li>
-<li>
-<p><strong>secret</strong> [457152e95295f63116eb776d43ac3d0c41e58905]</p>
-<p><a href="http://symfony.com/doc/current/reference/configuration/framework.html#secret">http://symfony.com/doc/current/reference/configuration/framework.html#secret</a></p>
-</li>
-</ul>
+                    <h1 id="tartana-information">Tartana Information</h1>
+<p>Tartana is a command line app which has a web frontend to browse the downloads. It works with four simple steps:</p>
+<ol>
+<li>It scans a directory for files which do contain links to download.</li>
+<li>Adds the links to the download repository (local or Synology).</li>
+<li>Downloads the links.</li>
+<li>Post processing (eg. auto extract) the downloaded files.</li>
+</ol>
+<p>This is a quick overview of the process of Tartana. More details about every step can be found in the chapters below.</p>
+<h3 id="directory-scanning">Directory scanning</h3>
+<p>Every time the default command did run it scans the folder <a href="configuration.html">configured in the parameters.yml file</a> with the value <em>tartana.links.folder</em> for files containing links. Actually supported are dlc, rsdf and txt files.</p>
+<p>The command to run the scan is:</p>
+<p><code>php cli/app.php</code></p>
+<h3 id="download-repository">Download repository</h3>
+<p>After the links are fetched they will be added to the repository. All links of one file are fetched into one folder. Actually Tartana supports two types of repository. The local one manages the downloads locally, the <a href="synology.html">Synology repository</a> uses the download station app to manage the downloads.</p>
+<h3 id="downloading">Downloading</h3>
+<p>Depending on the repository either way Tartana is downloading the file or the Synology download station. Progress can be seen trough the following command:</p>
+<p><code>php cli/app.php download:control</code></p>
+<h3 id="post-processing">Post processing</h3>
+<p>After all downloads are finished of a folder, the files are post processed. Actually Tartana will auto extract archive files.</p>
                 </section>
 
             </div>
