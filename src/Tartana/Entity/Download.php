@@ -102,7 +102,7 @@ class Download extends Base
 	/**
 	 * Get id
 	 *
-	 * @return integer
+	 * @return integer|string
 	 */
 	public function getId ()
 	{

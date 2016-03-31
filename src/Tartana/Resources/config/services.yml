@@ -138,6 +138,12 @@ services:
             - [setLogger, ['@Logger']]
         tags:
             - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
+    ProcessLinksListener.Command:
+        class: Tartana\Event\Listener\ProcessLinksListener
+        calls:
+            - [setHostFactory, ['@HostFactory']]
+        tags:
+            - {name: kernel.event_listener, event: commandbus.command.before, method: onProcessLinksBefore}
     ConsoleExceptionListener:
         class: Tartana\Event\Listener\ConsoleExceptionListener
         calls:

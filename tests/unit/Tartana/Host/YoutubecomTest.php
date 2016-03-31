@@ -15,6 +15,56 @@ use Tartana\Host\Youtubecom;
 class YoutubecomTest extends \PHPUnit_Framework_TestCase
 {
 
+	public function testFetchLinkList ()
+	{
+		$mock = new MockHandler(
+				[
+						new Response(200, [],
+								'<div><a href="/watch?v=123&b=cde" class="pl-video-title-link"></a><a href="/watch?v=678&b=cde"></a></div>')
+				]);
+
+		$client = new Client([
+				'handler' => HandlerStack::create($mock)
+		]);
+
+		$downloader = new Youtubecom(new Registry(), $client);
+		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
+
+		$this->assertCount(1, $links);
+		$this->assertEquals('https://www.youtube.com/watch?v=123', $links[0]);
+	}
+
+	public function testFetchLinkListNoPlaylistLink ()
+	{
+		$mock = new MockHandler([]);
+
+		$client = new Client([
+				'handler' => HandlerStack::create($mock)
+		]);
+
+		$downloader = new Youtubecom(new Registry(), $client);
+		$links = $downloader->fetchLinkList('https://www.youtube.com/watch?v=123');
+
+		$this->assertCount(1, $links);
+		$this->assertEquals('https://www.youtube.com/watch?v=123', $links[0]);
+	}
+
+	public function testFetchLinkListNoPath ()
+	{
+		$mock = new MockHandler([
+				new Response(200, [], '<div><a href="/foo?v=123&b=cde" class="pl-video-title-link"></a></div>')
+		]);
+
+		$client = new Client([
+				'handler' => HandlerStack::create($mock)
+		]);
+
+		$downloader = new Youtubecom(new Registry(), $client);
+		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
+
+		$this->assertEmpty($links);
+	}
+
 	public function testFetchDownloadInfo ()
 	{
 		$mock = new MockHandler([

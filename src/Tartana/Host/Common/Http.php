@@ -31,6 +31,13 @@ class Http implements HostInterface
 		$this->setClient($client);
 	}
 
+	public function fetchLinkList ($link)
+	{
+		return [
+				$link
+		];
+	}
+
 	public function fetchDownloadInfo (array $downloads)
 	{
 		foreach ($downloads as $download)

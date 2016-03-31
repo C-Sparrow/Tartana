@@ -9,6 +9,15 @@ use Tartana\Host\Youtubecom;
 class YoutubecomTest extends \PHPUnit_Framework_TestCase
 {
 
+	public function testFetchLinkList ()
+	{
+		$downloader = new Youtubecom(new Registry());
+		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=PL5DF954DB82987243');
+
+		$this->assertCount(19, $links);
+		$this->assertStringStartsWith('https://www.youtube.com/watch', $links[0]);
+	}
+
 	public function testFetchDownloadInfo ()
 	{
 		$downloader = new Youtubecom(new Registry());

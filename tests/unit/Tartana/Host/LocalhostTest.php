@@ -13,6 +13,16 @@ use League\Flysystem\Filesystem;
 class LocalhostTest extends TartanaBaseTestCase
 {
 
+	public function testFetchLinkList ()
+	{
+		$downloader = new Localhost(new Registry());
+		$links = $downloader->fetchLinkList('file://localhost/' . __DIR__);
+
+		$this->assertEquals([
+				'file://localhost/' . __DIR__
+		], $links);
+	}
+
 	public function testFetchDownloadInfo ()
 	{
 		$src = new Local(__DIR__ . '/test');

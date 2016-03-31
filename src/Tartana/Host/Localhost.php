@@ -31,6 +31,13 @@ class Localhost implements HostInterface
 		$this->manager = $manager;
 	}
 
+	public function fetchLinkList ($link)
+	{
+		return [
+				$link
+		];
+	}
+
 	public function fetchDownloadInfo (array $downloads)
 	{
 		foreach ($downloads as $download)

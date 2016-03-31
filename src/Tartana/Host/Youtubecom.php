@@ -1,12 +1,50 @@
 <?php
 namespace Tartana\Host;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\RequestOptions;
+use Symfony\Component\DomCrawler\Crawler;
 use Tartana\Entity\Download;
 use Tartana\Host\Common\Http;
-use GuzzleHttp\RequestOptions;
+use Tartana\Util;
 
 class Youtubecom extends Http
 {
+
+	public function fetchLinkList ($link)
+	{
+		if (! Util::startsWith($link, 'https://www.youtube.com/playlist?'))
+		{
+			return parent::fetchLinkList($link);
+		}
+
+		$resp = $this->getClient()->request('get', $link);
+
+		$crawler = new Crawler($resp->getBody()->getContents());
+
+		// Extracting the links which belong to the playlist
+		$links = $crawler->filter('a.pl-video-title-link')->extract([
+				'href'
+		]);
+
+		$data = [];
+		foreach ($links as $link)
+		{
+			$uri = parse_url($link);
+
+			if (! key_exists('path', $uri) || $uri['path'] != '/watch')
+			{
+				continue;
+			}
+
+			$params = [];
+			parse_str($uri['query'], $params);
+			if (key_exists('v', $params))
+			{
+				$data[] = 'https://www.youtube.com/watch?v=' . $params['v'];
+			}
+		}
+		return array_unique($data);
+	}
 
 	public function fetchDownloadInfo (array $downloads)
 	{

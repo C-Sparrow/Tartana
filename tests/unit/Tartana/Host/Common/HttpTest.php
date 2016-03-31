@@ -22,6 +22,16 @@ class HttpTest extends TartanaBaseTestCase
 
 	protected $scheme = 'http';
 
+	public function testFetchLinkList ()
+	{
+		$downloader = $this->getHttp(new Registry());
+		$links = $downloader->fetchLinkList('http://foo.bar/test');
+
+		$this->assertEquals([
+				'http://foo.bar/test'
+		], $links);
+	}
+
 	public function testFetchDownloadInfo ()
 	{
 		$mock = new MockHandler(

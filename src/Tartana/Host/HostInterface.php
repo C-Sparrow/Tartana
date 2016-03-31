@@ -12,6 +12,15 @@ interface HostInterface
 {
 
 	/**
+	 * Fetches additional links to download for the given link.
+	 * This is usefule if a hoster supports playlist links or similar. If the returned list
+	 *
+	 * @param string $link
+	 * @return string[]
+	 */
+	public function fetchLinkList ($link);
+
+	/**
 	 * Prefetches download information like file name size, etc.
 	 *
 	 * @param \Tartana\Entity\Download[] $downloads

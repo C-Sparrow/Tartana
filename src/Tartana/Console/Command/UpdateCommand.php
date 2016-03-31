@@ -169,6 +169,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$downloader->setCommandBus(null);
 
 		$d = new Download();
+		$d->setId('tartana');
 		$d->setDestination($destination);
 		$d->setFileName($fileName);
 		$d->setLink($url);

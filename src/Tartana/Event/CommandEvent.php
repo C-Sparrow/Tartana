@@ -16,4 +16,9 @@ class CommandEvent extends Event
 	{
 		return $this->command;
 	}
+
+	public function setCommand ($command)
+	{
+		$this->command = $command;
+	}
 }

@@ -6,6 +6,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Sends a before and after command event to an event dispatcher.
+ * On the before event, the command can be manipulated, before it is passed to
+ * the handler.
  */
 class MessageBusEventDispatcher implements MessageBusMiddleware
 {
@@ -21,7 +23,7 @@ class MessageBusEventDispatcher implements MessageBusMiddleware
 	{
 		$event = new CommandEvent($message);
 		$this->dispatcher->dispatch('commandbus.command.before', $event);
-		$next($message);
+		$next($event->getCommand());
 		$this->dispatcher->dispatch('commandbus.command.after', $event);
 	}
 }
