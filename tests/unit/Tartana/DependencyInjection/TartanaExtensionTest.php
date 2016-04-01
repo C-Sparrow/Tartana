@@ -65,6 +65,8 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('ExtractListener.Start');
 		$this->assertContainerBuilderHasService('ExtractListener.Finish');
 		$this->assertContainerBuilderHasService('ExtractListener.Command');
+		$this->assertContainerBuilderHasService('ConvertSoundListener.Completed');
+		$this->assertContainerBuilderHasService('ConvertSoundListener.Command');
 		$this->assertContainerBuilderHasService('ProcessLinksListener.Command');
 		$this->assertContainerBuilderHasService('ConsoleExceptionListener');
 		$this->assertContainerBuilderHasService('UpdateExtractStateListener.Progress');

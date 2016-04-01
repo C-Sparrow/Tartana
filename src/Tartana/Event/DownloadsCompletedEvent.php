@@ -21,6 +21,10 @@ class DownloadsCompletedEvent extends Event
 		return $this->repository;
 	}
 
+	/**
+	 *
+	 * @return \Tartana\Entity\Download[]
+	 */
 	public function getDownloads ()
 	{
 		return $this->downloads;

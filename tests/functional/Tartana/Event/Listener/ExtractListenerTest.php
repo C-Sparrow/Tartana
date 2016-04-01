@@ -2,11 +2,11 @@
 namespace Tests\Functional\Tartana\Event\Listener;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
-use Local\Domain\LocalDownloadRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
 use Tartana\Event\DownloadsCompletedEvent;
 use Tartana\Event\Listener\ExtractListener;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ExtractListenerTest extends KernelTestCase
 {
@@ -31,7 +31,7 @@ class ExtractListenerTest extends KernelTestCase
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
 		}
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), $downloads);
+		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$subscriber->onExtractDownloads($event);
 
@@ -59,7 +59,7 @@ class ExtractListenerTest extends KernelTestCase
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
 		}
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), $downloads);
+		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$subscriber->onExtractDownloads($event);
 
@@ -97,14 +97,5 @@ class ExtractListenerTest extends KernelTestCase
 			}
 			$fs->copy($rar['path'], str_replace('../../../../unit/Tartana/Console/Command/Extract/rars/' . $folder, 'test/', $rar['path']));
 		}
-	}
-
-	private function getMockRepository ()
-	{
-		$repositoryMock = $this->getMockBuilder(LocalDownloadRepository::class)
-			->disableOriginalConstructor()
-			->getMock();
-
-		return $repositoryMock;
 	}
 }

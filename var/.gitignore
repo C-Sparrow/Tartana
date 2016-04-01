@@ -6,6 +6,7 @@
 /data/Links/*.dlc
 /data/Downloads/job-*
 /data/New/job-*
+/data/Sound/job-*
 
 /logs/dev.log
 /logs/prod.log

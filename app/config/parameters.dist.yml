@@ -21,6 +21,12 @@ parameters:
     # After the files have been extracted, should they be deleted
     tartana.extract.deleteFiles: true
     
+    # The destiation directory to convert the download to mp3
+    tartana.sound.destination: var/data/Sound
+    
+    # Should only downloads being converted to mp3 which belong to the regex pattern (example: drive.google.com or (youtube.com|google.com))
+    tartana.sound.hostFilter: 
+    
     # If Tartana should run without a Synology back end set it to true (set tartana.synology.enabled to false!)
     tartana.local.enabled: true
     

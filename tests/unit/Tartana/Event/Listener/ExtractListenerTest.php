@@ -387,15 +387,12 @@ class ExtractListenerTest extends TartanaBaseTestCase
 		$dst = new Local(__DIR__ . '/test1');
 		$dst->createDir('test', new Config());
 
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
-		]));
+		$listener = new ExtractListener($this->getMockRunner(),
+				new Registry([
+						'extract' => [
+								'destination' => $dst->getPathPrefix()
+						]
+				]));
 
 		$downloads = [
 				new Download()
@@ -433,15 +430,12 @@ class ExtractListenerTest extends TartanaBaseTestCase
 		$dst = new Local(__DIR__ . '/test1');
 		$dst->createDir('test', new Config());
 
-		$runner = $this->getMockRunner();
-		$runner->expects($this->never())
-			->method('execute');
-
-		$listener = new ExtractListener($runner, new Registry([
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
-		]));
+		$listener = new ExtractListener($this->getMockRunner(),
+				new Registry([
+						'extract' => [
+								'destination' => $dst->getPathPrefix()
+						]
+				]));
 
 		$downloads = [
 				new Download()

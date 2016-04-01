@@ -138,6 +138,20 @@ services:
             - [setLogger, ['@Logger']]
         tags:
             - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
+    ConvertSoundListener.Completed:
+        class: Tartana\Event\Listener\ConvertSoundListener
+        arguments: ['@CommandRunner', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: downloads.completed, method: onConvertDownloads}
+    ConvertSoundListener.Command:
+        class: Tartana\Event\Listener\ConvertSoundListener
+        arguments: ['@CommandRunner', '@config']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
     ProcessLinksListener.Command:
         class: Tartana\Event\Listener\ProcessLinksListener
         calls:
