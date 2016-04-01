@@ -33,6 +33,14 @@ The following list describes the parameters in more detail:
 
   After the files have been extracted, should they be deleted.
 
+- **tartana.sound.destination** [var/data/Sound]
+
+  The destination directory to convert the downloads to mp3.
+
+- **tartana.sound.hostFilter** []
+
+  Should only downloads being converted to mp3 which belong to the host (example*drive.google.com*). This setting supports regex as well. If you want to exclude hosts from google, then put ^((?!google.com).)*$ as host filter.
+
 - **tartana.local.enabled** [true]
 
   If Tartana should run without a Synology back end set it to true (set tartana.synology.enabled to false!).

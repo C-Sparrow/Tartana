@@ -2,14 +2,19 @@
 
 Tartana is a PHP application which can run on the [command line only or with a web frontend](running.md). The minimal requirements of Tartana are:
 
+**Required**
 - Linux System
 - PHP command line executable
 - PHP Sqlite extension
 - PHP Curl extension
 - PHP Intl extension
 - Unzip installed
-- Unrar installed
 - Access to the internet
+
+**Optional**
+- Unrar installed to extract rar files
+- 7z installed to extract .z7 files
+- ffmpeg installed for mp4 to mp3 conversion
 
 ## Debian/Ubuntu setup
 

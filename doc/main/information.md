@@ -29,4 +29,6 @@ Depending on the repository either way Tartana is downloading the file or the Sy
 
 ### Post processing
 
-After all downloads are finished of a folder, the files are post processed. Actually Tartana will auto extract archive files.
+After all downloads are finished of a folder, the files are post processed. Actually Tartana will auto extract archive files or can convert mp4 files to mp3.
+
+To auto extract files some binaries like **unzip**, **7z** or **unrar** must be available. To convert mp4 files **ffmpeg** must be available.

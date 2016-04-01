@@ -7,12 +7,20 @@ use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
 use Tartana\Event\DownloadsCompletedEvent;
 use Tartana\Event\Listener\ConvertSoundListener;
+use Tartana\Component\Command\Runner;
+use Tartana\Component\Command\Command;
 
 class ConvertSoundListenerTest extends KernelTestCase
 {
 
 	public function testConvertFile ()
 	{
+		if (! (new Runner())->execute(new Command('which ffmpeg')))
+		{
+			$this->markTestSkipped('FFmpeg is not on the path!');
+			return;
+		}
+
 		$src = new Local(__DIR__ . '/test');
 		$src->copy('../files/test.mp4', 'test.mp4');
 		$dst = new Local(__DIR__ . '/test1');

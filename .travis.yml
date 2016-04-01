@@ -17,6 +17,7 @@ addons:
     - unzip
     - unrar
     - p7zip-full
+    - ffmpeg
 
 before_script:
   - composer selfupdate

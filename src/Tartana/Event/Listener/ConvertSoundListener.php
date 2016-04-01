@@ -45,6 +45,12 @@ class ConvertSoundListener
 			return;
 		}
 
+		if (! $this->runner->execute(new Command('which ffmpeg')))
+		{
+			$this->log("FFmpeg is not on the path, can't convert");
+			return;
+		}
+
 		$soundHostFilter = $this->configuration->get('sound.hostFilter');
 		$this->log('Host filter is: ' . $soundHostFilter);
 

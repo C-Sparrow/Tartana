@@ -42,6 +42,8 @@ The *cli/app.php* PHP script accepts the two following main commands:
 
   - **clearcompleted**<br/>Removes all successfully processed downloads.
 
+  - **clearfailed**<br/>Removes all failed (downloading or processing) downloads.
+
   - **resumeall**<br/>Resumes all downloads.
     
   - **resumefailed**<br/>Resumes the downloads which have failed downloading or processing.

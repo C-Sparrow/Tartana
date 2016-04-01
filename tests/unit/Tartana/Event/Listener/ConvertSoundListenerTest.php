@@ -22,11 +22,16 @@ class ConvertSoundListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
+						$this->callback(function  (Command $command) {
+							return $command->getCommand() == 'which ffmpeg';
+						}),
 						$this->callback(
 								function  (Command $command) {
 									return $command->getCommand() == 'ffmpeg' && strpos($command, 'test.mp4') !== false &&
 											 strpos($command, 'test.mp3') !== false;
 								})
+				], [
+						'ffmpeg'
 				]);
 
 		$download = new Download();
@@ -55,11 +60,16 @@ class ConvertSoundListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 				[
+						$this->callback(function  (Command $command) {
+							return $command->getCommand() == 'which ffmpeg';
+						}),
 						$this->callback(
 								function  (Command $command) {
 									return $command->getCommand() == 'ffmpeg' && strpos($command, 'test.mp4') !== false &&
 											 strpos($command, 'test.mp3') !== false;
 								})
+				], [
+						'ffmpeg'
 				]);
 
 		$download = new Download();
@@ -119,6 +129,35 @@ class ConvertSoundListenerTest extends TartanaBaseTestCase
 		$listener->onConvertDownloads($event);
 
 		$this->assertFileNotExists(__DIR__ . 'invalid');
+	}
+
+	public function testConvertCommandNotAvailable ()
+	{
+		$dst = new Local(__DIR__ . '/test1');
+
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return $command->getCommand() == 'which ffmpeg';
+						})
+				], [
+						''
+				]);
+
+		$download = new Download();
+		$download->setFileName('test.mp4');
+		$download->setDestination(__DIR__ . '/test');
+		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
+				$download
+		]);
+		$listener = new ConvertSoundListener($runner, new Registry([
+				'sound' => [
+						'destination' => $dst->getPathPrefix()
+				]
+		]));
+		$listener->onConvertDownloads($event);
+
+		$this->assertFalse($dst->has('test'));
 	}
 
 	public function testCleanUpDirectory ()

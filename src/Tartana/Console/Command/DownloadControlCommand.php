@@ -37,7 +37,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		$this->setDescription('Manages the downloads!');
 
 		$this->addArgument('action', InputArgument::OPTIONAL,
-				'The action, can be: status, clearall, clearcompleted, resumefailed, resumeall or reprocess.', 'status');
+				'The action, can be: status, clearall, clearcompleted, clearfailed, resumefailed, resumeall or reprocess.', 'status');
 
 		$this->addOption('destination', 'd', InputOption::VALUE_OPTIONAL,
 				'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.');
@@ -287,6 +287,17 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				foreach ($downloads as $d)
 				{
 					if ($d->getState() == Download::STATE_PROCESSING_COMPLETED)
+					{
+						$toDelete[] = $d;
+					}
+				}
+				$command = new DeleteDownloads($toDelete);
+				break;
+			case 'clearfailed':
+				$toDelete = [];
+				foreach ($downloads as $d)
+				{
+					if ($d->getState() == Download::STATE_DOWNLOADING_ERROR || $d->getState() == Download::STATE_PROCESSING_ERROR)
 					{
 						$toDelete[] = $d;
 					}
