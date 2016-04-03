@@ -339,5 +339,9 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 			$this->handleCommand($command);
 			$output->writeln($t->trans('TARTANA_TEXT_COMMAND_RUN_SUCCESS'));
 		}
+		else if ($action != 'status' && $action != 'details')
+		{
+			$output->writeln($t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_NO_ACTION_FOUND'));
+		}
 	}
 }

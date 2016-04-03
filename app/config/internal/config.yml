@@ -13,6 +13,10 @@ tartana:
         passwordFile: "%tartana.extract.passwordFile%"
         deleteFiles: "%tartana.extract.deleteFiles%"
 
+    sound:
+        destination: "%tartana.sound.destination%"
+        hostFilter: "%tartana.sound.hostFilter%"
+
 local:
     enabled: "%tartana.local.enabled%"
     downloads: "%tartana.local.downloads%"

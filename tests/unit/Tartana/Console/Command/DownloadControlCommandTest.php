@@ -533,4 +533,27 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 		$this->assertEquals('Success run!', $content);
 	}
+
+	public function testInvalidAction ()
+	{
+		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
+		$translator->expects($this->once())
+			->method('trans')
+			->will($this->returnValue('No action found!'));
+
+		$application = new Application();
+		$cmd = new DownloadControlCommand($this->getMockRepository(), $translator);
+		$cmd->setCommandBus($this->getMockCommandBus([]));
+		$application->add($cmd);
+		$command = $application->find('download:control');
+
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+				'command' => $command->getName(),
+				'action' => 'invalid'
+		));
+		$content = trim($commandTester->getDisplay());
+
+		$this->assertEquals('No action found!', $content);
+	}
 }

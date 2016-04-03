@@ -12,6 +12,7 @@ use Tartana\Event\CommandEvent;
 use Tartana\Event\DownloadsCompletedEvent;
 use Tartana\Event\Listener\ConvertSoundListener;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
+use Tartana\Domain\Command\SaveDownloads;
 
 class ConvertSoundListenerTest extends TartanaBaseTestCase
 {
@@ -52,6 +53,48 @@ class ConvertSoundListenerTest extends TartanaBaseTestCase
 		$listener->onConvertDownloads($event);
 
 		$this->assertTrue($dst->has('test'));
+	}
+
+	public function testConvertCommandBus ()
+	{
+		$dst = new Local(__DIR__ . '/test1');
+
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(function  (Command $command) {
+							return true;
+						}),
+						$this->callback(function  (Command $command) {
+							return true;
+						})
+				], [
+						'ffmpeg'
+				]);
+
+		$download = new Download();
+		$download->setFileName('test.mp4');
+		$download->setDestination(__DIR__ . '/test');
+		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
+				$download
+		]);
+		$listener = new ConvertSoundListener($runner, new Registry([
+				'sound' => [
+						'destination' => $dst->getPathPrefix()
+				]
+		]));
+		$listener->setCommandBus(
+				$this->getMockCommandBus(
+						[
+								$this->callback(
+										function  (SaveDownloads $command) {
+											return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_STARTED;
+										}),
+								$this->callback(
+										function  (SaveDownloads $command) {
+											return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
+										})
+						]));
+		$listener->onConvertDownloads($event);
 	}
 
 	public function testConvertHostFilter ()

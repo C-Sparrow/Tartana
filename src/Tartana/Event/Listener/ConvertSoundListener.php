@@ -12,6 +12,8 @@ use Tartana\Event\DownloadsCompletedEvent;
 use Tartana\Mixins\LoggerAwareTrait;
 use Tartana\Util;
 use League\Flysystem\Config;
+use Tartana\Mixins\CommandBusAwareTrait;
+use Tartana\Domain\Command\SaveDownloads;
 
 /**
  * Converts downloads which are mp4 to mp3.
@@ -20,6 +22,7 @@ class ConvertSoundListener
 {
 
 	use LoggerAwareTrait;
+	use CommandBusAwareTrait;
 
 	private $runner = null;
 
@@ -84,7 +87,17 @@ class ConvertSoundListener
 			$command->addArgument('-vn');
 			$command->addArgument(str_replace('.mp4', '.mp3', $destination->applyPathPrefix($destName) . '/' . $download->getFileName()));
 
+			$download->setState(Download::STATE_PROCESSING_STARTED);
+			$this->handleCommand(new SaveDownloads([
+					$download
+			]));
+
 			$this->runner->execute($command);
+
+			$download->setState(Download::STATE_PROCESSING_COMPLETED);
+			$this->handleCommand(new SaveDownloads([
+					$download
+			]));
 
 			$this->log('Finished to convert the file ' . $download->getDestination() . '/' . $download->getFileName() . ' to mp3');
 		}

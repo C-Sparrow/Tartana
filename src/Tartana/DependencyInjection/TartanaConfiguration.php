@@ -33,6 +33,15 @@ class TartanaConfiguration implements ConfigurationInterface
 						->scalarNode('deleteFiles')->end()
 					->end()
 				->end()
+				->arrayNode('sound')
+				->isRequired()
+					->children()
+						->scalarNode('destination')
+							->isRequired()
+						->end()
+						->scalarNode('hostFilter')->end()
+					->end()
+				->end()
 			->end()
 		->end();
 

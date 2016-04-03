@@ -19,6 +19,10 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 								'destination' => '/path/to/folder',
 								'passwordFile' => '/path/to/folder/pw.txt',
 								'deleteFiles' => true
+						],
+						'sound' => [
+								'destination' => '/path/to/folder',
+								'hostFilter' => 'foo.com'
 						]
 				]);
 
@@ -33,6 +37,10 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 								'destination' => '/path/to/folder',
 								'passwordFile' => '/path/to/folder/pw.txt',
 								'deleteFiles' => true
+						],
+						'sound' => [
+								'destination' => '/path/to/folder',
+								'hostFilter' => 'foo.com'
 						]
 				]);
 

@@ -68,6 +68,32 @@ class TartanaConfigurationTest extends \PHPUnit_Framework_TestCase
 		], 'extract');
 	}
 
+	public function testSoundValueIsProvided ()
+	{
+		$this->assertConfigurationIsValid([
+				[
+						'sound' => [
+								'destination' => '/path/to/dir'
+						]
+				]
+		], 'sound');
+	}
+
+	public function testSoundValueIsNotProvided ()
+	{
+		$this->assertConfigurationIsInvalid(
+				[
+						[
+								'links' => [
+										'folder' => '/path/to/dir'
+								],
+								'extract' => [
+										'destination' => '/path/to/dir'
+								]
+						]
+				], 'sound');
+	}
+
 	public function testProcessedValueContainsRequiredValue ()
 	{
 		$this->assertProcessedConfigurationEquals(
@@ -78,6 +104,9 @@ class TartanaConfigurationTest extends \PHPUnit_Framework_TestCase
 								],
 								'extract' => [
 										'destination' => '/path/to/dir'
+								],
+								'sound' => [
+										'destination' => '/path/to/dir'
 								]
 						]
 				],
@@ -86,6 +115,9 @@ class TartanaConfigurationTest extends \PHPUnit_Framework_TestCase
 								'folder' => '/path/to/dir'
 						],
 						'extract' => [
+								'destination' => '/path/to/dir'
+						],
+						'sound' => [
 								'destination' => '/path/to/dir'
 						]
 				]);
