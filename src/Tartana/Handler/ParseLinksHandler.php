@@ -6,6 +6,7 @@ use Tartana\Component\Decrypter\DecrypterFactory;
 use Tartana\Domain\Command\ParseLinks;
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Mixins\LoggerAwareTrait;
+use Monolog\Logger;
 
 class ParseLinksHandler
 {
@@ -38,8 +39,15 @@ class ParseLinksHandler
 		}
 		else
 		{
-			$links = $decrypter->decrypt($file->getFolder()
-				->read($file->getPath())['contents']);
+			try
+			{
+				$links = $decrypter->decrypt($file->getFolder()
+					->read($file->getPath())['contents']);
+			}
+			catch (\Exception $e)
+			{
+				$this->log('Exception decrypting file ' . $file->getPath() . ' ' . $e->getMessage(), Logger::ERROR);
+			}
 		}
 
 		$this->log('Found ' . count($links) . ' links to process');

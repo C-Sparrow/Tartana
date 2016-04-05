@@ -3,7 +3,7 @@ namespace Tartana\Event;
 use League\Flysystem\Adapter\AbstractAdapter;
 use Symfony\Component\EventDispatcher\Event;
 
-class ExtractProgressEvent extends Event
+class ProcessingProgressEvent extends Event
 {
 
 	private $source = null;

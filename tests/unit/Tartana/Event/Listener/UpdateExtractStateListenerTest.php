@@ -4,8 +4,8 @@ use League\Flysystem\Adapter\Local;
 use Tartana\Domain\Command\SaveDownloads;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
-use Tartana\Event\ExtractCompletedEvent;
-use Tartana\Event\ExtractProgressEvent;
+use Tartana\Event\ProcessingCompletedEvent;
+use Tartana\Event\ProcessingProgressEvent;
 use Tartana\Event\Listener\UpdateExtractStateListener;
 use SimpleBus\Message\Bus\MessageBus;
 
@@ -36,7 +36,7 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 							return $command->getDownloads()[0]->getProgress() == 20 && empty($command->getDownloads()[0]->getMessage());
 						}));
 
-		$event = new ExtractProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
+		$event = new ProcessingProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
 		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
 		$listener->onExtractProgress($event);
 
@@ -44,7 +44,7 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($download2->getMessage());
 	}
 
-	public function testOnExtractCompletedSuccess ()
+	public function testonProcessingCompletedSuccess ()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__);
@@ -63,12 +63,12 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 									 empty($command->getDownloads()[0]->getMessage());
 						}));
 
-		$event = new ExtractCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
+		$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
 		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-		$listener->onExtractCompleted($event);
+		$listener->onProcessingCompleted($event);
 	}
 
-	public function testOnExtractCompletedError ()
+	public function testonProcessingCompletedError ()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__);
@@ -87,8 +87,8 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 									 ! empty($command->getDownloads()[0]->getMessage());
 						}));
 
-		$event = new ExtractCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
+		$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
 		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-		$listener->onExtractCompleted($event);
+		$listener->onProcessingCompleted($event);
 	}
 }

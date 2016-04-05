@@ -46,13 +46,13 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 	{
 		$force = (boolean) $input->getOption('force');
 
-		$this->log('Started with update routing against ' . $this->url, Logger::INFO);
+		$this->log('Started with update routine against ' . $this->url, Logger::INFO);
 
 		$url = $this->url;
 		if (empty($url))
 		{
 			$this->log('Update url is empty');
-			$this->log('Finished with update routing', Logger::INFO);
+			$this->log('Finished with update routine', Logger::INFO);
 			return;
 		}
 
@@ -155,7 +155,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 			}
 		}
 
-		$this->log('Finished with update routing', Logger::INFO);
+		$this->log('Finished with update routine', Logger::INFO);
 	}
 
 	private function download ($url, $destination, $fileName)

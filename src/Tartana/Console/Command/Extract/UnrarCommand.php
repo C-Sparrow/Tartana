@@ -1,7 +1,7 @@
 <?php
 namespace Tartana\Console\Command\Extract;
 use League\Flysystem\Adapter\AbstractAdapter;
-use Tartana\Event\ExtractProgressEvent;
+use Tartana\Event\ProcessingProgressEvent;
 use Tartana\Util;
 use Symfony\Component\Console\Command\Command;
 
@@ -63,7 +63,7 @@ class UnrarCommand extends ExtractCommand
 			}
 			if ($this->lastFileName && preg_match("/\s[0-9]+%$/", $line, $matches))
 			{
-				$this->dispatcher->dispatch('extract.progress', new ExtractProgressEvent($source, $destination, $this->lastFileName, $matches[0]));
+				$this->dispatcher->dispatch('extract.progress', new ProcessingProgressEvent($source, $destination, $this->lastFileName, $matches[0]));
 			}
 		}
 	}

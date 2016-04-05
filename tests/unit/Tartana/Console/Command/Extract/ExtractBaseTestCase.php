@@ -3,7 +3,7 @@ namespace Tests\Unit\Tartana\Console\Command\Extract;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
-use Tartana\Event\ExtractProgressEvent;
+use Tartana\Event\ProcessingProgressEvent;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -249,7 +249,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 			->with()
 			->willReturnCallback(
 				function  ($eventName, $event) {
-					if ($event instanceof ExtractProgressEvent)
+					if ($event instanceof ProcessingProgressEvent)
 					{
 						return is_numeric($event->getProgress()) && $event->getFile() != null;
 					}
@@ -281,7 +281,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$dispatcherMock->method('dispatch')->willReturn(true);
 		$dispatcherMock->expects($this->once())
 			->method('dispatch')
-			->with($this->equalTo('extract.completed'));
+			->with($this->equalTo('processing.completed'));
 
 		$application = new Application();
 		$command = $this->createCommand($dispatcherMock);

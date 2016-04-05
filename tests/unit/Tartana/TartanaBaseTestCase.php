@@ -30,6 +30,11 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 	{
 		foreach ($callbacks as $key => $callback)
 		{
+			if (is_array($callback))
+			{
+				continue;
+			}
+
 			$callbacks[$key] = [
 					$callback
 			];

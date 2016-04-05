@@ -125,6 +125,20 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		$handler->handle(new ParseLinks($fs, 'simple.txt'));
 	}
 
+	public function testParseLinksFileThrowException ()
+	{
+		$fs = new Local(__DIR__ . '/test');
+		$fs->write('simple.txt', '' . PHP_EOL . '' . PHP_EOL, new Config());
+
+		$dec = $this->getMockBuilder(DecrypterInterface::class)->getMock();
+		$dec->method('decrypt')->willThrowException(new \RuntimeException('unit test'));
+		$dlcDecrypter = $this->getMockBuilder(DecrypterFactory::class)->getMock();
+		$dlcDecrypter->method('createDecryptor')->willReturn($dec);
+
+		$handler = new ParseLinksHandler($dlcDecrypter, $this->getMockCommandBus(), new Registry());
+		$handler->handle(new ParseLinks($fs, 'simple.txt'));
+	}
+
 	public function testNoValidFile ()
 	{
 		$handler = new ParseLinksHandler($this->getMockBuilder(DecrypterFactory::class)->getMock(), $this->getMockCommandBus(), new Registry());

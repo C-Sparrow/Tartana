@@ -33,7 +33,7 @@ class ExtractListenerTest extends KernelTestCase
 		}
 		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
-		$subscriber->onExtractDownloads($event);
+		$subscriber->onProcessCompletedDownloads($event);
 
 		$this->assertTrue($dst->has('test/Downloads/symfony.png'));
 		$this->assertEmpty($src->listContents());
@@ -61,7 +61,7 @@ class ExtractListenerTest extends KernelTestCase
 		}
 		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
-		$subscriber->onExtractDownloads($event);
+		$subscriber->onProcessCompletedDownloads($event);
 
 		// As we run it async we wait at least 10 seconds
 		for ($i = 0; $i < 3 && ! $dst->has('test/Downloads/symfony.png'); $i ++)

@@ -3,7 +3,7 @@ namespace Tartana\Console\Command\Extract;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\Local;
-use Tartana\Event\ExtractCompletedEvent;
+use Tartana\Event\ProcessingCompletedEvent;
 use Tartana\Mixins\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -73,7 +73,7 @@ abstract class ExtractCommand extends Command
 		$this->setDescription('Extracts files. This command is running in foreground!');
 
 		$this->addArgument('source', InputArgument::REQUIRED, 'The folder with files to extract.');
-		$this->addArgument('destination', InputArgument::REQUIRED, 'The folder to textract the file to.');
+		$this->addArgument('destination', InputArgument::REQUIRED, 'The folder to textract the files to.');
 		$this->addArgument('pwfile', InputArgument::OPTIONAL, 'The file with passwords to use to extract.');
 	}
 
@@ -186,7 +186,7 @@ abstract class ExtractCommand extends Command
 		}
 		if ($this->dispatcher)
 		{
-			$this->dispatcher->dispatch('extract.completed', new ExtractCompletedEvent($source, $destination, $success));
+			$this->dispatcher->dispatch('processing.completed', new ProcessingCompletedEvent($source, $destination, $success));
 		}
 	}
 }

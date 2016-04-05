@@ -1,16 +1,16 @@
 <?php
 namespace Tests\Unit\Tartana\Event;
 use League\Flysystem\Adapter\NullAdapter;
-use Tartana\Event\ExtractProgressEvent;
+use Tartana\Event\ProcessingProgressEvent;
 
-class ExtractProgressEventTest extends \PHPUnit_Framework_TestCase
+class ProcessingProgressEventTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testExtractProgressEventValidProgress ()
+	public function testProcessingProgressEventValidProgress ()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
-		$event = new ExtractProgressEvent($src, $dst, 'test.txt', 10);
+		$event = new ProcessingProgressEvent($src, $dst, 'test.txt', 10);
 
 		$this->assertEquals($src, $event->getSource());
 		$this->assertEquals($dst, $event->getDestination());
@@ -18,29 +18,29 @@ class ExtractProgressEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(10, $event->getProgress());
 	}
 
-	public function testExtractProgressEventString ()
+	public function testProcessingProgressEventString ()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
-		$event = new ExtractProgressEvent($src, $dst, 'test.txt', 'unit');
+		$event = new ProcessingProgressEvent($src, $dst, 'test.txt', 'unit');
 
 		$this->assertEquals(0, $event->getProgress());
 	}
 
-	public function testExtractProgressEventTooLarge ()
+	public function testProcessingProgressEventTooLarge ()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
-		$event = new ExtractProgressEvent($src, $dst, 'test.txt', 200);
+		$event = new ProcessingProgressEvent($src, $dst, 'test.txt', 200);
 
 		$this->assertEquals(100, $event->getProgress());
 	}
 
-	public function testExtractProgressEventTooLow ()
+	public function testProcessingProgressEventTooLow ()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
-		$event = new ExtractProgressEvent($src, $dst, 'test.txt', - 2);
+		$event = new ProcessingProgressEvent($src, $dst, 'test.txt', - 2);
 
 		$this->assertEquals(0, $event->getProgress());
 	}

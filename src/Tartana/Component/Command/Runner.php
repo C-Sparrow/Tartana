@@ -1,7 +1,7 @@
 <?php
 namespace Tartana\Component\Command;
-use Tartana\Mixins\LoggerAwareTrait;
 use Symfony\Component\Process\Process;
+use Tartana\Mixins\LoggerAwareTrait;
 
 class Runner
 {
@@ -20,10 +20,15 @@ class Runner
 	 * If async is true, the process id is returned.
 	 * If a file is given all the output will be piped to that file.
 	 *
+	 * If a callback is set the output will be delegated line by line to the
+	 * given callback, then the given command will never run in async mode!
+	 *
 	 * @param \Tartana\Component\Command $command
+	 * @param
+	 *        	$callback
 	 * @return string|integer
 	 */
-	public function execute (Command $command)
+	public function execute (Command $command, $callback = null)
 	{
 		if ($this->environment !== null)
 		{
@@ -51,10 +56,21 @@ class Runner
 			}
 		}
 
+		if ($callback)
+		{
+			$command->setAsync(false);
+		}
+
 		$this->log('Running real command on runner: ' . $command);
-		$output = shell_exec($command);
+		$process = new Process((string) $command);
+		$process->run(function  ($type, $buffer) use ( $callback) {
+			if ($callback)
+			{
+				$callback($buffer);
+			}
+		});
 		$this->log('Finished real command on runner: ' . $command);
 
-		return trim($output);
+		return trim($process->getOutput());
 	}
 }

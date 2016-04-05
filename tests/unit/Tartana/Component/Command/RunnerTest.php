@@ -51,4 +51,21 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertContains('--env prod', $output);
 	}
+
+	public function testRunCommandWithCallback ()
+	{
+		$command = new Command('echo');
+		$command->addArgument('Unit Test');
+
+		$runner = new Runner();
+
+		$buffer = [];
+		$output = $runner->execute($command, function  ($line) use ( &$buffer) {
+			$buffer[] = $line;
+		});
+
+		$this->assertEquals('Unit Test', $output);
+		$this->assertCount(1, $buffer);
+		$this->assertEquals('Unit Test', trim($buffer[0]));
+	}
 }

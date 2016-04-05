@@ -3,8 +3,8 @@ namespace Tartana\Event\Listener;
 use Tartana\Domain\Command\SaveDownloads;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
-use Tartana\Event\ExtractCompletedEvent;
-use Tartana\Event\ExtractProgressEvent;
+use Tartana\Event\ProcessingCompletedEvent;
+use Tartana\Event\ProcessingProgressEvent;
 use Tartana\Mixins\LoggerAwareTrait;
 use SimpleBus\Message\Bus\MessageBus;
 
@@ -23,7 +23,7 @@ class UpdateExtractStateListener
 		$this->commandBus = $commandBus;
 	}
 
-	public function onExtractProgress (ExtractProgressEvent $event)
+	public function onExtractProgress (ProcessingProgressEvent $event)
 	{
 		$downloads = $this->repository->findDownloadsByDestination($event->getSource()
 			->getPathPrefix());
@@ -44,7 +44,7 @@ class UpdateExtractStateListener
 		}
 	}
 
-	public function onExtractCompleted (ExtractCompletedEvent $event)
+	public function onProcessingCompleted (ProcessingCompletedEvent $event)
 	{
 		$downloads = $this->repository->findDownloadsByDestination($event->getSource()
 			->getPathPrefix());
