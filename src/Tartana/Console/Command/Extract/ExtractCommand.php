@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use League\Flysystem\Config;
+use Tartana\Component\Command\Runner;
 
 abstract class ExtractCommand extends Command
 {
@@ -18,14 +19,17 @@ abstract class ExtractCommand extends Command
 
 	protected $dispatcher = null;
 
+	protected $runner = null;
+
 	private $configuration = null;
 
-	public function __construct (EventDispatcherInterface $dispatcher, Registry $configuration)
+	public function __construct (EventDispatcherInterface $dispatcher, Runner $runner, Registry $configuration)
 	{
 		// Setting the command name based on the class
 		parent::__construct(str_replace('command', '', strtolower((new \ReflectionClass($this))->getShortName())));
 
 		$this->dispatcher = $dispatcher;
+		$this->runner = $runner;
 		$this->configuration = $configuration;
 	}
 
@@ -52,7 +56,7 @@ abstract class ExtractCommand extends Command
 	 * @param string $password
 	 * @param AbstractAdapter $source
 	 * @param AbstractAdapter $destination
-	 * @return string
+	 * @return \Tartana\Component\Command\Command
 	 */
 	abstract protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination);
 
@@ -107,45 +111,20 @@ abstract class ExtractCommand extends Command
 		// Extract with passwords check
 		foreach ($passwords as $pw)
 		{
-			$descriptorspec = [
-					0 => [
-							"pipe",
-							"r"
-					],
-					1 => [
-							"pipe",
-							"w"
-					],
-					2 => [
-							"pipe",
-							"w"
-					]
-			];
-			flush();
-
+			$me = $this;
 			$command = $this->getExtractCommand($pw, $source, $destination);
 			$this->log('Running pure command to extract the files: ' . $command);
-			$process = proc_open($command, $descriptorspec, $pipes);
 
-			// Outputting the progress to stdout
-			$buffer = '';
-			if (is_resource($process))
-			{
-				while ($s = fgets($pipes[1]))
-				{
-					$lastLine = trim($s);
-					if ($lastLine)
-					{
-						$output->writeln($lastLine);
+			$buffer = $this->runner->execute($command,
+					function  ($line) use ( $output, &$buffer, $me, $source, $destination) {
+						$line = trim($line);
+						if ($line)
+						{
+							$output->writeln($line);
 
-						$buffer .= $lastLine . PHP_EOL;
-						$this->processLine($lastLine, $source, $destination);
-					}
-					flush();
-				}
-			}
-
-			$buffer = trim($buffer);
+							$me->processLine($line, $source, $destination);
+						}
+					});
 
 			$success = $this->isSuccessfullFinished($buffer);
 

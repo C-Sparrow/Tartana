@@ -1,12 +1,12 @@
 <?php
-namespace Tests\Unit\Tartana\Console\Command\Extract;
+namespace Tests\Functional\Tartana\Console\Command\Extract;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
-use Tartana\Event\ProcessingProgressEvent;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tartana\Component\Command\Runner;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 abstract class ExtractBaseTestCase extends TartanaBaseTestCase
@@ -22,7 +22,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -47,7 +47,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -72,7 +72,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -99,7 +99,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -128,11 +128,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Registry([
-				'extract' => [
-						'delete' => false
-				]
-		]));
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner(),
+				new Registry([
+						'extract' => [
+								'delete' => false
+						]
+				]));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -163,7 +164,8 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->write('test1/test.txt', 'Hello unit test 2', new Config());
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
+		;
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -191,7 +193,8 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher());
+		$command = $this->createCommand($this->getMockDispatcher(), new Runner());
+		;
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -218,48 +221,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$dispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 		$dispatcherMock->method('dispatch')->willReturn(true);
-		$dispatcherMock->expects($this->once())
+		$dispatcherMock->expects($this->atLeastOnce())
 			->method('dispatch');
 
 		$application = new Application();
-		$command = $this->createCommand($dispatcherMock);
+		$command = $this->createCommand($dispatcherMock, new Runner());
 		$application->add($command);
-		$commandTester = new CommandTester($command);
-
-		$fs = new Local(__DIR__);
-		$commandTester->execute(
-				[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
-				]);
-	}
-
-	public function testExecuteWithDispatcherProgress ()
-	{
-		if (! $this->copyArchives('multipart'))
-		{
-			return;
-		}
-
-		$dispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-		$dispatcherMock->method('dispatch')->willReturn(true);
-		$dispatcherMock->expects($this->atLeast(2))
-			->method('dispatch')
-			->with()
-			->willReturnCallback(
-				function  ($eventName, $event) {
-					if ($event instanceof ProcessingProgressEvent)
-					{
-						return is_numeric($event->getProgress()) && $event->getFile() != null;
-					}
-					return true;
-				});
-
-		$application = new Application();
-		$command = $this->createCommand($dispatcherMock);
-		$application->add($command);
-
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(__DIR__);
@@ -284,7 +251,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 			->with($this->equalTo('processing.completed'));
 
 		$application = new Application();
-		$command = $this->createCommand($dispatcherMock);
+		$command = $this->createCommand($dispatcherMock, new Runner());
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -298,7 +265,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 				]);
 	}
 
-	abstract protected function createCommand (EventDispatcherInterface $dispatcher, Registry $config = null);
+	abstract protected function createCommand (EventDispatcherInterface $dispatcher, Runner $runner, Registry $config = null);
 
 	protected function tearDown ()
 	{
@@ -307,10 +274,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->deleteDir('test');
 	}
 
-	protected function getMockDispatcher ()
+	protected function getMockDispatcher ($callbacks = [])
 	{
-		$runner = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-		return $runner;
+		return $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 	}
 
 	protected function copyArchives ($folder = 'simple')

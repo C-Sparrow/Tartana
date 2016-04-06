@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Unit\Tartana;
 use SimpleBus\Message\Bus\MessageBus;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tartana\Component\Command\Runner;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
@@ -84,6 +85,25 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 		$repositoryMock->method('findDownloadsByDestination')->will($this->callOnConsecutiveCalls($downloads));
 
 		return $repositoryMock;
+	}
+
+	protected function getMockDispatcher ($callbacks = [])
+	{
+		if (count($callbacks) == 2 && is_string($callbacks[0]))
+		{
+			$callbacks = [
+					[
+							$this->equalTo($callbacks[0]),
+							$callbacks[1]
+					]
+			];
+		}
+		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+
+		$method = $dispatcher->expects($this->exactly(count($callbacks)))
+			->method('dispatch');
+		$this->callWithConsecutive($method, $callbacks);
+		return $dispatcher;
 	}
 
 	protected function callOnConsecutiveCalls (array $data)

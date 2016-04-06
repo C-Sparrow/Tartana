@@ -21,13 +21,19 @@ class SevenzCommand extends ExtractCommand
 
 	protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination)
 	{
-		/*
-		 * The 7z command:
-		 * x: extract command with folder structure
-		 * -p: The password
-		 */
-		return '7z x -y -p' . escapeshellarg($password) . ' ' . escapeshellarg($source->applyPathPrefix('*.zip')) . ' -o' .
-				 $destination->getPathPrefix() . ' 2>&1';
+		$command = new Command('7z');
+		// Extract
+		$command->addArgument('x', false);
+		// Set all to yes
+		$command->addArgument('-y', false);
+		// Password
+		$command->addArgument('-p' . $password);
+		// Input files
+		$command->addArgument($source->applyPathPrefix('*.zip'));
+		// Output
+		$command->addArgument('-o' . $destination->getPathPrefix());
+
+		return $command;
 	}
 
 	protected function getFilesToDelete (AbstractAdapter $source)

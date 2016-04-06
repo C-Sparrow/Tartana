@@ -6,11 +6,11 @@ use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
 use Tartana\Entity\Download;
 use Tartana\Event\DownloadsCompletedEvent;
-use Tartana\Event\Listener\SoundConverterListener;
+use Tartana\Event\Listener\ConvertSoundListener;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 use Joomla\Registry\Registry;
 
-class SoundConverterListenerTest extends TartanaBaseTestCase
+class ConvertSoundListenerTest extends TartanaBaseTestCase
 {
 
 	public function testHasFilesToProcess ()
@@ -37,7 +37,7 @@ class SoundConverterListenerTest extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 
-		$listener = new SoundConverterListener($runner,
+		$listener = new ConvertSoundListener($runner,
 				new Registry([
 						'sound' => [
 								'destination' => $fs->applyPathPrefix('test1')

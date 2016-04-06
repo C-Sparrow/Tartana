@@ -2,23 +2,31 @@
 namespace Tests\Functional\Tartana\Event\Listener;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\Config;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tartana\Component\Command\Command;
+use Tartana\Component\Command\Runner;
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
 use Tartana\Event\DownloadsCompletedEvent;
-use Tartana\Event\Listener\SoundConverterListener;
-use League\Flysystem\Config;
+use Tartana\Event\Listener\ConvertSoundListener;
 
-class SoundConverterListenerTest extends KernelTestCase
+class ConvertSoundListenerTest extends KernelTestCase
 {
 
 	public function testConvertFile ()
 	{
+		if (! (new Runner())->execute(new Command('which ffmpeg')))
+		{
+			$this->markTestSkipped('FFmpeg is not on the path!');
+			return;
+		}
+
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
 		$fs->createDir('test1', new Config());
-		$fs->copy('../../../../unit/Tartana/Console/Command/files/test.mp4', 'test/test.mp4');
+		$fs->copy('../../Console/Command/files/test.mp4', 'test/test.mp4');
 
 		$configuration = new Registry([
 				'async' => false,
@@ -32,8 +40,8 @@ class SoundConverterListenerTest extends KernelTestCase
 		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), [
 				$d
 		]);
-		$subscriber = new SoundConverterListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
-		$subscriber->onProcessCompletedDownloads($event);
+		$listener = new ConvertSoundListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
+		$listener->onProcessCompletedDownloads($event);
 
 		$this->assertTrue($fs->has('test1/test/test.mp3'));
 		$this->assertTrue($fs->has('test/test.mp4'));

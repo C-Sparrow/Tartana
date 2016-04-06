@@ -9,7 +9,7 @@ interface DecrypterInterface
 	/**
 	 * Decrypts the given string or path.
 	 *
-	 * @param string $dlc
+	 * @param string $string
 	 * @return string[]
 	 * @throws \RuntimeException if something goes wrong
 	 */

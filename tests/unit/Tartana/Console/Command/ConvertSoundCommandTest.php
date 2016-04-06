@@ -40,8 +40,17 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 				], [
 						'yes'
 				]);
+
+		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+		$dispatcher->expects($this->once())
+			->method('dispatch')
+			->with($this->equalTo('processing.completed'),
+				$this->callback(function  (ProcessingCompletedEvent $event) {
+					return $event->isSuccess();
+				}));
+
 		$application = new Application();
-		$application->add(new ConvertSoundCommand($runner));
+		$application->add(new ConvertSoundCommand($runner, $dispatcher));
 		$command = $application->find('convert:sound');
 
 		$commandTester = new CommandTester($command);
@@ -52,27 +61,30 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 						'destination' => $fs->applyPathPrefix('test1')
 				]);
 
-		// For some reasons phpunit is calling the with function twice
-		// https://github.com/sebastianbergmann/phpunit-mock-objects/issues/261
-		$this->assertEquals('unit test' . PHP_EOL . 'unit test', trim($commandTester->getDisplay()));
+		$this->assertContains('unit test', trim($commandTester->getDisplay()));
 	}
 
-	public function testConvertFileWithDispatcher ()
+	public function testConvertInvalidFile ()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.mp4', 'mp4', new Config());
-		$fs->write('test/test.txt', 'hello', new Config());
 		$fs->createDir('test1', new Config());
+
+		$runner = $this->getMockRunner([
+				$this->anything(),
+				$this->anything()
+		], [
+				'ffmpeg',
+				'Wrong: Invalid data found when processing input'
+		]);
 
 		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 		$dispatcher->expects($this->once())
 			->method('dispatch')
 			->with($this->equalTo('processing.completed'),
 				$this->callback(function  (ProcessingCompletedEvent $event) {
-					return $event->isSuccess();
+					return ! $event->isSuccess();
 				}));
-		$runner = $this->getMockBuilder(Runner::class)->getMock();
-		$runner->method('execute')->willReturn('ffmpeg');
 
 		$application = new Application();
 		$application->add(new ConvertSoundCommand($runner, $dispatcher));

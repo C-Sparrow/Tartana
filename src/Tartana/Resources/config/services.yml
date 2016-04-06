@@ -43,21 +43,21 @@ services:
             - { name: console.command }
     Tartana.UnrarCommand:
         class: Tartana\Console\Command\Extract\UnrarCommand
-        arguments: ['@EventDispatcher', '@config']
+        arguments: ['@EventDispatcher', '@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:
             - { name: console.command }
     Tartana.UnzipCommand:
         class: Tartana\Console\Command\Extract\UnzipCommand
-        arguments: ['@EventDispatcher', '@config', '@CommandRunner']
+        arguments: ['@EventDispatcher', '@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:
             - { name: console.command }
     Tartana.SevenzCommand:
         class: Tartana\Console\Command\Extract\SevenzCommand
-        arguments: ['@EventDispatcher', '@config']
+        arguments: ['@EventDispatcher', '@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:
@@ -145,22 +145,22 @@ services:
             - [setLogger, ['@Logger']]
         tags:
             - {name: kernel.event_listener, event: commandbus.command.after, method: onChangeDownloadStateAfter}
-    SoundConverterListener.Start:
-        class: Tartana\Event\Listener\SoundConverterListener
+    ConvertSoundListener.Start:
+        class: Tartana\Event\Listener\ConvertSoundListener
         arguments: ['@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:
             - {name: kernel.event_listener, event: downloads.completed, method: onProcessCompletedDownloads}
-    SoundConverterListener.Finish:
-        class: Tartana\Event\Listener\SoundConverterListener
+    ConvertSoundListener.Finish:
+        class: Tartana\Event\Listener\ConvertSoundListener
         arguments: ['@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
         tags:
             - {name: kernel.event_listener, event: processing.completed, method: onProcessingCompleted}
-    SoundConverterListener.Command:
-        class: Tartana\Event\Listener\SoundConverterListener
+    ConvertSoundListener.Command:
+        class: Tartana\Event\Listener\ConvertSoundListener
         arguments: ['@CommandRunner', '@config']
         calls:
             - [setLogger, ['@Logger']]
@@ -182,7 +182,7 @@ services:
         class: Tartana\Event\Listener\UpdateExtractStateListener
         arguments: ['@DownloadRepository', '@CommandBus']
         tags:
-            - {name: kernel.event_listener, event: extract.progress, method: onExtractProgress}
+            - {name: kernel.event_listener, event: processing.progress, method: onExtractProgress}
     UpdateExtractStateListener.Finish:
         class: Tartana\Event\Listener\UpdateExtractStateListener
         arguments: ['@DownloadRepository', '@CommandBus']

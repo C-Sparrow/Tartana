@@ -8,7 +8,7 @@ class DecrypterFactory
 
 	/**
 	 *
-	 * @param string $filename
+	 * @param string $fileName
 	 * @return \Tartana\Component\Decrypter\DecrypterInterface
 	 */
 	public function createDecryptor ($fileName)

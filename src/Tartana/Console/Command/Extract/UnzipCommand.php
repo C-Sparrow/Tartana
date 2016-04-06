@@ -12,10 +12,10 @@ class UnzipCommand extends SevenzCommand
 
 	private $executable = '';
 
-	public function __construct (EventDispatcherInterface $dispatcher, Registry $configuration, Runner $runner)
+	public function __construct (EventDispatcherInterface $dispatcher, Runner $runner, Registry $configuration)
 	{
 		// Setting the command name based on the class
-		parent::__construct($dispatcher, $configuration);
+		parent::__construct($dispatcher, $runner, $configuration);
 
 		// On the DSM 6 7z is available only
 		$cmd = new Command('which');
@@ -58,14 +58,17 @@ class UnzipCommand extends SevenzCommand
 		}
 		else
 		{
-			/*
-			 * The unzip command:
-			 * -o: Overwrite
-			 * -p: The password
-			 * -d: Destination to extract to
-			 */
-			return 'unzip -o -P ' . escapeshellarg($password) . ' ' . escapeshellarg($source->applyPathPrefix('*.zip')) . ' -d ' .
-					 $destination->getPathPrefix() . ' 2>&1';
+			$command = new Command('unzip');
+			// Overwrite existing files
+			$command->addArgument('-o');
+			// Password
+			$command->addArgument('-p' . $password);
+			// Input files
+			$command->addArgument($source->applyPathPrefix('*.zip'));
+			// Output
+			$command->addArgument('-d ' . $destination->getPathPrefix());
+
+			return $command;
 		}
 	}
 

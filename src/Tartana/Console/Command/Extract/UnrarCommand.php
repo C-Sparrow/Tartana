@@ -1,9 +1,9 @@
 <?php
 namespace Tartana\Console\Command\Extract;
 use League\Flysystem\Adapter\AbstractAdapter;
+use Tartana\Component\Command\Command;
 use Tartana\Event\ProcessingProgressEvent;
 use Tartana\Util;
-use Symfony\Component\Console\Command\Command;
 
 class UnrarCommand extends ExtractCommand
 {
@@ -22,22 +22,34 @@ class UnrarCommand extends ExtractCommand
 			$password = '-';
 		}
 
-		/*
-		 * The unrar command:
-		 * x: Extract
-		 * -y: Answer all with yes, no interaction
-		 * -r: Recursive all rar files
-		 * -o+: Overwrite files
-		 * -p: The password
-		 */
-		return 'unrar x -y -r -o- -p' . $password . ' "' . $source->applyPathPrefix('*.rar') . '" ' . $destination->getPathPrefix();
+		$command = new Command('unrar');
+		// Extract
+		$command->addArgument('x', false);
+		// Set all to yes
+		$command->addArgument('-y', false);
+		// Recursive
+		$command->addArgument('-r');
+		// Overwrite existing files
+		$command->addArgument('-o-');
+		// Password
+		$command->addArgument('-p' . $password);
+		// Input files
+		$command->addArgument($source->applyPathPrefix('*.rar'));
+		// Output
+		$command->addArgument($destination->getPathPrefix());
+
+		return $command;
 	}
 
 	protected function getFilesToDelete (AbstractAdapter $source)
 	{
 		$filesToDelete = [];
 
-		$list = shell_exec('unrar l -v "' . $source->applyPathPrefix('*.rar') . '"');
+		$command = new Command('unrar');
+		$command->addArgument('l', false);
+		$command->addArgument('-v', false);
+		$command->addArgument($source->applyPathPrefix('*.rar'));
+		$list = $this->runner->execute($command);
 
 		// Delet the files which do belong to successfull unrar
 		preg_match_all("/^(Archive:?|Volume) (.*)/m", $list, $matches);
@@ -63,7 +75,8 @@ class UnrarCommand extends ExtractCommand
 			}
 			if ($this->lastFileName && preg_match("/\s[0-9]+%$/", $line, $matches))
 			{
-				$this->dispatcher->dispatch('extract.progress', new ProcessingProgressEvent($source, $destination, $this->lastFileName, $matches[0]));
+				$this->dispatcher->dispatch('processing.progress',
+						new ProcessingProgressEvent($source, $destination, $this->lastFileName, $matches[0]));
 			}
 		}
 	}

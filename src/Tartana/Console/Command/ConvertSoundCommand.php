@@ -12,6 +12,7 @@ use Tartana\Component\Command\Runner;
 use Tartana\Event\ProcessingCompletedEvent;
 use Tartana\Mixins\LoggerAwareTrait;
 use Tartana\Util;
+use League\Flysystem\Config;
 
 class ConvertSoundCommand extends SymfonyCommand
 {
@@ -61,6 +62,7 @@ class ConvertSoundCommand extends SymfonyCommand
 		$destination = new Local($destination);
 		$source = new Local($source);
 
+		$success = true;
 		foreach ($source->listContents('', true) as $file)
 		{
 			if (! Util::endsWith($file['path'], '.mp4'))
@@ -80,14 +82,20 @@ class ConvertSoundCommand extends SymfonyCommand
 
 			$this->log('Running ffmpeg system command: ' . $command);
 
-			$this->commandRunner->execute($command, function  ($line) use ( $output) {
+			$output = $this->commandRunner->execute($command, function  ($line) use ( $output) {
 				$output->writeln($line);
 			});
+
+			if (Util::endsWith($output, 'Invalid data found when processing input'))
+			{
+				$success = false;
+				$source->write($file['path'] . '.out', $output, new Config());
+			}
 		}
 
 		if ($this->dispatcher)
 		{
-			$this->dispatcher->dispatch('processing.completed', new ProcessingCompletedEvent($source, $destination, true));
+			$this->dispatcher->dispatch('processing.completed', new ProcessingCompletedEvent($source, $destination, $success));
 		}
 	}
 }

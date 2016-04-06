@@ -1,7 +1,7 @@
 <?php
 namespace Tartana\Event\Listener;
 
-class SoundConverterListener extends AbstractProcessingListener
+class ConvertSoundListener extends AbstractProcessingListener
 {
 
 	protected function getConfigurationKey ()

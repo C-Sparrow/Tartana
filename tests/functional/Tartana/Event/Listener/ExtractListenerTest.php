@@ -32,8 +32,8 @@ class ExtractListenerTest extends KernelTestCase
 			$downloads[] = $d;
 		}
 		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
-		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
-		$subscriber->onProcessCompletedDownloads($event);
+		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
+		$listener->onProcessCompletedDownloads($event);
 
 		$this->assertTrue($dst->has('test/Downloads/symfony.png'));
 		$this->assertEmpty($src->listContents());
@@ -60,8 +60,8 @@ class ExtractListenerTest extends KernelTestCase
 			$downloads[] = $d;
 		}
 		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
-		$subscriber = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
-		$subscriber->onProcessCompletedDownloads($event);
+		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
+		$listener->onProcessCompletedDownloads($event);
 
 		// As we run it async we wait at least 10 seconds
 		for ($i = 0; $i < 3 && ! $dst->has('test/Downloads/symfony.png'); $i ++)
@@ -89,13 +89,13 @@ class ExtractListenerTest extends KernelTestCase
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
-		foreach ($fs->listContents('../../../../unit/Tartana/Console/Command/Extract/rars/' . $folder, false) as $rar)
+		foreach ($fs->listContents('../../Console/Command/Extract/rars/' . $folder, false) as $rar)
 		{
 			if ($rar['type'] != 'file')
 			{
 				continue;
 			}
-			$fs->copy($rar['path'], str_replace('../../../../unit/Tartana/Console/Command/Extract/rars/' . $folder, 'test/', $rar['path']));
+			$fs->copy($rar['path'], str_replace('../../Console/Command/Extract/rars/' . $folder, 'test/', $rar['path']));
 		}
 	}
 }
