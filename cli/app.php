@@ -36,5 +36,7 @@ if (! file_exists(TARTANA_PATH_ROOT . '/var/data.db') && ! $input->hasParameterO
 
 $kernel = new TartanaKernel($env, $debug);
 $application = new Application($kernel);
+$application->setName('Tartana');
+$application->setVersion(file_get_contents(__DIR__ . '/../app/config/internal/version.txt'));
 $application->setDefaultCommand('default');
 $application->run($input);
