@@ -95,6 +95,11 @@
                                         </a>
                                     </li>
                                                                     <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/faq.html">
+                                            Faq
+                                        </a>
+                                    </li>
+                                                                    <li class="">
                                         <a href="//c-sparrow.github.io/Tartana/doc/main/support.html">
                                             Support
                                         </a>
@@ -148,6 +153,14 @@ In the folder <em>app/config</em> you will find the whole configuration for Tart
 <li>
 <p><strong>tartana.extract.deleteFiles</strong> [true]</p>
 <p>After the files have been extracted, should they be deleted.</p>
+</li>
+<li>
+<p><strong>tartana.sound.destination</strong> [var/data/Sound]</p>
+<p>The destination directory to convert the downloads to mp3.</p>
+</li>
+<li>
+<p><strong>tartana.sound.hostFilter</strong> []</p>
+<p>Should only downloads being converted to mp3 which belong to the host (example<em>drive.google.com</em>). This setting supports regex as well. If you want to exclude hosts from google, then put ^((?!google.com).)*$ as host filter.</p>
 </li>
 <li>
 <p><strong>tartana.local.enabled</strong> [true]</p>

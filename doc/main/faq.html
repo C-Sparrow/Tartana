@@ -121,18 +121,12 @@
 
                 
                 <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="tartana-contribution">Tartana Contribution</h1>
-<p>Tartana uses TDD, means every single peace of functionality must be covered trough a unit test. That means we do not accept pull requests without test coverage and that the tests are not failing. The project is hosted on <a href="https://github.com/C-Sparrow/Tartana">Github</a> where you can open issues and pull requests.</p>
-<h2 id="development-workflow">Development workflow</h2>
-<p>Before you start, make sure your system meets the <a href="../main/requirements.html">requirements</a>. To develop Tartana run the following commands on your linux machine:</p>
-<ul>
-<li><code>git clone https://github.com/C-Sparrow/Tartana.git</code></li>
-<li><code>cd Tartana</code></li>
-<li><code>wget https://getcomposer.org/composer.phar</code></li>
-<li><code>php composer.phar install</code></li>
-<li><code>vendor/bin/phpunit tests/unit</code></li>
-</ul>
-<p>If composer is installed globaly the wget command is not needed, but then you know anyway what to do.</p>
+                    <h1 id="tartana-faq">Tartana Faq</h1>
+<p>Most common questions answered by the Tartana team.</p>
+<h3 id="error-exceeded-the-timeout-of-60-seconds">[Error] exceeded the timeout of 60 seconds</h3>
+<p>Tartana is executing long running processes when downloading large files or extracting them. It tries it's best to disable the execution time limit. But on some hardened environments it is not allowed to disable it in the code. The settings must be disabled manually in the configuration files. On the console run the command</p>
+<p><code>php --ini</code></p>
+<p>This command will show you what for ini files are loaded. In one of them, mostly the <em>php.ini</em> file, set eh variables <strong>max_execution_time</strong> and <strong>max_input_time</strong> to <strong>0</strong>.</p>
                 </section>
 
             </div>
