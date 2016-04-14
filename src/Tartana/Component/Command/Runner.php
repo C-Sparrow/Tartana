@@ -63,6 +63,8 @@ class Runner
 
 		$this->log('Running real command on runner: ' . $command);
 		$process = new Process((string) $command);
+		$process->setTimeout(null);
+		$process->setIdleTimeout(null);
 		$process->run(function  ($type, $buffer) use ( $callback) {
 			if ($callback)
 			{

@@ -66,6 +66,10 @@ menu:
                     itemId: synology
                     text: Synology
                     relativeUrl: doc/main/synology.html
+                faq:
+                    itemId: faq
+                    text: Faq
+                    relativeUrl: doc/main/faq.html
                 support:
                     itemId: support
                     text: Support
