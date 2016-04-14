@@ -47,6 +47,10 @@ class Http implements HostInterface
 			{
 				$originalName = $this->parseFileName($this->getClient()
 					->head($download->getLink()));
+				if (empty($originalName))
+				{
+					$originalName = basename($download->getLink());
+				}
 				if (! empty($originalName) && empty($download->getFileName()))
 				{
 					$download->setFileName($originalName);

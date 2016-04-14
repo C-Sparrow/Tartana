@@ -120,7 +120,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					]);
 					$table->addRow([
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE'),
-							$download->getMessage()
+							$t->trans($download->getMessage())
 					]);
 
 					$table->render();

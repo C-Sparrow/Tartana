@@ -63,6 +63,32 @@ class HttpTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
 	}
 
+	public function testFetchDownloadInfoGetLinkFromDownload ()
+	{
+		$mock = new MockHandler([
+				new Response(200)
+		]);
+
+		$client = new Client([
+				'handler' => HandlerStack::create($mock)
+		]);
+
+		$dest = new Local(__DIR__ . '/test');
+
+		$download = new Download();
+		$download->setLink($this->scheme . '://foo.bar/ldlsls/hello.txt');
+		$download->setDestination($dest->getPathPrefix());
+
+		$downloader = $this->getHttp(new Registry(), $client);
+		$downloader->fetchDownloadInfo([
+				$download
+		]);
+
+		$this->assertEmpty($download->getMessage());
+		$this->assertEquals('hello.txt', $download->getFileName());
+		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
+	}
+
 	public function testFetchDownloadInfoInvalidLink ()
 	{
 		$dest = new Local(__DIR__ . '/test');
