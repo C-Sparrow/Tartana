@@ -13,7 +13,35 @@ class ExtractListenerTest extends KernelTestCase
 
 	public function testExtractRarFile ()
 	{
-		$this->copyRars();
+		$this->copyArchives('rars');
+
+		$src = new Local(__DIR__ . '/test');
+		$dst = new Local(__DIR__ . '/test1');
+		$configuration = new Registry([
+				'async' => false,
+				'extract' => [
+						'destination' => $dst->getPathPrefix()
+				]
+		]);
+
+		$downloads = [];
+		foreach ($src->listContents() as $file)
+		{
+			$d = new Download();
+			$d->setDestination($src->getPathPrefix());
+			$downloads[] = $d;
+		}
+		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
+		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
+		$listener->onProcessCompletedDownloads($event);
+
+		$this->assertTrue($dst->has('test/Downloads/symfony.png'));
+		$this->assertEmpty($src->listContents());
+	}
+
+	public function testExtract7zFile ()
+	{
+		$this->copyArchives('7z', 'multipart');
 
 		$src = new Local(__DIR__ . '/test');
 		$dst = new Local(__DIR__ . '/test1');
@@ -41,7 +69,7 @@ class ExtractListenerTest extends KernelTestCase
 
 	public function testExtractRarFileAsync ()
 	{
-		$this->copyRars();
+		$this->copyArchives('rars');
 
 		$src = new Local(__DIR__ . '/test');
 		$dst = new Local(__DIR__ . '/test1');
@@ -84,18 +112,18 @@ class ExtractListenerTest extends KernelTestCase
 		$fs->deleteDir('test');
 	}
 
-	private function copyRars ($folder = 'simple')
+	private function copyArchives ($type, $folder = 'simple')
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
-		foreach ($fs->listContents('../../Console/Command/Extract/rars/' . $folder, false) as $rar)
+		foreach ($fs->listContents('../../Console/Command/Extract/' . $type . '/' . $folder, false) as $archive)
 		{
-			if ($rar['type'] != 'file')
+			if ($archive['type'] != 'file')
 			{
 				continue;
 			}
-			$fs->copy($rar['path'], str_replace('../../Console/Command/Extract/rars/' . $folder, 'test/', $rar['path']));
+			$fs->copy($archive['path'], str_replace('../../Console/Command/Extract/' . $type . '/' . $folder, 'test/', $archive['path']));
 		}
 	}
 }

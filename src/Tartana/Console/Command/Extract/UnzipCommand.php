@@ -86,4 +86,9 @@ class UnzipCommand extends SevenzCommand
 		}
 		return $filesToDelete;
 	}
+
+	protected function getFileExtension ()
+	{
+		return 'zip';
+	}
 }

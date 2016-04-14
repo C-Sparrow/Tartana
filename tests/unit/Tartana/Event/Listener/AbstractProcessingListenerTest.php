@@ -45,6 +45,35 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertEmpty($download->getMessage());
 	}
 
+	public function testHasFilesToProcessMultipart ()
+	{
+		$fs = new Local(__DIR__);
+		$fs->write('test/test.txt.001', 'unit test 1', new Config());
+		$fs->write('test/test.txt.002', 'unit test 2', new Config());
+		$fs->createDir('test1', new Config());
+
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(
+								function  (Command $command) use ( $fs) {
+									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
+											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
+											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
+								})
+				]);
+
+		$download = new Download();
+		$download->setDestination($fs->applyPathPrefix('test'));
+		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
+				$download
+		]);
+		$listener = $this->getMockListener($runner);
+		$listener->onProcessCompletedDownloads($event);
+
+		$this->assertEquals(Download::STATE_PROCESSING_STARTED, $download->getState());
+		$this->assertEmpty($download->getMessage());
+	}
+
 	public function testHasMultipleFilesToProcess ()
 	{
 		$fs = new Local(__DIR__);

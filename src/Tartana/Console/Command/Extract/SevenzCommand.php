@@ -29,7 +29,7 @@ class SevenzCommand extends ExtractCommand
 		// Password
 		$command->addArgument('-p' . $password);
 		// Input files
-		$command->addArgument($source->applyPathPrefix('*.zip'));
+		$command->addArgument($source->applyPathPrefix('*.' . $this->getFileExtension() . '*'));
 		// Output
 		$command->addArgument('-o' . $destination->getPathPrefix());
 
@@ -41,7 +41,8 @@ class SevenzCommand extends ExtractCommand
 		$filesToDelete = [];
 		foreach ($source->listContents() as $file)
 		{
-			if (! Util::endsWith($file['path'], '.7z') && ! Util::endsWith($file['path'], '.zip'))
+			// Multipart archives do have the naming pattern test.7z.001
+			if (! Util::endsWith($file['path'], '.' . $this->getFileExtension()) && strpos($file['path'], '.7z.') === false)
 			{
 				continue;
 			}
@@ -49,5 +50,17 @@ class SevenzCommand extends ExtractCommand
 			$filesToDelete[] = $file['path'];
 		}
 		return $filesToDelete;
+	}
+
+	/**
+	 * Returns the file extension this command is processing.
+	 * Subclasses can override as the 7z command can handle multiple file
+	 * formats, eg. zip files.
+	 *
+	 * @return string
+	 */
+	protected function getFileExtension ()
+	{
+		return '7z';
 	}
 }

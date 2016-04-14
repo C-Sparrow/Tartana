@@ -96,7 +96,7 @@ abstract class AbstractProcessingListener
 			{
 				foreach ($files as $file)
 				{
-					if (! Util::endsWith($file['path'], '.' . $fileExtension))
+					if (! Util::endsWith($file['path'], '.' . $fileExtension) && strpos($file['path'], '.' . $fileExtension . '.') === false)
 					{
 						continue;
 					}
