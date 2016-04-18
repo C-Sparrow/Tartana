@@ -56,21 +56,24 @@ class Runner
 			}
 		}
 
-		if ($callback)
-		{
-			$command->setAsync(false);
-		}
-
 		$this->log('Running real command on runner: ' . $command);
 		$process = new Process((string) $command);
 		$process->setTimeout(null);
 		$process->setIdleTimeout(null);
-		$process->run(function  ($type, $buffer) use ( $callback) {
-			if ($callback)
-			{
+
+		if ($callback)
+		{
+			// Can not get the output of an async command
+			$command->setAsync(false);
+
+			$process->run(function  ($type, $buffer) use ( $callback) {
 				$callback($buffer);
-			}
-		});
+			});
+		}
+		else
+		{
+			$process->run();
+		}
 		$this->log('Finished real command on runner: ' . $command);
 
 		return trim($process->getOutput());

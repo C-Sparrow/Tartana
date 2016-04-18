@@ -45,7 +45,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		]);
 
 		$this->assertTrue($fs->has(self::PID_FILE_NAME));
-		$this->assertEquals(20, $fs->read(self::PID_FILE_NAME)['contents']);
+		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
 	public function testStartServerWithPort ()
@@ -80,7 +80,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		]);
 
 		$this->assertTrue($fs->has(self::PID_FILE_NAME));
-		$this->assertEquals(20, $fs->read(self::PID_FILE_NAME)['contents']);
+		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
 	public function testStartServerNoActionSet ()
@@ -113,7 +113,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		]);
 
 		$this->assertTrue($fs->has(self::PID_FILE_NAME));
-		$this->assertEquals(20, $fs->read(self::PID_FILE_NAME)['contents']);
+		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
 	public function testStartServerHasRunningPid ()
@@ -127,7 +127,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
-		$fs->write(self::PID_FILE_NAME, getmypid(), new Config());
+		$fs->write(self::PID_FILE_NAME, getmypid() . ':' . getmypid(), new Config());
 		$commandTester->execute([
 				'command' => $command->getName(),
 				'action' => 'start',
@@ -135,7 +135,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		]);
 
 		$this->assertTrue($fs->has(self::PID_FILE_NAME));
-		$this->assertEquals(getmypid(), $fs->read(self::PID_FILE_NAME)['contents']);
+		$this->assertEquals(getmypid() . ':' . getmypid(), $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
 	public function testStartServerHasDiedPid ()
@@ -162,7 +162,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
-		$fs->write(self::PID_FILE_NAME, '8751238512351235328123', new Config());
+		$fs->write(self::PID_FILE_NAME, '8751238512351235328123:3333333334443334', new Config());
 		$commandTester->execute([
 				'command' => $command->getName(),
 				'action' => 'start',
@@ -170,13 +170,16 @@ class ServerCommandTest extends TartanaBaseTestCase
 		]);
 
 		$this->assertTrue($fs->has(self::PID_FILE_NAME));
-		$this->assertEquals(20, $fs->read(self::PID_FILE_NAME)['contents']);
+		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
 	public function testStopServer ()
 	{
 		$runner = $this->getMockRunner(
 				[
+						$this->callback(function  (Command $command) {
+							return strpos($command, "kill '-9' '" . getmypid()) !== false;
+						}),
 						$this->callback(function  (Command $command) {
 							return strpos($command, "kill '-9' '" . getmypid()) !== false;
 						})
@@ -193,7 +196,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
-		$fs->write(self::PID_FILE_NAME, getmypid(), new Config());
+		$fs->write(self::PID_FILE_NAME, getmypid() . ':' . getmypid(), new Config());
 		$commandTester->execute([
 				'command' => $command->getName(),
 				'action' => 'stop',
