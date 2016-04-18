@@ -1,8 +1,6 @@
 <?php
 namespace Tartana\Console\Command\Extract;
-use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\AbstractAdapter;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
 use Tartana\Util;
@@ -10,26 +8,7 @@ use Tartana\Util;
 class UnzipCommand extends SevenzCommand
 {
 
-	private $executable = '';
-
-	public function __construct (EventDispatcherInterface $dispatcher, Runner $runner, Registry $configuration)
-	{
-		// Setting the command name based on the class
-		parent::__construct($dispatcher, $runner, $configuration);
-
-		// On the DSM 6 7z is available only
-		$cmd = new Command('which');
-		$cmd->addArgument('7z');
-		$cmd->setAsync(false);
-		if ($runner->execute($cmd))
-		{
-			$this->executable = '7z';
-		}
-		else
-		{
-			$this->executable = 'unzip';
-		}
-	}
+	private $executable = null;
 
 	protected function configure ()
 	{
@@ -40,7 +19,7 @@ class UnzipCommand extends SevenzCommand
 
 	protected function isSuccessfullFinished ($output)
 	{
-		if ($this->executable == '7z')
+		if ($this->is7zAvailable())
 		{
 			return parent::isSuccessfullFinished($output);
 		}
@@ -52,7 +31,7 @@ class UnzipCommand extends SevenzCommand
 
 	protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination)
 	{
-		if ($this->executable == '7z')
+		if ($this->is7zAvailable())
 		{
 			return parent::getExtractCommand($password, $source, $destination);
 		}
@@ -90,5 +69,26 @@ class UnzipCommand extends SevenzCommand
 	protected function getFileExtension ()
 	{
 		return 'zip';
+	}
+
+	private function is7zAvailable ()
+	{
+		if ($this->executable === null)
+		{
+			// On the DSM 6 7z is available only
+			$cmd = new Command('which');
+			$cmd->addArgument('7z');
+			$cmd->setAsync(false);
+			if ($this->runner->execute($cmd))
+			{
+				$this->executable = '7z';
+			}
+			else
+			{
+				$this->executable = 'unzip';
+			}
+		}
+
+		return $this->executable == '7z';
 	}
 }
