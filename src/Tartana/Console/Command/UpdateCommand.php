@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command;
+
 use GuzzleHttp\Promise;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -25,7 +26,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 
 	private $factory = null;
 
-	public function __construct (Runner $commandRunner, $url, HostFactory $factory)
+	public function __construct(Runner $commandRunner, $url, HostFactory $factory)
 	{
 		parent::__construct('update');
 
@@ -35,16 +36,15 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$this->factory = $factory;
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
 		$this->setDescription('Updates Tartana!');
-		$this->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Forces the update, even when the version is lower than the downloaded one.',
-				false);
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Forces the update, even when the version is lower than the downloaded one.');
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$force = (boolean) $input->getOption('force');
+		$force = (boolean)$input->getOption('force');
 
 		$this->log('Started with update routine against ' . $this->url, Logger::INFO);
 
@@ -74,7 +74,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 				$data = json_decode($fs->read('github-update-data.json')['contents']);
 			}
 
-			if (! is_array($data) || ! isset($data[0]->assets) || ! is_array($data[0]->assets) || ! isset($data[0]->assets[0]->browser_download_url))
+			if (!is_array($data) || !isset($data[0]->assets) || !is_array($data[0]->assets) || !isset($data[0]->assets[0]->browser_download_url))
 			{
 				$this->log("Api response didn't send an asset", Logger::ERROR);
 				$this->log('Github API response: ' . print_r($data, true));
@@ -86,7 +86,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 			}
 		}
 
-		if (! empty($url))
+		if (!empty($url))
 		{
 			$this->log('Fetching Tartana from ' . $url);
 
@@ -106,7 +106,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 
 			$zip = new \ZipArchive();
 			$oldVersion = $fs->read('../../app/config/internal/version.txt')['contents'];
-			if (! $fs->has('tartana.zip'))
+			if (!$fs->has('tartana.zip'))
 			{
 				$this->log("Zip file to extract doesn't exist, can't update!", Logger::ERROR);
 			}
@@ -114,7 +114,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 			{
 				$this->log("Could not read zip file, it is corrupt!", Logger::ERROR);
 			}
-			else if (! $force && version_compare($oldVersion, $zip->getFromName('app/config/internal/version.txt')) >= 0)
+			else if (!$force && version_compare($oldVersion, $zip->getFromName('app/config/internal/version.txt')) >= 0)
 			{
 				$this->log(
 						"Old version is " . $oldVersion . ", new version is " . $zip->getFromName('app/config/internal/version.txt') .
@@ -158,7 +158,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$this->log('Finished with update routine', Logger::INFO);
 	}
 
-	private function download ($url, $destination, $fileName)
+	private function download($url, $destination, $fileName)
 	{
 		$downloader = $this->factory->createHostDownloader($url);
 		if (empty($downloader))
@@ -174,7 +174,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$d->setFileName($fileName);
 		$d->setLink($url);
 
-		$tmp = (array) $downloader->download([
+		$tmp = (array)$downloader->download([
 				$d
 		]);
 		Promise\unwrap($tmp);
