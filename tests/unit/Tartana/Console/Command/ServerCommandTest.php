@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Symfony\Component\Console\Application;
@@ -14,14 +15,16 @@ class ServerCommandTest extends TartanaBaseTestCase
 
 	const PID_FILE_NAME = 'server_test.pid';
 
-	public function testStartServer ()
+	public function testStartServer()
 	{
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, '-S 0.0.0.0:') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, "app.php' 'default'") !== false;
 						})
 				], [
@@ -48,14 +51,16 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
-	public function testStartServerWithPort ()
+	public function testStartServerWithPort()
 	{
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, '-S 0.0.0.0:9999') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, "app.php' 'default'") !== false;
 						})
 				], [
@@ -83,14 +88,16 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
-	public function testStartServerNoActionSet ()
+	public function testStartServerNoActionSet()
 	{
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, '-S 0.0.0.0:') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, "app.php' 'default'") !== false;
 						})
 				], [
@@ -116,7 +123,35 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
-	public function testStartServerHasRunningPid ()
+	public function testStartServerInBackground()
+	{
+		$runner = $this->getMockRunner(
+				[
+						$this->callback(
+								function (Command $command)
+								{
+									return $command->isAsync() && strpos($command, 'server') !== false;
+								})
+				]);
+
+		$command = new ServerCommand($runner);
+		$command->addOption('env', 'e');
+		$application = new Application();
+		$application->add($command);
+
+		$command = $application->find('server');
+		$commandTester = new CommandTester($command);
+
+		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
+		$commandTester->execute([
+				'command' => $command->getName(),
+				'action' => 'start',
+				'--background' => '1',
+				'--env' => 'test'
+		]);
+	}
+
+	public function testStartServerHasRunningPid()
 	{
 		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -138,14 +173,16 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertEquals(getmypid() . ':' . getmypid(), $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
-	public function testStartServerHasDiedPid ()
+	public function testStartServerHasDiedPid()
 	{
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, '-S 0.0.0.0:') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command)
+						{
 							return strpos($command, "app.php' 'default'") !== false;
 						})
 				], [
@@ -173,16 +210,20 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertEquals(getmypid() . ':20', $fs->read(self::PID_FILE_NAME)['contents']);
 	}
 
-	public function testStopServer ()
+	public function testStopServer()
 	{
 		$runner = $this->getMockRunner(
 				[
-						$this->callback(function  (Command $command) {
-							return strpos($command, "kill '-9' '" . getmypid()) !== false;
-						}),
-						$this->callback(function  (Command $command) {
-							return strpos($command, "kill '-9' '" . getmypid()) !== false;
-						})
+						$this->callback(
+								function (Command $command)
+								{
+									return strpos($command, "kill '-9' '" . getmypid()) !== false;
+								}),
+						$this->callback(
+								function (Command $command)
+								{
+									return strpos($command, "kill '-9' '" . getmypid()) !== false;
+								})
 				], [
 						'Killed'
 				]);
@@ -206,7 +247,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertFalse($fs->has(self::PID_FILE_NAME));
 	}
 
-	public function testStopServerInvalidPid ()
+	public function testStopServerInvalidPid()
 	{
 		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -227,7 +268,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertFalse($fs->has(self::PID_FILE_NAME));
 	}
 
-	public function testStopServerNoPidFile ()
+	public function testStopServerNoPidFile()
 	{
 		$command = new ServerCommand($this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -247,7 +288,7 @@ class ServerCommandTest extends TartanaBaseTestCase
 		$this->assertFalse($fs->has(self::PID_FILE_NAME));
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
 		if ($fs->has(self::PID_FILE_NAME))

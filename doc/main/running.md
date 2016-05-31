@@ -33,6 +33,8 @@ You can stop it at any time with the command
 
 The default port the web server is listening to is 8000. If you want to change it, add the *--port=9000* option to the start command.
 
+If you want to start it in the backgound, add the *--background* option to the start command.
+
 ## Web server infrastructure
 You can unzip Tartana on your web root and opening the web directory. You will see then the web interface of Tartana. As Tartana is mainly doing stuff in the background you need to set up a cron as described in the command line chapter:
 

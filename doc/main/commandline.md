@@ -20,7 +20,7 @@ The *cli/app.php* PHP script accepts the two following main commands:
 
 - **server**
 
-  Starts the built in web server as described (here)[running.md]. You can add the following arguments *start* or *stop* and *--port*.
+  Starts the built in web server as described (here)[running.md]. You can add the following arguments *start* or *stop* and options *--port [-p]*, *--backgound [-b]*.
   
   Example: `php cli/app.php server start --port=9009`
 

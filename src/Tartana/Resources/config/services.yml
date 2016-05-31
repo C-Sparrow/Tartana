@@ -91,6 +91,13 @@ services:
             - [setLogger, ['@Logger']]
         tags:
             - { name: console.command }
+    Tartana.ProcessDiscFolderCommand:
+        class: Tartana\Console\Command\ProcessDiscFolderCommand
+        arguments: ['@CommandRunner']
+        calls:
+            - [setLogger, ['@Logger']]
+        tags:
+            - { name: console.command }
 
 # Action classes
     ParseLinksHandler:

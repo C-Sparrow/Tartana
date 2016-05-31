@@ -17,9 +17,9 @@
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "friendsofsymfony/rest-bundle": "^1.7",
         "simple-bus/symfony-bridge": "*",
-		"guzzlehttp/guzzle": "*",
-		"league/flysystem": "*",
-		"joomla/registry": "*",
+		"guzzlehttp/guzzle": "6.*",
+		"league/flysystem": "1.*",
+		"joomla/registry": "1.*",
 		"jeremykendall/php-domain-parser": "*"
 	},
 	"require-dev": {
