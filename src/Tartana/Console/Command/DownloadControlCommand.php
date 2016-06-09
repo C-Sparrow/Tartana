@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command;
+
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 
 	private $translator = null;
 
-	public function __construct (DownloadRepository $repository, TranslatorInterface $translator)
+	public function __construct(DownloadRepository $repository, TranslatorInterface $translator)
 	{
 		parent::__construct('download:control');
 
@@ -32,7 +33,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		$this->translator = $translator;
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
 		$this->setDescription('Manages the downloads!');
 
@@ -41,22 +42,22 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 
 		$this->addOption('destination', 'd', InputOption::VALUE_OPTIONAL,
 				'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.');
-		$this->addOption('compact', 'c', InputOption::VALUE_OPTIONAL, 'Shows a compact list of downloads for the status action.', false);
+		$this->addOption('compact', 'c', InputOption::VALUE_NONE, 'Shows a compact list of downloads for the status action.');
 		$this->addOption('id', null, InputOption::VALUE_OPTIONAL, 'Shows the details of the download with the given id.', false);
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
 		$action = $input->getArgument('action');
 		$destination = $input->getOption('destination');
-		$compact = (boolean) $input->getOption('compact');
+		$compact = (boolean)$input->getOption('compact');
 		$t = $this->translator;
 
 		$command = null;
 		/** @var Download[] $downloads **/
 		$downloads = [];
-		if (! empty($destination))
+		if (!empty($destination))
 		{
 			$downloads = $this->repository->findDownloadsByDestination($destination);
 		}
@@ -127,10 +128,11 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				}
 				break;
 			case 'status':
-				if (! empty($downloads))
+				if (!empty($downloads))
 				{
 					usort($downloads,
-							function  (Download $d1, Download $d2) {
+							function (Download $d1, Download $d2)
+							{
 								return strcmp($d1->getDestination(), $d2->getDestination());
 							});
 				}
@@ -140,7 +142,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					foreach ($downloads as $download)
 					{
 						$destination = $download->getDestination();
-						if (! key_exists($destination, $data))
+						if (!key_exists($destination, $data))
 						{
 							$data[$destination] = [
 									'count' => 0,
@@ -166,7 +168,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						$data[$destination]['state'][$download->getState()] ++;
 
 						// Set the name when no one is set
-						if (empty($data[$destination]['name']) && ! empty($download->getFileName()))
+						if (empty($data[$destination]['name']) && !empty($download->getFileName()))
 						{
 							$data[$destination]['name'] = $download->getFileName();
 						}
@@ -252,7 +254,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					{
 						if ($lastDestinaton != $download->getDestination())
 						{
-							if (! empty($table))
+							if (!empty($table))
 							{
 								$table->render();
 							}
@@ -273,7 +275,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 										Util::shorten($t->trans($download->getMessage()), 30)
 								]);
 					}
-					if (! empty($table))
+					if (!empty($table))
 					{
 						$table->render();
 					}

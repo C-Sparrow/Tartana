@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Monolog\Logger;
@@ -18,13 +19,13 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 
 	private $commandRunner = null;
 
-	public function __construct (Runner $commandRunner)
+	public function __construct(Runner $commandRunner)
 	{
 		parent::__construct('server');
 		$this->commandRunner = $commandRunner;
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
 		$this->setDescription('Runs Tartana own web server!');
 
@@ -33,13 +34,13 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 		$this->addOption('background', 'b', InputOption::VALUE_NONE, 'Should start on background.');
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
 		$action = $input->getArgument('action');
-		$port = (int) $input->getOption('port');
+		$port = (int)$input->getOption('port');
 		$environment = $input->getOption('env');
-		$background = (boolean) $input->getOption('background');
+		$background = (boolean)$input->getOption('background');
 
 		$pidFile = 'server_' . $environment . '.pid';
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
@@ -48,7 +49,7 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 			if ($fs->has($pidFile))
 			{
 				$pids = explode(':', $fs->read($pidFile)['contents']);
-				if ($pids && count($pids) > 1 && Util::isPidRunning($pids[0]) && Util::isPidRunning($pids[1]))
+				if (!empty($pids) && count($pids) > 1 && Util::isPidRunning($pids[0]) && Util::isPidRunning($pids[1]))
 				{
 					$this->log('Web server is already running with the pids ' . implode(':', $pids), Logger::INFO);
 					return;
@@ -96,12 +97,12 @@ class ServerCommand extends \Symfony\Component\Console\Command\Command
 					// @codeCoverageIgnoreEnd
 				}
 			}
-			while (! $output);
+			while (!$output);
 		}
 		if ($action == 'stop' && $fs->has($pidFile))
 		{
 			$pids = explode(':', $fs->read($pidFile)['contents']);
-			if ($pids && count($pids) > 1 && Util::isPidRunning($pids[0]) && Util::isPidRunning($pids[1]))
+			if (!empty($pids) && count($pids) > 1 && Util::isPidRunning($pids[0]) && Util::isPidRunning($pids[1]))
 			{
 				$this->log('Web server is running with the pids ' . implode(':', $pids) . ' killing it', Logger::INFO);
 

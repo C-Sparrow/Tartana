@@ -50,7 +50,7 @@ The *cli/app.php* PHP script accepts the two following main commands:
 
   - **reprocess**<br/>Reprocesses the completed or processed downloads. This is handy if you want to extract the downloads again.
 
-  The status and the other actions do support a *--destination* (eg. --destination=demo) option. This options filters downloads by the destination string and runs the action only on that subset. The *--compact* (eg. --compact=1) option shows the status action in compact mode.
+  The status and the other actions do support a *--destination* (eg. --destination=demo) option. This options filters downloads by the destination string and runs the action only on that subset. The *--compact* (eg. --compact) option shows the status action in compact mode.
 
   Example: `php cli/app.php download:control status destination=test`
 

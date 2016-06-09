@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
+
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -13,7 +14,7 @@ use Tartana\Domain\DownloadRepository;
 class DownloadControlCommandTest extends TartanaBaseTestCase
 {
 
-	public function testStatus ()
+	public function testStatus()
 	{
 		$downloads = [];
 		$download = new Download();
@@ -58,7 +59,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertContains($download->getDestination(), $content);
 	}
 
-	public function testStatusNoAction ()
+	public function testStatusNoAction()
 	{
 		$download = new Download();
 		$download->setLink('http://foo.bar/lkhasdu');
@@ -86,7 +87,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertContains($download->getLink(), $content);
 	}
 
-	public function testStatusByDestination ()
+	public function testStatusByDestination()
 	{
 		$downloads = [];
 		$download = new Download();
@@ -123,7 +124,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertContains($downloads[1]->getLink(), $content);
 	}
 
-	public function testStatusCompact ()
+	public function testStatusCompact()
 	{
 		$downloads = [];
 		$download = new Download();
@@ -164,7 +165,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$commandTester->execute(array(
 				'command' => $command->getName(),
 				'action' => 'status',
-				'--compact' => 1
+				'--compact'
 		));
 		$content = $commandTester->getDisplay();
 
@@ -177,7 +178,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertContains('1', $content);
 	}
 
-	public function testDetails ()
+	public function testDetails()
 	{
 		$downloads = [];
 		$download = new Download();
@@ -224,10 +225,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertNotContains($download->getDestination(), $content);
 	}
 
-	public function testClearAll ()
+	public function testClearAll()
 	{
 		$messageBusMock = $this->getMockCommandBus([
-				$this->callback(function  (DeleteDownloads $command) {
+				$this->callback(function (DeleteDownloads $command)
+				{
 					return true;
 				})
 		]);
@@ -253,7 +255,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testClearAllByDestination ()
+	public function testClearAllByDestination()
 	{
 		$download = new Download();
 		$download->setLink('http://foo.bar/3d23424');
@@ -270,7 +272,8 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$messageBusMock = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (DeleteDownloads $command) {
+								function (DeleteDownloads $command)
+								{
 									return count($command->getDownloads()) == 1 && $command->getDownloads()[0]->getDestination() == __DIR__ . '/test1';
 								})
 				]);
@@ -297,10 +300,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testClearCompleted ()
+	public function testClearCompleted()
 	{
 		$messageBusMock = $this->getMockCommandBus([
-				$this->callback(function  (DeleteDownloads $command) {
+				$this->callback(function (DeleteDownloads $command)
+				{
 					return true;
 				})
 		]);
@@ -332,10 +336,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testClearFailed ()
+	public function testClearFailed()
 	{
 		$messageBusMock = $this->getMockCommandBus([
-				$this->callback(function  (DeleteDownloads $command) {
+				$this->callback(function (DeleteDownloads $command)
+				{
 					return true;
 				})
 		]);
@@ -367,10 +372,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testResumeFailed ()
+	public function testResumeFailed()
 	{
 		$messageBusMock = $this->getMockCommandBus([
-				$this->callback(function  (ChangeDownloadState $command) {
+				$this->callback(function (ChangeDownloadState $command)
+				{
 					return true;
 				})
 		]);
@@ -407,7 +413,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testResumeFailedByDestination ()
+	public function testResumeFailedByDestination()
 	{
 		$download = new Download();
 		$download->setLink('http://foo.bar/3d23424');
@@ -426,7 +432,8 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 
 		$messageBusMock = $this->getMockCommandBus(
 				[
-						$this->callback(function  (ChangeDownloadState $command) {
+						$this->callback(function (ChangeDownloadState $command)
+						{
 							return true;
 						})
 				]);
@@ -453,7 +460,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testResumeAll ()
+	public function testResumeAll()
 	{
 		$download = new Download();
 		$download->setFileName('hello.txt');
@@ -461,7 +468,8 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$messageBusMock = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (ChangeDownloadState $command) {
+								function (ChangeDownloadState $command)
+								{
 									return $command->getFromState() == [
 											Download::STATE_DOWNLOADING_STARTED,
 											Download::STATE_DOWNLOADING_COMPLETED,
@@ -501,10 +509,11 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testReprocess ()
+	public function testReprocess()
 	{
 		$messageBusMock = $this->getMockCommandBus([
-				$this->callback(function  (ChangeDownloadState $command) {
+				$this->callback(function (ChangeDownloadState $command)
+				{
 					return true;
 				})
 		]);
@@ -534,7 +543,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$this->assertEquals('Success run!', $content);
 	}
 
-	public function testInvalidAction ()
+	public function testInvalidAction()
 	{
 		$translator = $this->getMockBuilder(TranslatorInterface::class)->getMock();
 		$translator->expects($this->once())
