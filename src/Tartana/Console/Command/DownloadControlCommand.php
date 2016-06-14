@@ -133,7 +133,8 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					usort($downloads,
 							function (Download $d1, Download $d2)
 							{
-								return strcmp($d1->getDestination(), $d2->getDestination());
+								return strcmp($d1->getDestination() . str_pad($d1->getId(), 10, '0', STR_PAD_LEFT),
+										$d2->getDestination() . str_pad($d2->getId(), 10, '0', STR_PAD_LEFT));
 							});
 				}
 				if ($compact)

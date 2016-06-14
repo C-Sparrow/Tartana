@@ -1,5 +1,6 @@
 <?php
 namespace Local\Domain;
+
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\Adapter\Local;
 use Tartana\Domain\DownloadRepository;
@@ -10,26 +11,27 @@ class LocalDownloadRepository implements DownloadRepository
 
 	private $entityManager = null;
 
-	public function __construct (EntityManagerInterface $entityManager)
+	public function __construct(EntityManagerInterface $entityManager)
 	{
 		$this->entityManager = $entityManager;
 	}
 
-	public function findDownloads ($state = null)
+	public function findDownloads($state = null)
 	{
 		$repository = $this->entityManager->getRepository('Tartana:Download');
 
+		$criteria = [];
 		if ($state !== null)
 		{
-			return $repository->findBy([
-					'state' => $state
-			]);
+			$criteria['state'] = $state;
 		}
 
-		return $repository->findAll();
+		return $repository->findBy($criteria, [
+				'id' => 'asc'
+		]);
 	}
 
-	public function findDownloadsByDestination ($destination)
+	public function findDownloadsByDestination($destination)
 	{
 		$destination = rtrim($destination, DIRECTORY_SEPARATOR);
 		$repository = $this->entityManager->getRepository('Tartana:Download');

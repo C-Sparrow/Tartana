@@ -18,7 +18,7 @@ You can run Tartana in threee different modes:
 We are going to explain the threee different modes more deeply in the next chapters.
 
 ## Command line
-The simplest way to run Tartana is trough command line. The only thing you have to set up is a cron job which runs every minute. The following example can be placed into crontab:
+The simplest way to run Tartana is trough command line. The only thing you have to set up is a cron job which runs the default script. The following example runs tartana every minute and can be placed directly into crontab:
 
 `* * * * * /path/to/php /path/to/tartana/cli/app.php default`
 
@@ -41,4 +41,4 @@ You can unzip Tartana on your web root and opening the web directory. You will s
 `* * * * * /path/to/php /path/to/tartana/cli/app.php default`
 
 This is needed because of the long running proceses which are downloading the files or extracting them. If they would be triggered during a web request, the process would die.
-For better security point your virtual host to the web folder og Tartana.
+For better security, point your virtual host to the web folder of Tartana.

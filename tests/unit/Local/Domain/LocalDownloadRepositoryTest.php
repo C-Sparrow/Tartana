@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Domain;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Joomla\Registry\Registry;
@@ -13,7 +14,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 {
 
-	public function testFindAllDownloads ()
+	public function testFindAllDownloads()
 	{
 		$download = new Download();
 		$download->setId(1);
@@ -23,7 +24,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->disableOriginalConstructor()
 			->getMock();
 		$repository->expects($this->once())
-			->method('findAll')
+			->method('findBy')
 			->will($this->returnValue([
 				$download
 		]));
@@ -51,7 +52,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 		$this->assertEquals('http://foo.bar/kjuiew', $downloads[0]->getLink());
 	}
 
-	public function testFindDownloadsByState ()
+	public function testFindDownloadsByState()
 	{
 		$download = new Download();
 		$download->setId(1);
@@ -91,7 +92,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 	}
 
-	public function testFindDownloadsByDestination ()
+	public function testFindDownloadsByDestination()
 	{
 		$download = new Download();
 		$download->setId(1);
