@@ -17,7 +17,7 @@ class FtpTest extends \PHPUnit_Framework_TestCase
 
 		$downloads = [];
 		$download = new Download();
-		$download->setLink('ftp://mirrors.kernel.org/debian-cd/8.3.0/amd64/list-dvd/debian-8.3.0-amd64-DVD-1.list.gz');
+		$download->setLink('ftp://mirrors.kernel.org/debian-cd/ls-lR.gz');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
@@ -30,7 +30,7 @@ class FtpTest extends \PHPUnit_Framework_TestCase
 		$this->assertCount(count($downloads), $dest->listContents());
 		foreach ($dest->listContents() as $file)
 		{
-			$this->assertEquals('debian-8.3.0-amd64-DVD-1.list.gz', $file['path']);
+			$this->assertEquals('ls-lR.gz', $file['path']);
 		}
 	}
 
