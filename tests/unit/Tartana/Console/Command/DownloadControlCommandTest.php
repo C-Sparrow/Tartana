@@ -165,7 +165,7 @@ class DownloadControlCommandTest extends TartanaBaseTestCase
 		$commandTester->execute(array(
 				'command' => $command->getName(),
 				'action' => 'status',
-				'--compact'
+				'--compact' => 1
 		));
 		$content = $commandTester->getDisplay();
 

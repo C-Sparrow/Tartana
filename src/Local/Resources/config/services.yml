@@ -9,7 +9,7 @@ services:
 # Console commands
     Local.DownloadCommand:
         class: Local\Console\Command\DownloadCommand
-        arguments: ['@DownloadRepository', '@HostFactory']
+        arguments: ['@DownloadRepository', '@HostFactory', '@CommandRunner']
         calls:
             - [setLogger, ['@Logger']]
             - [setCommandBus, ['@CommandBus']]

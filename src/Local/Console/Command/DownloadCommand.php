@@ -1,5 +1,6 @@
 <?php
 namespace Local\Console\Command;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -16,10 +17,11 @@ use Tartana\Util;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tartana\Console\Command\AbstractDaemonCommand;
+use Tartana\Component\Command\Runner;
 
-class DownloadCommand extends \Symfony\Component\Console\Command\Command
+class DownloadCommand extends AbstractDaemonCommand
 {
-
 	use LoggerAwareTrait;
 	use CommandBusAwareTrait;
 
@@ -27,21 +29,25 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 
 	private $factory = null;
 
-	public function __construct (DownloadRepository $repository, HostFactory $factory)
+	public function __construct(DownloadRepository $repository, HostFactory $factory, Runner $runner)
 	{
-		parent::__construct('download');
+		parent::__construct($runner);
 
 		$this->repository = $repository;
 		$this->factory = $factory;
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
+		parent::configure();
+
+		$this->setName('download');
 		$this->setDescription('Downloads links from the database. This command is running in foreground!');
-		$this->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Should all downloads set back to not started.', 0);
+
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, 'Should all downloads set back to not started.');
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function doWork(InputInterface $input, OutputInterface $output)
 	{
 		$repository = $this->repository;
 
@@ -58,7 +64,7 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 			$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
 		}
 
-		$force = (boolean) $input->getOption('force');
+		$force = (boolean)$input->getOption('force');
 		$this->log('Restarting zombie downloads, error downloads will be ' . ($force ? '' : 'not') . ' restarted');
 
 		$resets = $repository->findDownloads([
@@ -68,7 +74,7 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 		$hasChanged = false;
 		foreach ($resets as $resetDownload)
 		{
-			if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && ! $force)
+			if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && !$force)
 			{
 				// When not forcing only check for zombie downloads
 				continue;
@@ -87,93 +93,105 @@ class DownloadCommand extends \Symfony\Component\Console\Command\Command
 			$this->handleCommand(new SaveDownloads($resets));
 		}
 
-		$concurrentDownloads = 5;
-		$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
-
-		// Set download speed limit
-		if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
-				 $config->get('parameters')->{'tartana.local.downloads.speedlimit'} > 0)
+		while (true)
 		{
-			$config->set('speedlimit', $config->get('parameters')->{'tartana.local.downloads.speedlimit'} / $concurrentDownloads);
-		}
-
-		// Check day limit
-		if (isset($config->get('parameters')->{'tartana.local.downloads.daylimit'}) &&
-				 $config->get('parameters')->{'tartana.local.downloads.daylimit'} > 0)
-		{
-			$dayLimit = $config->get('parameters')->{'tartana.local.downloads.daylimit'} * 1000;
-
-			$today = (new \DateTime())->format('D');
-			foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED) as $download)
+			$notStartedDownloads = $repository->findDownloads(Download::STATE_DOWNLOADING_NOT_STARTED);
+			if (empty($notStartedDownloads))
 			{
-				if ($download->getFinishedAt() && $download->getFinishedAt()->format('D') != $today)
-				{
-					continue;
-				}
-
-				$dayLimit -= $download->getSize();
-			}
-
-			if ($dayLimit <= 0)
-			{
-				$this->log('Reached day limit, not starting any download');
-				$counter = $concurrentDownloads;
-			}
-		}
-
-		$this->log('Found ' . $counter . ' started downloads.');
-
-		// Processing the downloads
-		$promises = [];
-		$sharedClients = [];
-		foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_NOT_STARTED) as $download)
-		{
-			if ($counter >= $concurrentDownloads)
-			{
+				// Nothing to do anymore
 				break;
 			}
 
-			$downloader = $this->factory->createHostDownloader($download->getLink(), $config);
-			if ($downloader == null)
+			$concurrentDownloads = 5;
+			$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
+
+			// Set download speed limit
+			if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
+					 $config->get('parameters')->{'tartana.local.downloads.speedlimit'} > 0)
 			{
-				$this->log('No downloader found for link ' . $download->getLink(), Logger::WARNING);
-				continue;
+				$config->set('speedlimit', $config->get('parameters')->{'tartana.local.downloads.speedlimit'} / $concurrentDownloads);
 			}
 
-			$this->log('Started to download ' . $download->getLink() . ' with the class ' . get_class($downloader));
-
-			$download = Download::reset($download);
-			$download->setState(Download::STATE_DOWNLOADING_STARTED);
-			$download->setPid(getmypid());
-			$this->handleCommand(new SaveDownloads([
-					$download
-			]));
-
-			if ($downloader instanceof Http)
+			// Check day limit
+			if (isset($config->get('parameters')->{'tartana.local.downloads.daylimit'}) &&
+					 $config->get('parameters')->{'tartana.local.downloads.daylimit'} > 0)
 			{
-				$name = get_class($downloader);
-				if (! key_exists($name, $sharedClients))
+				$dayLimit = $config->get('parameters')->{'tartana.local.downloads.daylimit'} * 1000;
+
+				$today = (new \DateTime())->format('D');
+				foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED) as $download)
 				{
-					$sharedClients[$name] = $downloader->getClient();
+					if ($download->getFinishedAt() && $download->getFinishedAt()->format('D') != $today)
+					{
+						continue;
+					}
+
+					$dayLimit -= $download->getSize();
 				}
-				else
+
+				if ($dayLimit <= 0)
 				{
-					$downloader->setClient($sharedClients[$name]);
+					$this->log('Reached day limit, not starting any download');
+					$counter = $concurrentDownloads;
 				}
 			}
 
-			$tmp = $downloader->download([
-					clone $download
-			]);
+			$this->log('Found ' . $counter . ' started downloads.');
 
-			$promises = array_merge($promises, $tmp ? $tmp : []);
-			$counter ++;
+			// Processing the downloads
+			$promises = [];
+			$sharedClients = [];
+			foreach ($notStartedDownloads as $download)
+			{
+				if ($counter >= $concurrentDownloads)
+				{
+					break;
+				}
+
+				$downloader = $this->factory->createHostDownloader($download->getLink(), $config);
+				if ($downloader == null)
+				{
+					$this->log('No downloader found for link ' . $download->getLink(), Logger::WARNING);
+					continue;
+				}
+
+				$this->log('Started to download ' . $download->getLink() . ' with the class ' . get_class($downloader));
+
+				$download = Download::reset($download);
+				$download->setState(Download::STATE_DOWNLOADING_STARTED);
+				$download->setPid(getmypid());
+				$this->handleCommand(new SaveDownloads([
+						$download
+				]));
+
+				if ($downloader instanceof Http)
+				{
+					$name = get_class($downloader);
+					if (!key_exists($name, $sharedClients))
+					{
+						$sharedClients[$name] = $downloader->getClient();
+					}
+					else
+					{
+						$downloader->setClient($sharedClients[$name]);
+					}
+				}
+
+				$tmp = $downloader->download([
+						clone $download
+				]);
+
+				$promises = array_merge($promises, $tmp ? $tmp : []);
+				$counter ++;
+			}
+
+			$this->log('Downloading ' . count($promises) . ' links');
+
+			Promise\unwrap($promises);
+
+			// We sleep her as we are a daemon to relax the system a bit
+			sleep($config->get('sleepTime', 10));
 		}
-
-		$this->log('Downloading ' . count($promises) . ' links');
-
-		Promise\unwrap($promises);
-
 		$this->log('Finished to download links from the database');
 	}
 }

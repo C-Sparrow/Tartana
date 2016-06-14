@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Console\Command;
+
 use GuzzleHttp\ClientInterface;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -18,12 +19,13 @@ use Tartana\Host\Common\Https;
 class DownloadCommandTest extends LocalBaseTestCase
 {
 
-	public function testExecute ()
+	public function testExecute()
 	{
 		$commandBus = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+								function (SaveDownloads $command)
+								{
 									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
 								})
 				]);
@@ -32,34 +34,37 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$host->expects($this->once())
 			->method('download')
 			->with(
-				$this->callback(function  (array $downloads) {
+				$this->callback(function (array $downloads)
+				{
 					return $downloads[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
 				}));
-		$cmd = new DownloadCommand($this->getMockRepository(), $this->getMockHostFactory($host));
-		$cmd->setCommandBus($commandBus);
+		$command = new DownloadCommand($this->getMockRepository(), $this->getMockHostFactory($host), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($commandBus);
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
-
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	public function testExecuteNoDownloader ()
+	public function testExecuteNoDownloader()
 	{
-		$cmd = new DownloadCommand($this->getMockRepository(), $this->getMockHostFactory(null));
-		$cmd->setCommandBus($this->getMockCommandBus());
+		$command = new DownloadCommand($this->getMockRepository(), $this->getMockHostFactory(null), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($this->getMockCommandBus());
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
-
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	public function testExecuteStartedDownloads ()
+	public function testExecuteStartedDownloads()
 	{
 		// Not started download
 		$notStarted = new Download();
@@ -75,28 +80,32 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandBus = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+								function (SaveDownloads $command)
+								{
 									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
 								})
 				]);
 
-		$cmd = new DownloadCommand($this->getMockRepository([], [
+		$command = new DownloadCommand($this->getMockRepository([], [
 				$started
 		], [
 				$notStarted
 		]), $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
-			->getMock()));
-		$cmd->setCommandBus($commandBus);
+			->getMock()), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($commandBus);
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	public function testExecuteTooManyAlreadyStarted ()
+	public function testExecuteTooManyAlreadyStarted()
 	{
 		// Not started download
 		$notStarted = new Download();
@@ -122,18 +131,21 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$factory = $this->getMockHostFactory();
 		$factory->expects($this->never())
 			->method('createHostDownloader');
-		$cmd = new DownloadCommand($repositoryMock, $factory);
-		$cmd->setCommandBus($this->getMockCommandBus());
+		$command = new DownloadCommand($repositoryMock, $factory, $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($this->getMockCommandBus());
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	public function testExecuteForceReset ()
+	public function testExecuteForceReset()
 	{
 		$downloadsNotStarted = [];
 		$download = new Download();
@@ -145,26 +157,28 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandBus = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+								function (SaveDownloads $command)
+								{
 									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
 								})
 				]);
 
-		$cmd = new DownloadCommand($this->getMockRepository($downloadsNotStarted, [], []), $this->getMockHostFactory());
-		$cmd->setCommandBus($commandBus);
+		$command = new DownloadCommand($this->getMockRepository($downloadsNotStarted, [], []), $this->getMockHostFactory(), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($commandBus);
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName(),
+				'--env' => 'test',
 				'--force' => 1
 		]);
 	}
 
-	public function testExecuteRestartZombies ()
+	public function testExecuteRestartZombies()
 	{
 		$zombies = [];
 		$download = new Download();
@@ -177,25 +191,27 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandBus = $this->getMockCommandBus(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+								function (SaveDownloads $command)
+								{
 									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
 								})
 				]);
 
-		$cmd = new DownloadCommand($this->getMockRepository($zombies, [], []), $this->getMockHostFactory());
-		$cmd->setCommandBus($commandBus);
+		$command = new DownloadCommand($this->getMockRepository($zombies, [], []), $this->getMockHostFactory(), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($commandBus);
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteIgnoreReset ()
+	public function testExecuteIgnoreReset()
 	{
 		$zombies = [];
 		$download = new Download();
@@ -205,20 +221,21 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setPid(19236);
 		$zombies[] = $download;
 
-		$cmd = new DownloadCommand($this->getMockRepository($zombies, [], []), $this->getMockHostFactory());
-		$cmd->setCommandBus($this->getMockCommandBus());
+		$command = new DownloadCommand($this->getMockRepository($zombies, [], []), $this->getMockHostFactory(), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($this->getMockCommandBus());
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteIgnoreResetRunning ()
+	public function testExecuteIgnoreResetRunning()
 	{
 		$download = new Download();
 		$download->setLink('http://devnull.org/klad');
@@ -226,26 +243,28 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setState(Download::STATE_DOWNLOADING_STARTED);
 		$download->setPid(getmypid());
 
-		$cmd = new DownloadCommand($this->getMockRepository([
+		$command = new DownloadCommand($this->getMockRepository([
 				$download
-		], [], []), $this->getMockHostFactory());
-		$cmd->setCommandBus($this->getMockCommandBus());
+		], [], []), $this->getMockHostFactory(), $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$command->setCommandBus($this->getMockCommandBus());
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
 		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteWithSpeedLimit ()
+	public function testExecuteWithSpeedLimit()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
 		$fs->write('parameters.yml', Yaml::dump([
+				'sleepTime' => 0,
 				'parameters' => [
 						'tartana.local.downloads.speedlimit' => 10
 				]
@@ -254,25 +273,29 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
 		$factory->method('createHostDownloader')->with($this->anything(),
-				$this->callback(function  (Registry $config) {
+				$this->callback(function (Registry $config)
+				{
 					return $config->get('speedlimit') == 2;
 				}));
-		$application = new Application();
-		$application->add(new DownloadCommand($this->getMockRepository(), $factory));
 
-		$command = $application->find('download');
+		$command = new DownloadCommand($this->getMockRepository(), $factory, $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$application = new Application();
+		$application->add($command);
+
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteWithDayLimitNotReached ()
+	public function testExecuteWithDayLimitNotReached()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
 		$fs->write('parameters.yml', Yaml::dump([
+				'sleepTime' => 0,
 				'parameters' => [
 						'tartana.local.downloads.daylimit' => 10
 				]
@@ -289,30 +312,31 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;
 
+		$command = new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads),
+				$this->getMockHostFactory(
+						[
+								$this->getMockBuilder(HostInterface::class)
+									->getMock(),
+								$this->getMockBuilder(HostInterface::class)
+									->getMock()
+						]), $this->getMockRunner());
+		$command->addOption('env', 'e');
 		$application = new Application();
-		$application->add(
-				new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads),
-						$this->getMockHostFactory(
-								[
-										$this->getMockBuilder(HostInterface::class)
-											->getMock(),
-										$this->getMockBuilder(HostInterface::class)
-											->getMock()
-								])));
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteWithDayLimitReached ()
+	public function testExecuteWithDayLimitReached()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
 		$fs->write('parameters.yml', Yaml::dump([
+				'sleepTime' => 0,
 				'parameters' => [
 						'tartana.local.downloads.daylimit' => 10
 				]
@@ -324,18 +348,20 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;
 
+		$command = new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads), $this->getMockHostFactory(),
+				$this->getMockRunner());
+		$command->addOption('env', 'e');
 		$application = new Application();
-		$application->add(new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads), $this->getMockHostFactory()));
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteLoadHostersFile ()
+	public function testExecuteLoadHostersFile()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
@@ -346,21 +372,24 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
 		$factory->method('createHostDownloader')->with($this->anything(),
-				$this->callback(function  (Registry $config) {
+				$this->callback(function (Registry $config)
+				{
 					return $config->get('message') == 'unit-test';
 				}));
-		$application = new Application();
-		$application->add(new DownloadCommand($this->getMockRepository(), $factory));
 
-		$command = $application->find('download');
+		$command = new DownloadCommand($this->getMockRepository(), $factory, $this->getMockRunner());
+		$command->addOption('env', 'e');
+		$application = new Application();
+		$application->add($command);
+
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+				'--env' => 'test'
 		]);
 	}
 
-	public function testExecuteSharedClient ()
+	public function testExecuteSharedClient()
 	{
 		$client = $this->getMockBuilder(ClientInterface::class)->getMock();
 
@@ -376,26 +405,29 @@ class DownloadCommandTest extends LocalBaseTestCase
 			->getMock();
 		$host2->expects($this->once())
 			->method('setClient')
-			->with($this->callback(function  (ClientInterface $c) use ( $client) {
+			->with($this->callback(function (ClientInterface $c) use ($client)
+		{
 			return $client == $c;
 		}));
-		$cmd = new DownloadCommand($this->getMockRepository([], [], [
+		$command = new DownloadCommand($this->getMockRepository([], [], [
 				new Download(),
 				new Download()
 		]), $this->getMockHostFactory([
 				$host1,
 				$host2
-		]));
+		]), $this->getMockRunner());
+		$command->addOption('env', 'e');
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	public function testExecuteSharedClientNotEqual ()
+	public function testExecuteSharedClientNotEqual()
 	{
 		$client = $this->getMockBuilder(ClientInterface::class)->getMock();
 
@@ -412,23 +444,25 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$host2->expects($this->never())
 			->method('setClient');
 
-		$cmd = new DownloadCommand($this->getMockRepository([], [], [
+		$command = new DownloadCommand($this->getMockRepository([], [], [
 				new Download(),
 				new Download()
 		]), $this->getMockHostFactory([
 				$host1,
 				$host2
-		]));
+		]), $this->getMockRunner());
+		$command->addOption('env', 'e');
 		$application = new Application();
-		$application->add($cmd);
+		$application->add($command);
 
-		$command = $application->find('download');
 		$commandTester = new CommandTester($command);
 
-		$commandTester->execute([]);
+		$commandTester->execute([
+				'--env' => 'test'
+		]);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 		if ($fs->has('parameters.yml'))
@@ -439,9 +473,13 @@ class DownloadCommandTest extends LocalBaseTestCase
 		{
 			$fs->rename('hosters.yml', 'hosters.yml.backup.for.test');
 		}
+
+		$fs->write('parameters.yml', Yaml::dump([
+				'sleepTime' => 0
+		]), new Config());
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 		if ($fs->has('parameters.yml.backup.for.test'))
@@ -454,7 +492,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		}
 	}
 
-	protected function getMockRepository ($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null, $new = [])
+	protected function getMockRepository($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null, $new = [])
 	{
 		if ($downloadsNotStarted === null)
 		{
@@ -469,8 +507,8 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 		return parent::getMockRepository([
 				$zombieDownloads,
-				$downloadsStarted,
 				$downloadsNotStarted,
+				$downloadsStarted,
 				$new
 		]);
 	}
