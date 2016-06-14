@@ -15,6 +15,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Yaml\Yaml;
 use Tests\Unit\Local\LocalBaseTestCase;
 use Tartana\Host\Common\Https;
+use Tartana\Component\Command\Command;
 
 class DownloadCommandTest extends LocalBaseTestCase
 {
@@ -263,12 +264,13 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml', Yaml::dump([
-				'sleepTime' => 0,
-				'parameters' => [
-						'tartana.local.downloads.speedlimit' => 10
-				]
-		]), new Config());
+		$fs->write('parameters.yml',
+				Yaml::dump([
+						'sleepTime' => 0,
+						'parameters' => [
+								'tartana.local.downloads.speedlimit' => 10
+						]
+				]), new Config());
 
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
@@ -294,12 +296,13 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml', Yaml::dump([
-				'sleepTime' => 0,
-				'parameters' => [
-						'tartana.local.downloads.daylimit' => 10
-				]
-		]), new Config());
+		$fs->write('parameters.yml',
+				Yaml::dump([
+						'sleepTime' => 0,
+						'parameters' => [
+								'tartana.local.downloads.daylimit' => 10
+						]
+				]), new Config());
 
 		$downloads = [];
 		$download = new Download();
@@ -335,12 +338,13 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml', Yaml::dump([
-				'sleepTime' => 0,
-				'parameters' => [
-						'tartana.local.downloads.daylimit' => 10
-				]
-		]), new Config());
+		$fs->write('parameters.yml',
+				Yaml::dump([
+						'sleepTime' => 0,
+						'parameters' => [
+								'tartana.local.downloads.daylimit' => 10
+						]
+				]), new Config());
 
 		$downloads = [];
 		$download = new Download();
@@ -490,6 +494,20 @@ class DownloadCommandTest extends LocalBaseTestCase
 		{
 			$fs->rename('hosters.yml.backup.for.test', 'hosters.yml');
 		}
+	}
+
+	protected function getMockRunner($callbacks = [], $returnData = [])
+	{
+		if (empty($callbacks))
+		{
+			$callbacks = [
+					$this->callback(function (Command $command)
+					{
+						return strpos((string)$command, 'default') !== false;
+					})
+			];
+		}
+		return parent::getMockRunner($callbacks, $returnData);
 	}
 
 	protected function getMockRepository($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null, $new = [])

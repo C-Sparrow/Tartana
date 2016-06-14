@@ -193,5 +193,8 @@ class DownloadCommand extends AbstractDaemonCommand
 			sleep($config->get('sleepTime', 10));
 		}
 		$this->log('Finished to download links from the database');
+
+		$this->log('Calling default command for post processing');
+		$this->getCommandRunner()->execute(Command::getAppCommand('default'));
 	}
 }
