@@ -481,6 +481,12 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$fs->write('parameters.yml', Yaml::dump([
 				'sleepTime' => 0
 		]), new Config());
+
+		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
+		if ($fs->has('download_test.pid'))
+		{
+			$fs->delete('download_test.pid');
+		}
 	}
 
 	protected function tearDown()

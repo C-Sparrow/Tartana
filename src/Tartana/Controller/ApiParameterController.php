@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Controller;
+
 use League\Flysystem\Adapter\Local;
 use Tartana\Domain\Command\SaveParameters;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,27 +15,28 @@ class ApiParameterController extends Controller
 	/**
 	 * @Route("/api/v1/parameter/find", name="api_v1_parameter_find")
 	 */
-	public function findAction ()
+	public function findAction()
 	{
 		$data = [];
 
 		$root = new Local($this->container->getParameter('kernel.root_dir') . '/config');
 		$parameters = Yaml::parse($root->read('parameters.yml')['contents']);
-
-		foreach ($parameters['parameters'] as $key => $parameter)
+		if (is_array($parameters))
 		{
-			$p = [
-					'value' => $parameter,
-					'key' => $key
-			];
-			$label = str_replace('tartana.', '', $key);
-			$label = str_replace('.', ' ', $label);
-			$label = ucfirst($label);
-			$p['label'] = $label;
+			foreach ($parameters['parameters'] as $key => $parameter)
+			{
+				$p = [
+						'value' => $parameter,
+						'key' => $key
+				];
+				$label = str_replace('tartana.', '', $key);
+				$label = str_replace('.', ' ', $label);
+				$label = ucfirst($label);
+				$p['label'] = $label;
 
-			$data[] = $p;
+				$data[] = $p;
+			}
 		}
-
 		$data = [
 				'success' => true,
 				'message' => '',
@@ -47,7 +49,7 @@ class ApiParameterController extends Controller
 	/**
 	 * @Route("/api/v1/parameter/set", name="api_v1_parameter_set")
 	 */
-	public function setAction (Request $request)
+	public function setAction(Request $request)
 	{
 		$parameters = $request->request->all();
 		$labels = [];
@@ -72,7 +74,7 @@ class ApiParameterController extends Controller
 		return new JsonResponse($data);
 	}
 
-	private function transformKeyToLabel ($key)
+	private function transformKeyToLabel($key)
 	{
 		$label = str_replace('tartana.', '', $key);
 		$label = str_replace('.', ' ', $label);

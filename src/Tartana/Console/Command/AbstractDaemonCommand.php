@@ -101,7 +101,7 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 				$command->addArgument($inputString, false);
 				$this->getCommandRunner()->execute($command);
 
-				$this->log('Started daeomon for command ' . $this->getName() . ' in background mode.', Logger::INFO);
+				$this->log('Started daemon for command ' . $this->getName() . ' in background mode.', Logger::INFO);
 				return;
 			}
 

@@ -187,7 +187,16 @@ class DownloadCommand extends AbstractDaemonCommand
 
 			$this->log('Downloading ' . count($promises) . ' links');
 
-			Promise\unwrap($promises);
+			try
+			{
+				Promise\unwrap($promises);
+			}
+			catch (\Exception $e)
+			{
+				// @codeCoverageIgnoreStart
+				$this->log('Exception happened, waiting for the downloads: ' . $e->getMessage(), Logger::ERROR);
+				// @codeCoverageIgnoreEnd
+			}
 
 			// We sleep her as we are a daemon to relax the system a bit
 			sleep($config->get('sleepTime', 10));
