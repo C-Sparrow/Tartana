@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -29,7 +30,7 @@ abstract class AbstractProcessingListener
 
 	protected $configuration = null;
 
-	public function __construct (Runner $runner, Registry $configuration)
+	public function __construct(Runner $runner, Registry $configuration)
 	{
 		$this->runner = $runner;
 		$this->configuration = $configuration;
@@ -40,7 +41,7 @@ abstract class AbstractProcessingListener
 	 *
 	 * @return string
 	 */
-	abstract protected function getConfigurationKey ();
+	abstract protected function getConfigurationKey();
 
 	/**
 	 * Returns an array of file extensions to process and the corresponding
@@ -48,26 +49,26 @@ abstract class AbstractProcessingListener
 	 *
 	 * @return string[]
 	 */
-	abstract protected function getFileExtensionsForCommand ();
+	abstract protected function getFileExtensionsForCommand();
 
 	/**
 	 *
 	 * @param Command $command
 	 * @return Command
 	 */
-	protected function prepareCommand (Command $command)
+	protected function prepareCommand(Command $command)
 	{
 		return $command;
 	}
 
-	public function onProcessCompletedDownloads (DownloadsCompletedEvent $event)
+	public function onProcessCompletedDownloads(DownloadsCompletedEvent $event)
 	{
 		$destination = Util::realPath($this->configuration->get($this->getConfigurationKey()));
-		if (! empty($destination))
+		if (!empty($destination))
 		{
 			$destination = new Local($destination);
 		}
-		if (! $event->getDownloads() || ! $destination)
+		if (!$event->getDownloads() || !$destination)
 		{
 			return;
 		}
@@ -82,7 +83,7 @@ abstract class AbstractProcessingListener
 		$hasSource = file_exists($path);
 		$hasDestination = $destination->has($dirName);
 		$processed = false;
-		if (! $hasDestination && $hasSource)
+		if (!$hasDestination && $hasSource)
 		{
 			$this->log('No directory found, starting to process files on: ' . $destination->applyPathPrefix($dirName));
 
@@ -96,7 +97,7 @@ abstract class AbstractProcessingListener
 			{
 				foreach ($files as $file)
 				{
-					if (! Util::endsWith($file['path'], '.' . $fileExtension) && strpos($file['path'], '.' . $fileExtension . '.') === false)
+					if (!Util::endsWith($file['path'], '.' . $fileExtension) && strpos($file['path'], '.' . $fileExtension . '.') === false)
 					{
 						continue;
 					}
@@ -115,7 +116,7 @@ abstract class AbstractProcessingListener
 				$download->setMessage('TARTANA_EXTRACT_MESSAGE_DESTINATION_EXISTS');
 				$download->setState(Download::STATE_PROCESSING_ERROR);
 			}
-			else if (! $hasSource)
+			else if (!$hasSource)
 			{
 				$download->setMessage('TARTANA_EXTRACT_MESSAGE_SOURCE_NOT_EXIST');
 				$download->setState(Download::STATE_PROCESSING_ERROR);
@@ -133,7 +134,7 @@ abstract class AbstractProcessingListener
 	 *
 	 * @param ProcessingCompletedEvent $event
 	 */
-	public function onProcessingCompleted (ProcessingCompletedEvent $event)
+	public function onProcessingCompleted(ProcessingCompletedEvent $event)
 	{
 		$destination = $event->getDestination();
 		$this->log('Checking completed processed files at folder: ' . $destination->getPathPrefix(), Logger::INFO);
@@ -158,7 +159,7 @@ abstract class AbstractProcessingListener
 
 				foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command)
 				{
-					if (! Util::endsWith($file['path'], '.' . $fileExtension))
+					if (!Util::endsWith($file['path'], '.' . $fileExtension))
 					{
 						continue;
 					}
@@ -175,9 +176,9 @@ abstract class AbstractProcessingListener
 		}
 	}
 
-	public function onChangeDownloadStateAfter (CommandEvent $event)
+	public function onChangeDownloadStateAfter(CommandEvent $event)
 	{
-		if (! $event->getCommand() instanceof ChangeDownloadState)
+		if (!$event->getCommand() instanceof ChangeDownloadState)
 		{
 			return;
 		}
@@ -189,7 +190,7 @@ abstract class AbstractProcessingListener
 		}
 
 		$destination = Util::realPath($this->configuration->get($this->getConfigurationKey()));
-		if (! empty($destination))
+		if (!empty($destination))
 		{
 			$destination = new Local($destination);
 		}
@@ -200,15 +201,17 @@ abstract class AbstractProcessingListener
 
 		$this->log('Cleaning up the destination ' . $destination->getPathPrefix() . ' for downloads', Logger::INFO);
 
-		$dirNames = [];
 		foreach ($event->getCommand()->getDownloads() as $download)
 		{
-			$dirNames[basename($download->getDestination())] = basename($download->getDestination());
-		}
+			// If we do not process,tart ignore
+			if ($download->getState() != $event->getCommand()->getToState())
+			{
+				continue;
+			}
+			$dirName = basename($download->getDestination());
 
-		foreach ($dirNames as $dirName)
-		{
-			if (! $destination->has($dirName))
+			// If destination doesn't have the dir, ignore
+			if (!$destination->has($dirName))
 			{
 				continue;
 			}
@@ -217,7 +220,7 @@ abstract class AbstractProcessingListener
 		}
 	}
 
-	protected function runCommand ($cmd, $path, $destination)
+	protected function runCommand($cmd, $path, $destination)
 	{
 		$this->log('Starting with ' . $cmd . ' processing of the folder: ' . $path, Logger::INFO);
 

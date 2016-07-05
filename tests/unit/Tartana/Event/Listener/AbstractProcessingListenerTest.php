@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -17,7 +18,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class AbstractProcessingListenerTest extends TartanaBaseTestCase
 {
 
-	public function testHasFilesToProcess ()
+	public function testHasFilesToProcess()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt', 'unit test', new Config());
@@ -26,7 +27,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$runner = $this->getMockRunner(
 				[
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+								function (Command $command) use ($fs)
+								{
 									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
 											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
 											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
@@ -45,7 +47,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertEmpty($download->getMessage());
 	}
 
-	public function testHasFilesToProcessMultipart ()
+	public function testHasFilesToProcessMultipart()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt.001', 'unit test 1', new Config());
@@ -55,7 +57,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$runner = $this->getMockRunner(
 				[
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+								function (Command $command) use ($fs)
+								{
 									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
 											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
 											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
@@ -74,7 +77,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertEmpty($download->getMessage());
 	}
 
-	public function testHasMultipleFilesToProcess ()
+	public function testHasMultipleFilesToProcess()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt', 'unit test', new Config());
@@ -84,13 +87,15 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$runner = $this->getMockRunner(
 				[
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+								function (Command $command) use ($fs)
+								{
 									return $command->getCommand() == 'php' && strpos($command, 'foo') !== false &&
 											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
 											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
 								}),
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+								function (Command $command) use ($fs)
+								{
 									return $command->getCommand() == 'php' && strpos($command, 'bar') !== false &&
 											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
 											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
@@ -112,7 +117,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertEmpty($download->getMessage());
 	}
 
-	public function testHasDestination ()
+	public function testHasDestination()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt', 'unit test', new Config());
@@ -130,7 +135,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertNotEmpty($download->getMessage());
 	}
 
-	public function testHasWrongDownloadDestination ()
+	public function testHasWrongDownloadDestination()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt', 'unit test', new Config());
@@ -148,14 +153,14 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertNotEmpty($download->getMessage());
 	}
 
-	public function testExtractNoDownloads ()
+	public function testExtractNoDownloads()
 	{
 		$event = new DownloadsCompletedEvent($this->getMockRepository(), []);
 		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
 		$listener->onProcessCompletedDownloads($event);
 	}
 
-	public function testFinishedToExtract ()
+	public function testFinishedToExtract()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'unit test', new Config());
@@ -164,7 +169,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$runner = $this->getMockRunner(
 				[
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+								function (Command $command) use ($fs)
+								{
 									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
 											 substr_count($command, $fs->getPathPrefix()) == 2;
 								})
@@ -174,7 +180,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$listener->onProcessingCompleted(new ProcessingCompletedEvent($fs, $fs, true));
 	}
 
-	public function testFinishedToExtractWrongFileExtension ()
+	public function testFinishedToExtractWrongFileExtension()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.csv', 'unit test', new Config());
@@ -183,7 +189,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$listener->onProcessingCompleted(new ProcessingCompletedEvent($fs, $fs, true));
 	}
 
-	public function testFinishedWithError ()
+	public function testFinishedWithError()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'unit test', new Config());
@@ -192,7 +198,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$listener->onProcessingCompleted(new ProcessingCompletedEvent($fs, $fs, false));
 	}
 
-	public function testCleanUpDirectory ()
+	public function testCleanUpDirectory()
 	{
 		$dst = new Local(__DIR__ . '/test1');
 		$dst->createDir('test', new Config());
@@ -201,6 +207,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$download = new Download();
 		$download->setDestination(__DIR__ . '/test');
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$listener->onChangeDownloadStateAfter(
 				new CommandEvent(
@@ -211,7 +218,27 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertFalse($dst->has('test'));
 	}
 
-	public function testCleanUpDirectoryWrongEvent ()
+	public function testCleanUpDirectoryNorProcessed()
+	{
+		$dst = new Local(__DIR__ . '/test1');
+		$dst->createDir('test', new Config());
+
+		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
+
+		$download = new Download();
+		$download->setDestination(__DIR__ . '/test');
+		$download->setState(Download::STATE_PROCESSING_ERROR);
+
+		$listener->onChangeDownloadStateAfter(
+				new CommandEvent(
+						new ChangeDownloadState([
+								$download
+						], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
+
+		$this->assertTrue($dst->has('test'));
+	}
+
+	public function testCleanUpDirectoryWrongEvent()
 	{
 		$dst = new Local(__DIR__ . '/test1');
 		$dst->createDir('test', new Config());
@@ -222,7 +249,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertTrue($dst->has('test'));
 	}
 
-	public function testCleanUpDirectoryWrongState ()
+	public function testCleanUpDirectoryWrongState()
 	{
 		$dst = new Local(__DIR__ . '/test1');
 		$dst->createDir('test', new Config());
@@ -231,6 +258,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$download = new Download();
 		$download->setDestination(__DIR__ . '/test');
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$listener->onChangeDownloadStateAfter(
 				new CommandEvent(
@@ -241,12 +269,13 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$this->assertTrue($dst->has('test'));
 	}
 
-	public function testCleanUpDirectoryWrongDestination ()
+	public function testCleanUpDirectoryWrongDestination()
 	{
 		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
 
 		$download = new Download();
 		$download->setDestination(__DIR__ . '/test');
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$listener->onChangeDownloadStateAfter(
 				new CommandEvent(
@@ -255,7 +284,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 						], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
 	}
 
-	public function testCleanUpDirectoryDestinationHasNoDirectory ()
+	public function testCleanUpDirectoryDestinationHasNoDirectory()
 	{
 		$dst = new Local(__DIR__ . '/test1');
 
@@ -263,6 +292,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$download = new Download();
 		$download->setDestination(__DIR__ . '/test');
+		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$listener->onChangeDownloadStateAfter(
 				new CommandEvent(
@@ -271,21 +301,21 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 						], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_COMPLETED)));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 	}
 
-	private function getMockListener (Runner $runner, $keyCount = 1, $extensions = ['txt' => 'unit'])
+	private function getMockListener(Runner $runner, $keyCount = 1, $extensions = ['txt' => 'unit'])
 	{
 		$fs = new Local(__DIR__);
 

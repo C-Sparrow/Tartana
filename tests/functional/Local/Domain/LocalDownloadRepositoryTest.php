@@ -97,7 +97,7 @@ class LocalDownloadRepositoryTest extends WebTestCase
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download)
 		{
-			$this->assertEquals(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
+			$this->assertContains(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
 		}
 	}
 
@@ -115,7 +115,7 @@ class LocalDownloadRepositoryTest extends WebTestCase
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download)
 		{
-			$this->assertEquals(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
+			$this->assertContains(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
 		}
 	}
 	public function testFindDownloadsByDestinationPart ()
@@ -132,7 +132,7 @@ class LocalDownloadRepositoryTest extends WebTestCase
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download)
 		{
-			$this->assertEquals(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
+			$this->assertContains(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
 		}
 	}
 

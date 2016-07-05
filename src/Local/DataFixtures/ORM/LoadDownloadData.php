@@ -1,5 +1,6 @@
 <?php
 namespace Local\DataFixtures\ORM;
+
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tartana\Entity\Download;
@@ -10,7 +11,7 @@ use Tartana\Entity\Download;
 class LoadDownloadData implements FixtureInterface
 {
 
-	public function load (ObjectManager $manager)
+	public function load(ObjectManager $manager)
 	{
 		// Not started download
 		$download = new Download();
@@ -57,7 +58,7 @@ class LoadDownloadData implements FixtureInterface
 		$download = new Download();
 		$download->setLink('http://foo.bar/processingcompleted');
 		$download->setState(Download::STATE_PROCESSING_COMPLETED);
-		$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
+		$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test/processingcompleted');
 		$manager->persist($download);
 
 		// Error on process download
