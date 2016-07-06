@@ -65,36 +65,39 @@ class DownloadCommand extends AbstractDaemonCommand
 		}
 
 		$force = (boolean)$input->getOption('force');
-		$this->log('Restarting zombie downloads, error downloads will be ' . ($force ? '' : 'not') . ' restarted');
-
-		$resets = $repository->findDownloads([
-				Download::STATE_DOWNLOADING_STARTED,
-				Download::STATE_DOWNLOADING_ERROR
-		]);
-		$hasChanged = false;
-		foreach ($resets as $resetDownload)
-		{
-			if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && !$force)
-			{
-				// When not forcing only check for zombie downloads
-				continue;
-			}
-			if ($resetDownload->getState() == Download::STATE_DOWNLOADING_STARTED && $resetDownload->getPid() && Util::isPidRunning(
-					$resetDownload->getPid()))
-			{
-				// There is an active process
-				continue;
-			}
-			$resetDownload = Download::reset($resetDownload);
-			$hasChanged = true;
-		}
-		if ($hasChanged)
-		{
-			$this->handleCommand(new SaveDownloads($resets));
-		}
 
 		while (true)
 		{
+			$resets = $repository->findDownloads([
+					Download::STATE_DOWNLOADING_STARTED,
+					Download::STATE_DOWNLOADING_ERROR
+			]);
+			$hasChanged = false;
+			if (!empty($resets))
+			{
+				foreach ($resets as $resetDownload)
+				{
+					if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && !$force)
+					{
+						// When not forcing only check for zombie downloads
+						continue;
+					}
+					if ($resetDownload->getState() == Download::STATE_DOWNLOADING_STARTED && $resetDownload->getPid() && Util::isPidRunning(
+							$resetDownload->getPid()))
+					{
+						// There is an active process
+						continue;
+					}
+					$resetDownload = Download::reset($resetDownload);
+					$hasChanged = true;
+				}
+			}
+			if ($hasChanged)
+			{
+				$this->log('Restarting zombie downloads, error downloads will be ' . ($force ? '' : 'not') . ' restarted');
+				$this->handleCommand(new SaveDownloads($resets));
+			}
+
 			$notStartedDownloads = $repository->findDownloads(Download::STATE_DOWNLOADING_NOT_STARTED);
 			if (empty($notStartedDownloads))
 			{
