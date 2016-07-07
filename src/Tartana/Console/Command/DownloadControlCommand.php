@@ -161,7 +161,8 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						$data[$destination]['count'] ++;
 						$data[$destination]['size'] += $download->getSize();
 						if ($download->getState() != Download::STATE_DOWNLOADING_NOT_STARTED &&
-								 $download->getState() != Download::STATE_DOWNLOADING_STARTED)
+								 $download->getState() != Download::STATE_DOWNLOADING_STARTED &&
+								 $download->getState() != Download::STATE_DOWNLOADING_ERROR)
 						{
 							$data[$destination]['downloaded-size'] += $download->getSize();
 						}

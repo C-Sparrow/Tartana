@@ -144,6 +144,7 @@ class DownloadCommand extends AbstractDaemonCommand
 			// Processing the downloads
 			$promises = [];
 			$sharedClients = [];
+			$startedDownloads = [];
 			foreach ($notStartedDownloads as $download)
 			{
 				if ($counter >= $concurrentDownloads)
@@ -183,6 +184,7 @@ class DownloadCommand extends AbstractDaemonCommand
 				$tmp = $downloader->download([
 						clone $download
 				]);
+				$startedDownloads[] = $download;
 
 				$promises = array_merge($promises, $tmp ? $tmp : []);
 				$counter ++;
@@ -198,6 +200,15 @@ class DownloadCommand extends AbstractDaemonCommand
 			{
 				// @codeCoverageIgnoreStart
 				$this->log('Exception happened, waiting for the downloads: ' . $e->getMessage(), Logger::ERROR);
+				foreach ($startedDownloads as $download)
+				{
+					$download = Download::reset($download);
+					$download->setState(Download::STATE_DOWNLOADING_ERROR);
+					$download->setMessage($e->getMessage());
+					$this->handleCommand(new SaveDownloads([
+							$download
+					]));
+				}
 				// @codeCoverageIgnoreEnd
 			}
 
