@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -104,7 +105,7 @@ class Download extends Base
 	 *
 	 * @return integer|string
 	 */
-	public function getId ()
+	public function getId()
 	{
 		return $this->id;
 	}
@@ -114,7 +115,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setId ($id)
+	public function setId($id)
 	{
 		$this->id = $id;
 
@@ -128,7 +129,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setLink ($link)
+	public function setLink($link)
 	{
 		$this->link = $link;
 
@@ -140,7 +141,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getLink ()
+	public function getLink()
 	{
 		return $this->link;
 	}
@@ -154,19 +155,16 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setProgress ($progress, $allowReset = false)
+	public function setProgress($progress, $allowReset = false)
 	{
 		$progress = (float) $progress;
-		if ($progress < 0)
-		{
+		if ($progress < 0) {
 			$progress = 0;
 		}
-		if ($progress > 100)
-		{
+		if ($progress > 100) {
 			$progress = 100;
 		}
-		if ($this->progress > $progress && ! $allowReset)
-		{
+		if ($this->progress > $progress && ! $allowReset) {
 			return $this;
 		}
 		$this->progress = number_format($progress, 2);
@@ -179,7 +177,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getProgress ()
+	public function getProgress()
 	{
 		return $this->progress;
 	}
@@ -191,7 +189,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setSize ($size)
+	public function setSize($size)
 	{
 		$this->size = (int) $size;
 
@@ -203,7 +201,7 @@ class Download extends Base
 	 *
 	 * @return integer
 	 */
-	public function getSize ()
+	public function getSize()
 	{
 		return $this->size;
 	}
@@ -223,11 +221,12 @@ class Download extends Base
 	 * @see Download::STATE_PROCESSING_COMPLETED
 	 * @see Download::STATE_PROCESSING_ERROR
 	 */
-	public function setState ($state)
+	public function setState($state)
 	{
 		// Check if it is a valid state
-		if (! in_array($state,
-				[
+		if (! in_array(
+			$state,
+			[
 						self::STATE_DOWNLOADING_NOT_STARTED,
 						self::STATE_DOWNLOADING_STARTED,
 						self::STATE_DOWNLOADING_COMPLETED,
@@ -236,8 +235,8 @@ class Download extends Base
 						self::STATE_PROCESSING_STARTED,
 						self::STATE_PROCESSING_COMPLETED,
 						self::STATE_PROCESSING_ERROR
-				]))
-		{
+			]
+		)) {
 			return $this;
 		}
 		$this->state = $state;
@@ -250,7 +249,7 @@ class Download extends Base
 	 *
 	 * @return integer
 	 */
-	public function getState ()
+	public function getState()
 	{
 		return $this->state;
 	}
@@ -262,7 +261,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setStartedAt (\DateTime $startedAt = null)
+	public function setStartedAt(\DateTime $startedAt = null)
 	{
 		$this->started_at = $startedAt;
 
@@ -274,7 +273,7 @@ class Download extends Base
 	 *
 	 * @return \DateTime
 	 */
-	public function getStartedAt ()
+	public function getStartedAt()
 	{
 		return $this->started_at;
 	}
@@ -286,7 +285,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setFinishedAt (\DateTime $finishedAt = null)
+	public function setFinishedAt(\DateTime $finishedAt = null)
 	{
 		$this->finished_at = $finishedAt;
 
@@ -298,7 +297,7 @@ class Download extends Base
 	 *
 	 * @return \DateTime
 	 */
-	public function getFinishedAt ()
+	public function getFinishedAt()
 	{
 		return $this->finished_at;
 	}
@@ -310,7 +309,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setMessage ($message)
+	public function setMessage($message)
 	{
 		$this->message = $message;
 
@@ -322,7 +321,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getMessage ()
+	public function getMessage()
 	{
 		return $this->message;
 	}
@@ -334,7 +333,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setDestination ($destination)
+	public function setDestination($destination)
 	{
 		$this->destination = $destination;
 
@@ -346,7 +345,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getDestination ()
+	public function getDestination()
 	{
 		return $this->destination;
 	}
@@ -358,7 +357,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setFileName ($fileName)
+	public function setFileName($fileName)
 	{
 		$this->file_name = $fileName;
 
@@ -370,7 +369,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getFileName ()
+	public function getFileName()
 	{
 		return $this->file_name;
 	}
@@ -382,7 +381,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setPid ($pid)
+	public function setPid($pid)
 	{
 		$this->pid = $pid;
 
@@ -394,7 +393,7 @@ class Download extends Base
 	 *
 	 * @return integer
 	 */
-	public function getPid ()
+	public function getPid()
 	{
 		return $this->pid;
 	}
@@ -406,7 +405,7 @@ class Download extends Base
 	 *
 	 * @return Download
 	 */
-	public function setHash ($hash)
+	public function setHash($hash)
 	{
 		$this->hash = $hash;
 
@@ -418,7 +417,7 @@ class Download extends Base
 	 *
 	 * @return string
 	 */
-	public function getHash ()
+	public function getHash()
 	{
 		return $this->hash;
 	}
@@ -431,7 +430,7 @@ class Download extends Base
 	 * @return Download
 	 * @see Download::STATE_DOWNLOADING_NOT_STARTED
 	 */
-	public static function reset (Download $download)
+	public static function reset(Download $download)
 	{
 		$download->setState(Download::STATE_DOWNLOADING_NOT_STARTED);
 		$download->setProgress(0, true);

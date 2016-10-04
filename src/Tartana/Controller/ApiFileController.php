@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Controller;
+
 use Tartana\Util;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,18 +14,16 @@ class ApiFileController extends Controller
 	/**
 	 * @Route("/api/v1/file/add", name="api_v1_file_add")
 	 */
-	public function fileAddAction (Request $request)
+	public function fileAddAction(Request $request)
 	{
 		$folder = $this->container->getParameter('tartana.config')['links']['folder'];
 		$folder = Util::realPath($folder);
 
-		if (! empty($folder))
-		{
+		if (! empty($folder)) {
 			$fs = new Local($folder);
 
 			// Moving the uploaded file to the location of the links repository
-			foreach ($request->files as $file)
-			{
+			foreach ($request->files as $file) {
 				$file->move($fs->getPathPrefix(), $file->getClientOriginalName());
 			}
 		}

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Console\Command;
+
 use League\Flysystem\Adapter\Local;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
@@ -12,7 +13,7 @@ use League\Flysystem\Config;
 class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testUpdate ()
+	public function testUpdate()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$version = $this->createZipForUpdate($fs->applyPathPrefix('tartana.zip'));
@@ -32,7 +33,7 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($version, trim($fs->read('version.txt')['contents']));
 	}
 
-	public function testUpdateTwice ()
+	public function testUpdateTwice()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$this->createZipForUpdate($fs->applyPathPrefix('tartana.zip'));
@@ -57,12 +58,11 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($version, trim($fs->read('version.txt')['contents']));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT);
 
-		if ($fs->has('var/tmp/tartana.zip'))
-		{
+		if ($fs->has('var/tmp/tartana.zip')) {
 			$fs->delete('var/tmp/tartana.zip');
 		}
 
@@ -71,11 +71,10 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 		$fs = new Local(__DIR__ . '/test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT);
-		if ($fs->has('var/tmp/tartana.zip'))
-		{
+		if ($fs->has('var/tmp/tartana.zip')) {
 			$fs->delete('var/tmp/tartana.zip');
 		}
 		$fs->write('var/cache/.gitkeep', '', new Config());
@@ -83,16 +82,14 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 		$fs->rename('app/config/internal/version.txt.backup.for.test', 'app/config/internal/version.txt');
 
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}
 
-	private function createZipForUpdate ($path, $version = null)
+	private function createZipForUpdate($path, $version = null)
 	{
-		if ($version === null)
-		{
+		if ($version === null) {
 			$fs = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
 			$version = $fs->read('version.txt')['contents'];
 			preg_match_all("/(\d+)\.(\d+)\.(\d+)/", $version, $matches);

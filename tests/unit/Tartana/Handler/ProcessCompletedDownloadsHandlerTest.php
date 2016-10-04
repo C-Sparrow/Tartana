@@ -1,5 +1,6 @@
 <?php
 namespace Test\Unit\Tartana\Handler;
+
 use Tartana\Domain\Command\ProcessCompletedDownloads;
 use Tartana\Domain\Command\SaveDownloads;
 use Tartana\Domain\DownloadRepository;
@@ -12,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testWithDownloads ()
+	public function testWithDownloads()
 	{
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->exactly(2))
@@ -20,31 +21,34 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->withConsecutive(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+							function (SaveDownloads $command) {
 									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
-								})
+							}
+						)
 				],
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+							function (SaveDownloads $command) {
 									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
-								})
-				]);
+							}
+						)
+				]
+			);
 
-		$dispatcherMock = $this->getMockDispatcher();
-		$dispatcherMock->expects($this->once())
-			->method('dispatch')
-			->with($this->equalTo('downloads.completed'));
+				$dispatcherMock = $this->getMockDispatcher();
+				$dispatcherMock->expects($this->once())
+				->method('dispatch')
+				->with($this->equalTo('downloads.completed'));
 
-		$downloads = [
+				$downloads = [
 				new Download()
-		];
-		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
-		$handler = new ProcessCompletedDownloadsHandler($dispatcherMock, $commandBus);
-		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
+				];
+				$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
+				$handler = new ProcessCompletedDownloadsHandler($dispatcherMock, $commandBus);
+				$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
 	}
 
-	public function testWithDownloadsChangedState ()
+	public function testWithDownloadsChangedState()
 	{
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->exactly(2))
@@ -52,27 +56,30 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->withConsecutive(
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+							function (SaveDownloads $command) {
 									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
-								})
+							}
+						)
 				],
 				[
 						$this->callback(
-								function  (SaveDownloads $command) {
+							function (SaveDownloads $command) {
 									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_STARTED;
-								})
-				]);
-		$dispatcherMock = $this->getMockDispatcher();
-		$dispatcherMock->expects($this->once())
-			->method('dispatch')
-			->with($this->equalTo('downloads.completed'))
-			->willReturnCallback(
-				function  ($eventName, DownloadsCompletedEvent $event) {
-					foreach ($event->getDownloads() as $download)
-					{
-						$download->setState(Download::STATE_PROCESSING_STARTED);
-					}
-				});
+							}
+						)
+				]
+			);
+				$dispatcherMock = $this->getMockDispatcher();
+				$dispatcherMock->expects($this->once())
+				->method('dispatch')
+				->with($this->equalTo('downloads.completed'))
+				->willReturnCallback(
+					function ($eventName, DownloadsCompletedEvent $event) {
+						foreach ($event->getDownloads() as $download) {
+							$download->setState(Download::STATE_PROCESSING_STARTED);
+						}
+				    }
+				);
 
 		$downloads = [
 				new Download()
@@ -82,7 +89,7 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
 	}
 
-	public function testEmptyDownloads ()
+	public function testEmptyDownloads()
 	{
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->never())
@@ -96,7 +103,7 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), []));
 	}
 
-	private function getMockDispatcher ()
+	private function getMockDispatcher()
 	{
 		$dispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 		$dispatcherMock->method('dispatch')->willReturn(true);
@@ -104,7 +111,7 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		return $dispatcherMock;
 	}
 
-	private function getMockRepository ()
+	private function getMockRepository()
 	{
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 

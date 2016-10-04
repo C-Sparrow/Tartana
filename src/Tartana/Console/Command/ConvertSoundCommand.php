@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command;
+
 use League\Flysystem\Adapter\Local;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -22,7 +23,7 @@ class ConvertSoundCommand extends SymfonyCommand
 
 	protected $commandRunner = null;
 
-	public function __construct (Runner $commandRunner, EventDispatcherInterface $dispatcher = null)
+	public function __construct(Runner $commandRunner, EventDispatcherInterface $dispatcher = null)
 	{
 		parent::__construct('convert:sound');
 
@@ -30,7 +31,7 @@ class ConvertSoundCommand extends SymfonyCommand
 		$this->commandRunner = $commandRunner;
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
 		$this->setDescription('Converts mp4 files to mp3. This command is running in foreground!');
 
@@ -38,23 +39,20 @@ class ConvertSoundCommand extends SymfonyCommand
 		$this->addArgument('destination', InputArgument::REQUIRED, 'The folder to convert the files to.');
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$source = Util::realPath($input->getArgument('source'));
-		if (empty($source))
-		{
+		if (empty($source)) {
 			$this->log('Source directory no found to convert.', Logger::ERROR);
 			return;
 		}
 		$destination = Util::realPath($input->getArgument('destination'));
-		if (empty($destination))
-		{
+		if (empty($destination)) {
 			$this->log('Destination directory no found to convert.', Logger::ERROR);
 			return;
 		}
 
-		if (! $this->commandRunner->execute(new Command('which ffmpeg')))
-		{
+		if (! $this->commandRunner->execute(new Command('which ffmpeg'))) {
 			$this->log("FFmpeg is not on the path, can't convert video files to mp3", Logger::INFO);
 			return;
 		}
@@ -63,10 +61,8 @@ class ConvertSoundCommand extends SymfonyCommand
 		$source = new Local($source);
 
 		$success = true;
-		foreach ($source->listContents('', true) as $file)
-		{
-			if (! Util::endsWith($file['path'], '.mp4'))
-			{
+		foreach ($source->listContents('', true) as $file) {
+			if (! Util::endsWith($file['path'], '.mp4')) {
 				continue;
 			}
 
@@ -82,19 +78,17 @@ class ConvertSoundCommand extends SymfonyCommand
 
 			$this->log('Running ffmpeg system command: ' . $command);
 
-			$output = $this->commandRunner->execute($command, function  ($line) use ( $output) {
+			$output = $this->commandRunner->execute($command, function ($line) use ($output) {
 				$output->writeln($line);
 			});
 
-			if (Util::endsWith($output, 'Invalid data found when processing input'))
-			{
+			if (Util::endsWith($output, 'Invalid data found when processing input')) {
 				$success = false;
 				$source->write($file['path'] . '.out', $output, new Config());
 			}
 		}
 
-		if ($this->dispatcher)
-		{
+		if ($this->dispatcher) {
 			$this->dispatcher->dispatch('processing.completed', new ProcessingCompletedEvent($source, $destination, $success));
 		}
 	}

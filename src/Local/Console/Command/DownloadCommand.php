@@ -26,15 +26,16 @@ class DownloadCommand extends AbstractDaemonCommand
 	use CommandBusAwareTrait;
 
 	private $repository = null;
-
 	private $factory = null;
+	private $config = null;
 
-	public function __construct(DownloadRepository $repository, HostFactory $factory, Runner $runner)
+	public function __construct(DownloadRepository $repository, HostFactory $factory, Runner $runner, Registry $config = null)
 	{
 		parent::__construct($runner);
 
 		$this->repository = $repository;
 		$this->factory = $factory;
+		$this->config = $config;
 	}
 
 	protected function configure()
@@ -54,37 +55,32 @@ class DownloadCommand extends AbstractDaemonCommand
 		$this->log('Started to download links from the database');
 
 		// Loading configuration for the hosters if it exists
-		$config = new Registry();
-		if (file_exists(TARTANA_PATH_ROOT . '/app/config/parameters.yml'))
-		{
+		$config = $this->config ? $this->config : new Registry();
+		if (file_exists(TARTANA_PATH_ROOT . '/app/config/parameters.yml')) {
 			$config->loadFile(TARTANA_PATH_ROOT . '/app/config/parameters.yml', 'yaml');
 		}
-		if (file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
 		}
 
 		$force = (boolean)$input->getOption('force');
 
-		while (true)
-		{
+		while (true) {
 			$resets = $repository->findDownloads([
-					Download::STATE_DOWNLOADING_STARTED,
-					Download::STATE_DOWNLOADING_ERROR
+				Download::STATE_DOWNLOADING_STARTED,
+				Download::STATE_DOWNLOADING_ERROR
 			]);
 			$hasChanged = false;
-			if (!empty($resets))
-			{
-				foreach ($resets as $resetDownload)
-				{
-					if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && !$force)
-					{
+			if (!empty($resets)) {
+				foreach ($resets as $resetDownload) {
+					if ($resetDownload->getState() != Download::STATE_DOWNLOADING_STARTED && !$force) {
 						// When not forcing only check for zombie downloads
 						continue;
 					}
-					if ($resetDownload->getState() == Download::STATE_DOWNLOADING_STARTED && $resetDownload->getPid() && Util::isPidRunning(
-							$resetDownload->getPid()))
-					{
+					if ($resetDownload->getState() == Download::STATE_DOWNLOADING_STARTED &&
+						$resetDownload->getPid() &&
+						Util::isPidRunning($resetDownload->getPid())
+					) {
 						// There is an active process
 						continue;
 					}
@@ -92,15 +88,13 @@ class DownloadCommand extends AbstractDaemonCommand
 					$hasChanged = true;
 				}
 			}
-			if ($hasChanged)
-			{
+			if ($hasChanged) {
 				$this->log('Restarting zombie downloads, error downloads will be ' . ($force ? '' : 'not') . ' restarted');
 				$this->handleCommand(new SaveDownloads($resets));
 			}
 
 			$notStartedDownloads = $repository->findDownloads(Download::STATE_DOWNLOADING_NOT_STARTED);
-			if (empty($notStartedDownloads))
-			{
+			if (empty($notStartedDownloads)) {
 				// Nothing to do anymore
 				break;
 			}
@@ -110,30 +104,27 @@ class DownloadCommand extends AbstractDaemonCommand
 
 			// Set download speed limit
 			if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
-					 $config->get('parameters')->{'tartana.local.downloads.speedlimit'} > 0)
-			{
+				$config->get('parameters')->{'tartana.local.downloads.speedlimit'} > 0
+			) {
 				$config->set('speedlimit', $config->get('parameters')->{'tartana.local.downloads.speedlimit'} / $concurrentDownloads);
 			}
 
 			// Check day limit
 			if (isset($config->get('parameters')->{'tartana.local.downloads.daylimit'}) &&
-					 $config->get('parameters')->{'tartana.local.downloads.daylimit'} > 0)
-			{
+				$config->get('parameters')->{'tartana.local.downloads.daylimit'} > 0
+			) {
 				$dayLimit = $config->get('parameters')->{'tartana.local.downloads.daylimit'} * 1000;
 
 				$today = (new \DateTime())->format('D');
-				foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED) as $download)
-				{
-					if ($download->getFinishedAt() && $download->getFinishedAt()->format('D') != $today)
-					{
+				foreach ($repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED) as $download) {
+					if ($download->getFinishedAt() && $download->getFinishedAt()->format('D') != $today) {
 						continue;
 					}
 
 					$dayLimit -= $download->getSize();
 				}
 
-				if ($dayLimit <= 0)
-				{
+				if ($dayLimit <= 0) {
 					$this->log('Reached day limit, not starting any download');
 					$counter = $concurrentDownloads;
 				}
@@ -145,16 +136,13 @@ class DownloadCommand extends AbstractDaemonCommand
 			$promises = [];
 			$sharedClients = [];
 			$startedDownloads = [];
-			foreach ($notStartedDownloads as $download)
-			{
-				if ($counter >= $concurrentDownloads)
-				{
+			foreach ($notStartedDownloads as $download) {
+				if ($counter >= $concurrentDownloads) {
 					break;
 				}
 
 				$downloader = $this->factory->createHostDownloader($download->getLink(), $config);
-				if ($downloader == null)
-				{
+				if ($downloader == null) {
 					$this->log('No downloader found for link ' . $download->getLink(), Logger::WARNING);
 					continue;
 				}
@@ -165,48 +153,40 @@ class DownloadCommand extends AbstractDaemonCommand
 				$download->setState(Download::STATE_DOWNLOADING_STARTED);
 				$download->setPid(getmypid());
 				$this->handleCommand(new SaveDownloads([
-						$download
+					$download
 				]));
 
-				if ($downloader instanceof Http)
-				{
+				if ($downloader instanceof Http) {
 					$name = get_class($downloader);
-					if (!key_exists($name, $sharedClients))
-					{
+					if (!key_exists($name, $sharedClients)) {
 						$sharedClients[$name] = $downloader->getClient();
-					}
-					else
-					{
+					} else {
 						$downloader->setClient($sharedClients[$name]);
 					}
 				}
 
 				$tmp = $downloader->download([
-						clone $download
+					clone $download
 				]);
 				$startedDownloads[] = $download;
 
 				$promises = array_merge($promises, $tmp ? $tmp : []);
-				$counter ++;
+				$counter++;
 			}
 
 			$this->log('Downloading ' . count($promises) . ' links');
 
-			try
-			{
+			try {
 				Promise\unwrap($promises);
-			}
-			catch (\Exception $e)
-			{
+			} catch (\Exception $e) {
 				// @codeCoverageIgnoreStart
 				$this->log('Exception happened, waiting for the downloads: ' . $e->getMessage(), Logger::ERROR);
-				foreach ($startedDownloads as $download)
-				{
+				foreach ($startedDownloads as $download) {
 					$download = Download::reset($download);
 					$download->setState(Download::STATE_DOWNLOADING_ERROR);
 					$download->setMessage($e->getMessage());
 					$this->handleCommand(new SaveDownloads([
-							$download
+						$download
 					]));
 				}
 				// @codeCoverageIgnoreEnd

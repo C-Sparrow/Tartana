@@ -16,7 +16,7 @@ class Log extends Base
 
 	protected $extra;
 
-	public function __construct ($channel, $message, $date, $level, $context, $extra)
+	public function __construct($channel, $message, $date, $level, $context, $extra)
 	{
 		$this->channel = $channel;
 		$this->message = $message;
@@ -26,12 +26,12 @@ class Log extends Base
 		$this->extra = $extra;
 	}
 
-	public function getChannel ()
+	public function getChannel()
 	{
 		return $this->channel;
 	}
 
-	public function getMessage ()
+	public function getMessage()
 	{
 		return $this->message;
 	}
@@ -40,22 +40,22 @@ class Log extends Base
 	 *
 	 * @return \DateTime
 	 */
-	public function getDate ()
+	public function getDate()
 	{
 		return $this->date;
 	}
 
-	public function getLevel ()
+	public function getLevel()
 	{
 		return $this->level;
 	}
 
-	public function getContext ()
+	public function getContext()
 	{
 		return $this->context;
 	}
 
-	public function getExtra ()
+	public function getExtra()
 	{
 		return $this->extra;
 	}

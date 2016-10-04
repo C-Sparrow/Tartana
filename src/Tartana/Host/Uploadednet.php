@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Host;
+
 use GuzzleHttp\Psr7\Request;
 use Tartana\Entity\Download;
 use Tartana\Host\Common\Http;
@@ -7,48 +8,37 @@ use Tartana\Host\Common\Http;
 class Uploadednet extends Http
 {
 
-	public function fetchDownloadInfo (array $downloads)
+	public function fetchDownloadInfo(array $downloads)
 	{
-		foreach ($downloads as $download)
-		{
-			try
-			{
-				if (preg_match("/file\/(.*?)\//", $download->getLink(), $matches))
-				{
-					// Getting the link information
-					$res = $this->getClient()->request('get',
-							'https://uploaded.net/api/filemultiple?apikey=lhF2IeeprweDfu9ccWlxXVVypA5nA3EL&id_0=' . $matches[1]);
+		foreach ($downloads as $download) {
+			try {
+				if (preg_match("/file\/(.*?)\//", $download->getLink(), $matches)) {
+				// Getting the link information
+					$res = $this->getClient()->request(
+						'get',
+						'https://uploaded.net/api/filemultiple?apikey=lhF2IeeprweDfu9ccWlxXVVypA5nA3EL&id_0=' . $matches[1]
+					);
 					$csv = explode(',', $res->getBody()->getContents(), 5);
-					if (count($csv) >= 5)
-					{
-						if ($csv[0] != 'online')
-						{
+					if (count($csv) >= 5) {
+						if ($csv[0] != 'online') {
 							$download->setState(Download::STATE_DOWNLOADING_ERROR);
 							$download->setMessage($csv[0]);
-						}
-						else
-						{
+						} else {
 							$download->setHash($csv[3]);
 							$download->setFileName(trim($csv[4]));
 							$download->setSize($csv[2]);
 						}
-					}
-					else
-					{
+					} else {
 						parent::fetchDownloadInfo([
 								$download
 						]);
 					}
-				}
-				else
-				{
+				} else {
 					parent::fetchDownloadInfo([
 							$download
 					]);
 				}
-			}
-			catch (\Exception $e)
-			{
+			} catch (\Exception $e) {
 				$this->log('Exception fetching file info for connection test: ' . $e->getMessage());
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_URL');
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
@@ -56,13 +46,12 @@ class Uploadednet extends Http
 		}
 	}
 
-	protected function getUrlToDownload (Download $download)
+	protected function getUrlToDownload(Download $download)
 	{
 		$res = $this->getClient()->request('get', $download->getLink());
 		$html = $res->getBody()->getContents();
 
-		if (! preg_match("#https?://[0-9a-z\-]*stor\d+.uploaded.net/dl/([0-9a-z\-]+)#mi", $html, $matches))
-		{
+		if (! preg_match("#https?://[0-9a-z\-]*stor\d+.uploaded.net/dl/([0-9a-z\-]+)#mi", $html, $matches)) {
 			return null;
 		}
 
@@ -71,10 +60,9 @@ class Uploadednet extends Http
 		return $matches[0];
 	}
 
-	protected function login ()
+	protected function login()
 	{
-		if ($this->getCookie('login'))
-		{
+		if ($this->getCookie('login')) {
 			return true;
 		}
 
@@ -83,8 +71,7 @@ class Uploadednet extends Http
 				'pw' => trim($this->getConfiguration()->get('uploadednet.password'))
 		];
 
-		if (! $args['id'])
-		{
+		if (! $args['id']) {
 			return false;
 		}
 

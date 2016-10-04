@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Controller;
+
 use Tartana\Domain\Command\DeleteLogs;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,7 +12,7 @@ class ApiLogController extends Controller
 	/**
 	 * @Route("/api/v1/log/find", name="api_v1_log_find")
 	 */
-	public function findAction ()
+	public function findAction()
 	{
 		$logs = $this->container->get('LogRepository')->findLogs(1000);
 
@@ -27,7 +28,7 @@ class ApiLogController extends Controller
 	/**
 	 * @Route("/api/v1/log/deleteall", name="api_v1_log_deleteall")
 	 */
-	public function deleteallAction ()
+	public function deleteallAction()
 	{
 		$commandBus = $this->container->get('CommandBus');
 		$commandBus->handle(new DeleteLogs());

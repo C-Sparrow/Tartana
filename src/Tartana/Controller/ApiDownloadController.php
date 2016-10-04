@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Controller;
+
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Domain\Command\DeleteDownloads;
 use Tartana\Entity\Download;
@@ -15,10 +16,9 @@ class ApiDownloadController extends Controller
 	 * @Route("/api/v1/download/find/{state}", name="api_v1_download_find",
 	 * defaults={"state" = null})
 	 */
-	public function findAction ($state)
+	public function findAction($state)
 	{
-		if ($state)
-		{
+		if ($state) {
 			$state = explode(',', $state);
 		}
 
@@ -36,8 +36,7 @@ class ApiDownloadController extends Controller
 				$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
 				$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 		];
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$d = $download->toArray();
 			$d['message'] = $t->trans($download->getMessage());
 			$d['state'] = $t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState());
@@ -57,7 +56,7 @@ class ApiDownloadController extends Controller
 	/**
 	 * @Route("/api/v1/download/clearall", name="api_v1_download_clearall")
 	 */
-	public function clearallAction ()
+	public function clearallAction()
 	{
 		return $this->handleCommand(new DeleteDownloads($this->container->get('DownloadRepository')
 			->findDownloads()));
@@ -67,33 +66,39 @@ class ApiDownloadController extends Controller
 	 * @Route("/api/v1/download/clearcompleted",
 	 * name="api_v1_download_clearcompleted")
 	 */
-	public function clearcompletedAction ()
+	public function clearcompletedAction()
 	{
 		return $this->handleCommand(
-				new DeleteDownloads($this->container->get('DownloadRepository')
-					->findDownloads(Download::STATE_PROCESSING_COMPLETED)));
+			new DeleteDownloads($this->container->get('DownloadRepository')
+			->findDownloads(Download::STATE_PROCESSING_COMPLETED))
+		);
 	}
 
 	/**
 	 * @Route("/api/v1/download/resumefailed",
 	 * name="api_v1_download_resumefailed")
 	 */
-	public function resumefailedAction ()
+	public function resumefailedAction()
 	{
 		$states = [
 				Download::STATE_DOWNLOADING_ERROR,
 				Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository')
-					->findDownloads($states), $states, Download::STATE_DOWNLOADING_NOT_STARTED));
+			new ChangeDownloadState(
+				$this->container->get('DownloadRepository')
+				->findDownloads($states),
+				$states,
+				Download::STATE_DOWNLOADING_NOT_STARTED
+			)
+		);
 	}
 
 	/**
 	 * @Route("/api/v1/download/resumeall",
 	 * name="api_v1_download_resumeall")
 	 */
-	public function resumeallAction ()
+	public function resumeallAction()
 	{
 		$states = [
 				Download::STATE_DOWNLOADING_STARTED,
@@ -105,15 +110,20 @@ class ApiDownloadController extends Controller
 				Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository')
-					->findDownloads($states), $states, Download::STATE_DOWNLOADING_NOT_STARTED));
+			new ChangeDownloadState(
+				$this->container->get('DownloadRepository')
+				->findDownloads($states),
+				$states,
+				Download::STATE_DOWNLOADING_NOT_STARTED
+			)
+		);
 	}
 
 	/**
 	 * @Route("/api/v1/download/reprocess",
 	 * name="api_v1_download_reprocess")
 	 */
-	public function reprocessAction ()
+	public function reprocessAction()
 	{
 		$states = [
 				Download::STATE_PROCESSING_NOT_STARTED,
@@ -122,11 +132,16 @@ class ApiDownloadController extends Controller
 				Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
-				new ChangeDownloadState($this->container->get('DownloadRepository')
-					->findDownloads($states), $states, Download::STATE_DOWNLOADING_COMPLETED));
+			new ChangeDownloadState(
+				$this->container->get('DownloadRepository')
+				->findDownloads($states),
+				$states,
+				Download::STATE_DOWNLOADING_COMPLETED
+			)
+		);
 	}
 
-	private function handleCommand ($command)
+	private function handleCommand($command)
 	{
 		$commandBus = $this->container->get('CommandBus');
 		$commandBus->handle($command);

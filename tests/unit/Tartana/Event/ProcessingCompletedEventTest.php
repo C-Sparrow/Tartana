@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Event;
+
 use League\Flysystem\Adapter\NullAdapter;
 use Tartana\Event\ProcessingCompletedEvent;
 
 class ProcessingCompletedEventTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testProcessingCompletedEventTestSuccess ()
+	public function testProcessingCompletedEventTestSuccess()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
@@ -17,7 +18,7 @@ class ProcessingCompletedEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($event->isSuccess());
 	}
 
-	public function testProcessingCompletedEventTestFailed ()
+	public function testProcessingCompletedEventTestFailed()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();

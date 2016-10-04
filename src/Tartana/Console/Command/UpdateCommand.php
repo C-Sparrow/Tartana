@@ -49,8 +49,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$this->log('Started with update routine against ' . $this->url, Logger::INFO);
 
 		$url = $this->url;
-		if (empty($url))
-		{
+		if (empty($url)) {
 			$this->log('Update url is empty');
 			$this->log('Finished with update routine', Logger::INFO);
 			return;
@@ -63,68 +62,55 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$this->commandRunner->execute($command);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
-		if ($url == 'github')
-		{
+		if ($url == 'github') {
 			$this->log('Getting latest release from github');
 			$this->download(self::GITHUB_API_URL, $fs->getPathPrefix(), 'github-update-data.json');
 
 			$data = null;
-			if ($fs->has('github-update-data.json'))
-			{
+			if ($fs->has('github-update-data.json')) {
 				$data = json_decode($fs->read('github-update-data.json')['contents']);
 			}
 
-			if (!is_array($data) || !isset($data[0]->assets) || !is_array($data[0]->assets) || !isset($data[0]->assets[0]->browser_download_url))
-			{
+			if (!is_array($data) || !isset($data[0]->assets) || !is_array($data[0]->assets) || !isset($data[0]->assets[0]->browser_download_url)) {
 				$this->log("Api response didn't send an asset", Logger::ERROR);
 				$this->log('Github API response: ' . print_r($data, true));
 				$url = null;
-			}
-			else
-			{
+			} else {
 				$url = $data[0]->assets[0]->browser_download_url;
 			}
 		}
 
-		if (!empty($url))
-		{
+		if (!empty($url)) {
 			$this->log('Fetching Tartana from ' . $url);
 
-			if ($fs->has('tartana.zip'))
-			{
+			if ($fs->has('tartana.zip')) {
 				$fs->delete('tartana.zip');
 			}
 
-			try
-			{
+			try {
 				$this->download($url, $fs->getPathPrefix(), 'tartana.zip');
-			}
-			catch (\Exception $e)
-			{
+			} catch (\Exception $e) {
 				$this->log('Exception fetching Tartana update file: ' . $e->getMessage());
 			}
 
 			$zip = new \ZipArchive();
 			$oldVersion = $fs->read('../../app/config/internal/version.txt')['contents'];
-			if (!$fs->has('tartana.zip'))
-			{
+			if (!$fs->has('tartana.zip')) {
 				$this->log("Zip file to extract doesn't exist, can't update!", Logger::ERROR);
-			}
-			else if ($zip->open($fs->applyPathPrefix('tartana.zip')) !== true)
-			{
+			} elseif ($zip->open($fs->applyPathPrefix('tartana.zip')) !== true) {
 				$this->log("Could not read zip file, it is corrupt!", Logger::ERROR);
-			}
-			else if (!$force && version_compare($oldVersion, $zip->getFromName('app/config/internal/version.txt')) >= 0)
-			{
+			} elseif (!$force && version_compare($oldVersion, $zip->getFromName('app/config/internal/version.txt')) >= 0) {
 				$this->log(
-						"Old version is " . $oldVersion . ", new version is " . $zip->getFromName('app/config/internal/version.txt') .
-								 ". No new version found, nothing to update!", Logger::INFO);
-			}
-			else
-			{
+					"Old version is " . $oldVersion . ", new version is " . $zip->getFromName('app/config/internal/version.txt') .
+					". No new version found, nothing to update!",
+					Logger::INFO
+				);
+			} else {
 				$this->log(
-						'Found zip file to update at ' . $fs->applyPathPrefix('tartana.zip') . ' from version ' . $oldVersion . ' to version ' .
-								 $zip->getFromName('app/config/internal/version.txt') . ', updating!', Logger::INFO);
+					'Found zip file to update at ' . $fs->applyPathPrefix('tartana.zip') . ' from version ' . $oldVersion . ' to version ' .
+					$zip->getFromName('app/config/internal/version.txt') . ', updating!',
+					Logger::INFO
+				);
 
 				$command = Command::getAppCommand('unzip');
 				$command->setAsync(false);
@@ -136,10 +122,8 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 
 				$this->log('Output of unzip was: ' . $output);
 
-				if (empty($output))
-				{
-					if ($fs->has('tartana.zip'))
-					{
+				if (empty($output)) {
+					if ($fs->has('tartana.zip')) {
 						$fs->delete('tartana.zip');
 					}
 
@@ -161,8 +145,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 	private function download($url, $destination, $fileName)
 	{
 		$downloader = $this->factory->createHostDownloader($url);
-		if (empty($downloader))
-		{
+		if (empty($downloader)) {
 			return;
 		}
 

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Handler;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -13,17 +14,18 @@ use Tests\Unit\Local\LocalBaseTestCase;
 class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 {
 
-	public function testProcessLinks ()
+	public function testProcessLinks()
 	{
 		$entityManager = $this->getMockEntityManager(
-				[
-						$this->callback(function  (Download $download) {
+			[
+						$this->callback(function (Download $download) {
 							return $download->getLink() == 'http://foo.bar/kjashd';
 						}),
-						$this->callback(function  (Download $download) {
+						$this->callback(function (Download $download) {
 							return $download->getLink() == 'http://bar.foo/uzwhka';
 						})
-				]);
+			]
+		);
 
 		$fs = new Local(__DIR__ . '/test');
 		$handler = new LocalProcessLinksHandler(new Registry([
@@ -39,34 +41,37 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
-	public function testProcessLinksExisting ()
+	public function testProcessLinksExisting()
 	{
 		$download = new Download();
 		$download->setLink('http://bar.foo/uzwhka');
 		$entityManager = $this->getMockEntityManager(
-				[
-						$this->callback(function  (Download $download) {
+			[
+						$this->callback(function (Download $download) {
 							return $download->getLink() == 'http://foo.bar/kjashd';
 						})
-				], 1, [
+				],
+			1,
+			[
 						$download
-				]);
+			]
+		);
 
-		$fs = new Local(__DIR__ . '/test');
-		$handler = new LocalProcessLinksHandler(new Registry([
+				$fs = new Local(__DIR__ . '/test');
+				$handler = new LocalProcessLinksHandler(new Registry([
 				'downloads' => $fs->getPathPrefix()
-		]), $entityManager);
-		$handler->handle(new ProcessLinks([
+				]), $entityManager);
+				$handler->handle(new ProcessLinks([
 				'http://foo.bar/kjashd',
 				'http://bar.foo/uzwhka'
-		]));
+				]));
 
-		$this->assertNotEmpty($fs->listContents());
-		$this->assertCount(1, $fs->listContents());
-		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
+				$this->assertNotEmpty($fs->listContents());
+				$this->assertCount(1, $fs->listContents());
+				$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
-	public function testProcessLinksAllExisting ()
+	public function testProcessLinksAllExisting()
 	{
 		$download1 = new Download();
 		$download1->setLink('http://foo.bar/kjashd');
@@ -89,25 +94,25 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertEmpty($fs->listContents());
 	}
 
-	public function testProcessLinksDirectoryExists ()
+	public function testProcessLinksDirectoryExists()
 	{
 		$entityManager = $this->getMockEntityManager(
-				[
-						$this->callback(function  (Download $download) {
+			[
+						$this->callback(function (Download $download) {
 							return $download->getLink() == 'http://foo.bar/kjashd';
 						}),
-						$this->callback(function  (Download $download) {
+						$this->callback(function (Download $download) {
 							return $download->getLink() == 'http://bar.foo/uzwhka';
 						})
-				]);
+			]
+		);
 
 		$fs = new Local(__DIR__ . '/test');
 		$handler = new LocalProcessLinksHandler(new Registry([
 
 				'downloads' => $fs->getPathPrefix()
 		]), $entityManager);
-		for ($i = 0; $i < 5; $i ++)
-		{
+		for ($i = 0; $i < 5; $i ++) {
 			$fs->createDir('job-' . date('YmdHis', time() + $i) . '-1', new Config());
 		}
 
@@ -122,10 +127,8 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertCount(count($existingDirectories) + 1, $fs->listContents());
 
 		$hasNewNumber = false;
-		foreach ($fs->listContents() as $dir)
-		{
-			if (Util::endsWith($dir['path'], '-2'))
-			{
+		foreach ($fs->listContents() as $dir) {
+			if (Util::endsWith($dir['path'], '-2')) {
 				$hasNewNumber = true;
 				break;
 			}
@@ -133,7 +136,7 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertTrue($hasNewNumber);
 	}
 
-	public function testProcessLinksInvalidDirectory ()
+	public function testProcessLinksInvalidDirectory()
 	{
 		$entityManager = $this->getMockEntityManager([], 0);
 
@@ -146,13 +149,12 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		]));
 
 		$fs = new Local(__DIR__);
-		foreach ($fs->listContents() as $file)
-		{
+		foreach ($fs->listContents() as $file) {
 			$this->assertNotEquals('dir', $file['type']);
 		}
 	}
 
-	public function testProcessLinksEmptyDirectory ()
+	public function testProcessLinksEmptyDirectory()
 	{
 		$entityManager = $this->getMockEntityManager([], 0);
 
@@ -165,20 +167,20 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		]));
 
 		$fs = new Local(__DIR__);
-		foreach ($fs->listContents() as $file)
-		{
+		foreach ($fs->listContents() as $file) {
 			$this->assertNotEquals('dir', $file['type']);
 		}
 	}
 
-	public function testProcessLinksWithFactory ()
+	public function testProcessLinksWithFactory()
 	{
 		$entityManager = $this->getMockEntityManager(
-				[
-						$this->callback(function  (Download $download) {
+			[
+						$this->callback(function (Download $download) {
 							return ! $download->getFileName();
 						})
-				]);
+			]
+		);
 
 		$fs = new Local(__DIR__ . '/test');
 		$handler = new LocalProcessLinksHandler(new Registry([
@@ -194,14 +196,15 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
-	public function testProcessLinksWithFactoryWithHost ()
+	public function testProcessLinksWithFactoryWithHost()
 	{
 		$entityManager = $this->getMockEntityManager(
-				[
-						$this->callback(function  (Download $download) {
+			[
+						$this->callback(function (Download $download) {
 							return ! $download->getFileName();
 						})
-				]);
+			]
+		);
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('fetchDownloadInfo');
@@ -220,7 +223,7 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
-	public function testCreateJobDirFullPath ()
+	public function testCreateJobDirFullPath()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$dir = LocalProcessLinksHandler::createJobDir($fs->getPathPrefix(), true);
@@ -229,7 +232,7 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertStringStartsWith('job-', $fs->removePathPrefix($dir));
 	}
 
-	public function testCreateJobDirRelativePath ()
+	public function testCreateJobDirRelativePath()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$dir = LocalProcessLinksHandler::createJobDir($fs->getPathPrefix(), false);
@@ -238,7 +241,7 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertStringStartsWith('job-', $dir);
 	}
 
-	public function testCreateJobDirInvalidPath ()
+	public function testCreateJobDirInvalidPath()
 	{
 		$dir = LocalProcessLinksHandler::createJobDir(__DIR__ . '/invalid', false);
 
@@ -248,7 +251,7 @@ class LocalProcessLinksHandlerTest extends LocalBaseTestCase
 		$this->assertFalse($fs->has('invalid'));
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test/');

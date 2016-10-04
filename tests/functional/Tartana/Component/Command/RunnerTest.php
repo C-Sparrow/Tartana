@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Component;
+
 use Tartana\Component\Command\Runner;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -8,11 +9,10 @@ use Tartana\Component\Command\Command;
 class RunnerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testRunCommandPipeToFile ()
+	public function testRunCommandPipeToFile()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test.out'))
-		{
+		if ($fs->has('test.out')) {
 			$fs->delete('test.out');
 		}
 
@@ -29,7 +29,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$fs->delete('test.out');
 	}
 
-	public function testRunCommandPipeToFileAppend ()
+	public function testRunCommandPipeToFileAppend()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test.out', 'Hello ', new Config());

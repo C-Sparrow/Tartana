@@ -1,5 +1,6 @@
 <?php
 namespace Tartana;
+
 use Pdp\Parser;
 use Pdp\PublicSuffixListManager;
 
@@ -12,9 +13,9 @@ final class Util
 	 * @param integer $pid
 	 * @return boolean
 	 */
-	public static function isPidRunning ($pid)
+	public static function isPidRunning($pid)
 	{
-		return posix_getpgid((int) $pid) > 0;
+		return posix_getpgid((int)$pid) > 0;
 	}
 
 	/**
@@ -24,10 +25,9 @@ final class Util
 	 * @param array $strings
 	 * @return string
 	 */
-	public static function readableSize ($size, $strings = ['B','kB','MB','GB','TB','PB','EB','ZB','YB'])
+	public static function readableSize($size, $strings = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'])
 	{
-		for ($i = 0; ($size / 1024) > 0.9; $i ++, $size /= 1024)
-		{
+		for ($i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024) {
 		}
 		return round($size, 2) . (isset($strings[$i]) ? ' ' . $strings[$i] : '');
 	}
@@ -40,21 +40,18 @@ final class Util
 	 * @param string $path
 	 * @return NULL|string
 	 */
-	public static function realPath ($path)
+	public static function realPath($path)
 	{
-		if (! $path)
-		{
+		if (!$path) {
 			return null;
 		}
 
 		// If it is a relative path add the root path to it
-		if ($path[0] !== DIRECTORY_SEPARATOR && preg_match('~\A[A-Z]:(?![^/\\\\])~i', $path) < 1)
-		{
+		if ($path[0] !== DIRECTORY_SEPARATOR && preg_match('~\A[A-Z]:(?![^/\\\\])~i', $path) < 1) {
 			$path = TARTANA_PATH_ROOT . '/' . $path;
 		}
 
-		if (! file_exists($path))
-		{
+		if (!file_exists($path)) {
 			return null;
 		}
 
@@ -67,9 +64,9 @@ final class Util
 	 * @param array $objects
 	 * @return array
 	 */
-	public static function cloneObjects (array $objects)
+	public static function cloneObjects(array $objects)
 	{
-		return array_map(function  ($obj) {
+		return array_map(function ($obj) {
 			return clone $obj;
 		}, $objects);
 	}
@@ -81,7 +78,7 @@ final class Util
 	 * @param string $needle
 	 * @return boolean
 	 */
-	public static function startsWith ($haystack, $needle)
+	public static function startsWith($haystack, $needle)
 	{
 		return (substr($haystack, 0, strlen($needle)) === $needle);
 	}
@@ -93,15 +90,14 @@ final class Util
 	 * @param string $needle
 	 * @return boolean
 	 */
-	public static function endsWith ($haystack, $needle)
+	public static function endsWith($haystack, $needle)
 	{
 		$length = strlen($needle);
-		if ($length == 0)
-		{
+		if ($length == 0) {
 			return true;
 		}
 
-		return (substr($haystack, - $length) === $needle);
+		return (substr($haystack, -$length) === $needle);
 	}
 
 	/**
@@ -112,12 +108,11 @@ final class Util
 	 *
 	 * @return string
 	 */
-	public static function shorten ($string, $length = 20)
+	public static function shorten($string, $length = 20)
 	{
-		if (strlen($string) > $length)
-		{
+		if (strlen($string) > $length) {
 			$characters = floor($length / 2);
-			return substr($string, 0, $characters) . '...' . substr($string, - 1 * $characters);
+			return substr($string, 0, $characters) . '...' . substr($string, -1 * $characters);
 		}
 		return $string;
 	}
@@ -142,29 +137,26 @@ final class Util
 	 * @param string $url
 	 * @return array
 	 */
-	public static function parseUrl ($url)
+	public static function parseUrl($url)
 	{
-		try
-		{
+		try {
 			$pslManager = new PublicSuffixListManager();
 			$parser = new Parser($pslManager->getList());
 
 			return $parser->parseUrl($url)->toArray();
-		}
-		catch (\Exception $e)
-		{
+		} catch (\Exception $e) {
 			return [
-					'scheme' => '',
-					'user' => '',
-					'pass' => '',
-					'host' => '',
-					'subdomain' => '',
-					'registerableDomain' => '',
-					'publicSuffix' => '',
-					'port' => '',
-					'path' => '',
-					'query' => '',
-					'fragment' => ''
+				'scheme' => '',
+				'user' => '',
+				'pass' => '',
+				'host' => '',
+				'subdomain' => '',
+				'registerableDomain' => '',
+				'publicSuffix' => '',
+				'port' => '',
+				'path' => '',
+				'query' => '',
+				'fragment' => ''
 			];
 		}
 	}
@@ -177,20 +169,17 @@ final class Util
 	 * @return string
 	 * @see Util::parseUrl()
 	 */
-	public static function cleanHostName ($uri)
+	public static function cleanHostName($uri)
 	{
-		if (is_string($uri))
-		{
+		if (is_string($uri)) {
 			$uri = [
-					'host' => $uri
+				'host' => $uri
 			];
 		}
-		if (! isset($uri['registerableDomain']))
-		{
+		if (!isset($uri['registerableDomain'])) {
 			$uri['registerableDomain'] = '';
 		}
-		if (! isset($uri['host']))
-		{
+		if (!isset($uri['host'])) {
 			$uri['host'] = '';
 		}
 		$hostName = $uri['registerableDomain'] ? $uri['registerableDomain'] : $uri['host'];

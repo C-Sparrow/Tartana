@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Security\Authentication\Provider;
+
 use Tartana\Security\Authentication\Token\WsseUserToken;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
@@ -14,18 +15,17 @@ class WsseProvider implements AuthenticationProviderInterface
 
 	private $userProvider;
 
-	public function __construct (UserProviderInterface $userProvider)
+	public function __construct(UserProviderInterface $userProvider)
 	{
 		$this->userProvider = $userProvider;
 	}
 
-	public function authenticate (TokenInterface $token)
+	public function authenticate(TokenInterface $token)
 	{
 		$user = $this->userProvider->loadUserByUsername($token->getUsername());
 
 		// Verify Token and register it
-		if ($user && $token instanceof WsseUserToken && $this->validateDigest($token->digest, $token->nonce, $token->created, $user->getPassword()))
-		{
+		if ($user && $token instanceof WsseUserToken && $this->validateDigest($token->digest, $token->nonce, $token->created, $user->getPassword())) {
 			$authenticatedToken = new WsseUserToken($user->getRoles());
 			$authenticatedToken->setUser($user);
 
@@ -35,12 +35,11 @@ class WsseProvider implements AuthenticationProviderInterface
 		throw new AuthenticationException('The WSSE authentication failed. For user : ' . $user);
 	}
 
-	private function validateDigest ($digest, $nonce, $created, $secret)
+	private function validateDigest($digest, $nonce, $created, $secret)
 	{
 		// Validate timestamp is recent within 5 minutes
 		$seconds = time() - strtotime($created);
-		if ($seconds > 300)
-		{
+		if ($seconds > 300) {
 			throw new AuthenticationException('Expired timestamp.  Seconds: ' . $seconds);
 		}
 
@@ -52,7 +51,7 @@ class WsseProvider implements AuthenticationProviderInterface
 		return $expected === $digest;
 	}
 
-	public function supports (TokenInterface $token)
+	public function supports(TokenInterface $token)
 	{
 		return $token instanceof WsseUserToken;
 	}

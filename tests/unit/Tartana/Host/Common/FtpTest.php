@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Host\Common;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Filesystem;
@@ -15,12 +16,11 @@ class FtpTest extends TartanaBaseTestCase
 
 	private $scheme = 'ftp';
 
-	public function testInstantiable ()
+	public function testInstantiable()
 	{
 		// Flysystem can't run FTP properly on HHVM
 		// https://github.com/thephpleague/flysystem/blob/master/tests/FtpTests.php#L329
-		if (! defined('FTP_BINARY'))
-		{
+		if (! defined('FTP_BINARY')) {
 			$this->markTestSkipped('The FTP_BINARY constant is not defined');
 		}
 	}
@@ -28,7 +28,7 @@ class FtpTest extends TartanaBaseTestCase
 	/**
 	 * @depends testInstantiable
 	 */
-	public function testHasFtpAdapter ()
+	public function testHasFtpAdapter()
 	{
 		$download = new Download();
 		$download->setId(2);
@@ -36,17 +36,20 @@ class FtpTest extends TartanaBaseTestCase
 		$download->setDestination(__DIR__);
 
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
-		$this->callWithConsecutive($manager->expects($this->exactly(2))
+		$this->callWithConsecutive(
+			$manager->expects($this->exactly(2))
 			->method('mountFilesystem'),
-				[
+			[
 						[
 								$this->anything(),
 								$this->callback(
-										function  (Filesystem $f) {
+									function (Filesystem $f) {
 											return $f->getAdapter() instanceof \League\Flysystem\Adapter\Ftp;
-										})
+									}
+								)
 						]
-				]);
+			]
+		);
 
 		$downloader = $this->getFtp($manager);
 		Promise\unwrap($downloader->download([
@@ -57,7 +60,7 @@ class FtpTest extends TartanaBaseTestCase
 	/**
 	 * @depends testInstantiable
 	 */
-	public function testCredentialsInUrl ()
+	public function testCredentialsInUrl()
 	{
 		$download = new Download();
 		$download->setId(2);
@@ -65,18 +68,21 @@ class FtpTest extends TartanaBaseTestCase
 		$download->setDestination(__DIR__);
 
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
-		$this->callWithConsecutive($manager->expects($this->exactly(2))
+		$this->callWithConsecutive(
+			$manager->expects($this->exactly(2))
 			->method('mountFilesystem'),
-				[
+			[
 						[
 								$this->anything(),
 								$this->callback(
-										function  (Filesystem $f) {
+									function (Filesystem $f) {
 											$a = $f->getAdapter();
 											return $a->getUsername() == 'foo' && $a->getPassword() == 'bar';
-										})
+									}
+								)
 						]
-				]);
+			]
+		);
 
 		$downloader = $this->getFtp($manager);
 		Promise\unwrap($downloader->download([
@@ -87,7 +93,7 @@ class FtpTest extends TartanaBaseTestCase
 	/**
 	 * @depends testInstantiable
 	 */
-	public function testCredentialsInConfiguration ()
+	public function testCredentialsInConfiguration()
 	{
 		$download = new Download();
 		$download->setId(2);
@@ -95,22 +101,26 @@ class FtpTest extends TartanaBaseTestCase
 		$download->setDestination(__DIR__);
 
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
-		$this->callWithConsecutive($manager->expects($this->exactly(2))
+		$this->callWithConsecutive(
+			$manager->expects($this->exactly(2))
 			->method('mountFilesystem'),
-				[
+			[
 						[
 								$this->anything(),
 								$this->callback(
-										function  (Filesystem $f) {
+									function (Filesystem $f) {
 											$a = $f->getAdapter();
 											return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
-										})
+									}
+								)
 						]
-				]);
+			]
+		);
 
-		$downloader = $this->getFtp($manager,
-				new Registry(
-						[
+		$downloader = $this->getFtp(
+			$manager,
+			new Registry(
+				[
 								'ftp' => [
 										'localhost' => [
 												'username' => 'foo',
@@ -125,7 +135,9 @@ class FtpTest extends TartanaBaseTestCase
 												'password' => 'bar2'
 										]
 								]
-						]));
+					]
+			)
+		);
 		Promise\unwrap($downloader->download([
 				$download
 		]));
@@ -134,7 +146,7 @@ class FtpTest extends TartanaBaseTestCase
 	/**
 	 * @depends testInstantiable
 	 */
-	public function testCredentialsInConfigurationSubDomain ()
+	public function testCredentialsInConfigurationSubDomain()
 	{
 		$download = new Download();
 		$download->setId(2);
@@ -142,22 +154,26 @@ class FtpTest extends TartanaBaseTestCase
 		$download->setDestination(__DIR__);
 
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
-		$this->callWithConsecutive($manager->expects($this->exactly(2))
+		$this->callWithConsecutive(
+			$manager->expects($this->exactly(2))
 			->method('mountFilesystem'),
-				[
+			[
 						[
 								$this->anything(),
 								$this->callback(
-										function  (Filesystem $f) {
+									function (Filesystem $f) {
 											$a = $f->getAdapter();
 											return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
-										})
+									}
+								)
 						]
-				]);
+			]
+		);
 
-		$downloader = $this->getFtp($manager,
-				new Registry(
-						[
+		$downloader = $this->getFtp(
+			$manager,
+			new Registry(
+				[
 								'ftp' => [
 										'pingpongcom' => [
 												'username' => 'foo',
@@ -168,7 +184,9 @@ class FtpTest extends TartanaBaseTestCase
 												'password' => 'bar2'
 										]
 								]
-						]));
+					]
+			)
+		);
 		Promise\unwrap($downloader->download([
 				$download
 		]));
@@ -177,7 +195,7 @@ class FtpTest extends TartanaBaseTestCase
 	/**
 	 * @depends testInstantiable
 	 */
-	public function testNotHasFtpAdapter ()
+	public function testNotHasFtpAdapter()
 	{
 		$download = new Download();
 		$download->setId(2);
@@ -198,10 +216,9 @@ class FtpTest extends TartanaBaseTestCase
 	 *
 	 * @return Ftp|Ftps
 	 */
-	private function getFtp (MountManager $manager, Registry $config = null)
+	private function getFtp(MountManager $manager, Registry $config = null)
 	{
-		if (! $config)
-		{
+		if (! $config) {
 			$config = new Registry();
 		}
 		$class = '\\Tartana\\Host\\Common\\' . ucfirst($this->scheme);

@@ -64,12 +64,10 @@ abstract class AbstractProcessingListener
 	public function onProcessCompletedDownloads(DownloadsCompletedEvent $event)
 	{
 		$destination = Util::realPath($this->configuration->get($this->getConfigurationKey()));
-		if (!empty($destination))
-		{
+		if (!empty($destination)) {
 			$destination = new Local($destination);
 		}
-		if (!$event->getDownloads() || !$destination)
-		{
+		if (!$event->getDownloads() || !$destination) {
 			return;
 		}
 
@@ -83,8 +81,7 @@ abstract class AbstractProcessingListener
 		$hasSource = file_exists($path);
 		$hasDestination = $destination->has($dirName);
 		$processed = false;
-		if (!$hasDestination && $hasSource)
-		{
+		if (!$hasDestination && $hasSource) {
 			$this->log('No directory found, starting to process files on: ' . $destination->applyPathPrefix($dirName));
 
 			// Out file doesn't exist, we can start processing it
@@ -93,12 +90,9 @@ abstract class AbstractProcessingListener
 			$fs = new Local(dirname($path));
 			$files = $fs->listContents('', true);
 
-			foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command)
-			{
-				foreach ($files as $file)
-				{
-					if (!Util::endsWith($file['path'], '.' . $fileExtension) && strpos($file['path'], '.' . $fileExtension . '.') === false)
-					{
+			foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command) {
+				foreach ($files as $file) {
+					if (!Util::endsWith($file['path'], '.' . $fileExtension) && strpos($file['path'], '.' . $fileExtension . '.') === false) {
 						continue;
 					}
 
@@ -109,20 +103,14 @@ abstract class AbstractProcessingListener
 				}
 			}
 		}
-		foreach ($event->getDownloads() as $download)
-		{
-			if ($hasDestination)
-			{
+		foreach ($event->getDownloads() as $download) {
+			if ($hasDestination) {
 				$download->setMessage('TARTANA_EXTRACT_MESSAGE_DESTINATION_EXISTS');
 				$download->setState(Download::STATE_PROCESSING_ERROR);
-			}
-			else if (!$hasSource)
-			{
+			} elseif (!$hasSource) {
 				$download->setMessage('TARTANA_EXTRACT_MESSAGE_SOURCE_NOT_EXIST');
 				$download->setState(Download::STATE_PROCESSING_ERROR);
-			}
-			else if ($processed)
-			{
+			} elseif ($processed) {
 				$download->setState(Download::STATE_PROCESSING_STARTED);
 			}
 		}
@@ -139,28 +127,23 @@ abstract class AbstractProcessingListener
 		$destination = $event->getDestination();
 		$this->log('Checking completed processed files at folder: ' . $destination->getPathPrefix(), Logger::INFO);
 
-		if ($event->isSuccess())
-		{
+		if ($event->isSuccess()) {
 			$this->log('Processing was successfully in folder ' . $destination->getPathPrefix(), Logger::INFO);
 
 			$this->log('Searching for more files to process in folder: ' . $destination->getPathPrefix());
 
 			// Reprocessing processed files
 			$folders = [];
-			foreach ($destination->listContents('', true) as $file)
-			{
+			foreach ($destination->listContents('', true) as $file) {
 				$dir = dirname($file['path']);
 
-				if (key_exists($dir, $folders))
-				{
+				if (key_exists($dir, $folders)) {
 					continue;
 				}
 				$folders[$dir] = $dir;
 
-				foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command)
-				{
-					if (!Util::endsWith($file['path'], '.' . $fileExtension))
-					{
+				foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command) {
+					if (!Util::endsWith($file['path'], '.' . $fileExtension)) {
 						continue;
 					}
 
@@ -169,50 +152,40 @@ abstract class AbstractProcessingListener
 					$this->runCommand($command, $destination->applyPathPrefix($dir), $destination->applyPathPrefix($dir));
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$this->log('Error processing files in folder ' . $destination->getPathPrefix(), Logger::ERROR);
 		}
 	}
 
 	public function onChangeDownloadStateAfter(CommandEvent $event)
 	{
-		if (!$event->getCommand() instanceof ChangeDownloadState)
-		{
+		if (!$event->getCommand() instanceof ChangeDownloadState) {
 			return;
 		}
 
 		if ($event->getCommand()->getToState() != Download::STATE_DOWNLOADING_COMPLETED &&
-				 $event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED)
-		{
+				 $event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED) {
 			return;
 		}
 
 		$destination = Util::realPath($this->configuration->get($this->getConfigurationKey()));
-		if (!empty($destination))
-		{
+		if (!empty($destination)) {
 			$destination = new Local($destination);
-		}
-		else
-		{
+		} else {
 			return;
 		}
 
 		$this->log('Cleaning up the destination ' . $destination->getPathPrefix() . ' for downloads', Logger::INFO);
 
-		foreach ($event->getCommand()->getDownloads() as $download)
-		{
-			// If we do not process,tart ignore
-			if ($download->getState() != $event->getCommand()->getToState())
-			{
+		foreach ($event->getCommand()->getDownloads() as $download) {
+		// If we do not process,tart ignore
+			if ($download->getState() != $event->getCommand()->getToState()) {
 				continue;
 			}
 			$dirName = basename($download->getDestination());
 
 			// If destination doesn't have the dir, ignore
-			if (!$destination->has($dirName))
-			{
+			if (!$destination->has($dirName)) {
 				continue;
 			}
 			$this->log('Deleting the directory ' . $destination->applyPathPrefix($dirName));

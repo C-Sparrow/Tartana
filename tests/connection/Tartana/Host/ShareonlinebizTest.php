@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -9,10 +10,9 @@ use Tartana\Host\Shareonlinebiz;
 class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -28,7 +28,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -36,10 +36,9 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('symfony.png', $download->getFileName());
 	}
 
-	public function testFetchDownloadInfoDeleted ()
+	public function testFetchDownloadInfoDeleted()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -55,17 +54,16 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -81,11 +79,11 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());
@@ -93,17 +91,15 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('symfony.png', $file['path']);
 			$this->assertEquals(md5_file($dest->applyPathPrefix($file['path'])), $download->getHash());
 		}
 	}
 
-	public function testDownloadInvalidLinks ()
+	public function testDownloadInvalidLinks()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -127,10 +123,9 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testDownloadEmpty ()
+	public function testDownloadEmpty()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -146,10 +141,9 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testDownloadInvalidCredentials ()
+	public function testDownloadInvalidCredentials()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -175,15 +169,67 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	protected function setUp ()
+
+	public function testDownloadMultiplLinks()
 	{
-		$fs = new Local(__DIR__ . '/');
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+			$this->markTestSkipped('No credentials found for host');
+			return;
+		}
+
+		$config = new Registry();
+		$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
+		$downloader = new Shareonlinebiz($config);
+
+		$dest = new Local(__DIR__ . '/test');
+
+		$downloads = [];
+		$download = new Download();
+		$download->setLink('http://www.share-online.biz/dl/EG5BWT3OO27');
+		$download->setDestination($dest->getPathPrefix());
+		$download->setFileName('test1.png');
+		$downloads[] = $download;
+		$download = clone $download;
+		$download->setFileName('test2.png');
+		$downloads[] = $download;
+		$download = clone $download;
+		$download->setFileName('test3.png');
+		$downloads[] = $download;
+		$download = clone $download;
+		$download->setFileName('test4.png');
+		$downloads[] = $download;
+		$download = clone $download;
+		$download->setFileName('test5.png');
+		$downloads[] = $download;
+		$download = clone $download;
+		$download->setFileName('test6.png');
+		$downloads[] = $download;
+
+		Promise\unwrap($downloader->download(
+			$downloads
+		));
+
+		foreach ($downloads as $d) {
+			$this->assertEmpty($d->getMessage(), $d->getMessage());
+			$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $d->getState());
+		}
+
+		$this->assertNotEmpty($dest->listContents());
+		$this->assertEquals(count($downloads), count($dest->listContents()));
+		foreach ($dest->listContents() as $file) {
+			$this->assertContains('test', $file['path']);
+		}
+	}
+
+	protected function setUp()
+	{
+		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
-		$fs = new Local(__DIR__ . '/');
+		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 }

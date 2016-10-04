@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Synology\DependencyInjection;
+
 use GuzzleHttp\ClientInterface;
 use Tartana\Entity\Download;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -12,7 +13,7 @@ use Tartana\Host\HostFactory;
 class TartanaContainerTest extends KernelTestCase
 {
 
-	public function testHasClientInterface ()
+	public function testHasClientInterface()
 	{
 		$container = static::$kernel->getContainer();
 		$client = $container->get('ClientInterface');
@@ -20,7 +21,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertInstanceOf(ClientInterface::class, $client);
 	}
 
-	public function testHasLogger ()
+	public function testHasLogger()
 	{
 		$container = static::$kernel->getContainer();
 		$logger = $container->get('Logger');
@@ -28,7 +29,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertInstanceOf(Logger::class, $logger);
 	}
 
-	public function testHasLogRepository ()
+	public function testHasLogRepository()
 	{
 		$container = static::$kernel->getContainer();
 		$repository = $container->get('LogRepository');
@@ -36,7 +37,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertInstanceOf(LogRepository::class, $repository);
 	}
 
-	public function testHasHostFactory ()
+	public function testHasHostFactory()
 	{
 		$container = static::$kernel->getContainer();
 		$factory = $container->get('HostFactory');
@@ -46,7 +47,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertNotNull($factory->getLogger());
 	}
 
-	public function testHasProcessCompletedDownloadsHandler ()
+	public function testHasProcessCompletedDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('ProcessCompletedDownloadsHandler');
@@ -54,7 +55,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertInstanceOf(ProcessCompletedDownloadsHandler::class, $handler);
 	}
 
-	public function testHasChangeDownloadStateHandler ()
+	public function testHasChangeDownloadStateHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('ChangeDownloadStateHandler');
@@ -62,14 +63,14 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertInstanceOf(ChangeDownloadStateHandler::class, $handler);
 	}
 
-	public function testRunCommandNoHandler ()
+	public function testRunCommandNoHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$commandBus = $container->get('CommandBus');
 		$commandBus->handle(new Download());
 	}
 
-	public function testUsingDistFile ()
+	public function testUsingDistFile()
 	{
 		$container = static::$kernel->getContainer();
 		$parameter = $container->getParameter('tartana.config');
@@ -77,7 +78,7 @@ class TartanaContainerTest extends KernelTestCase
 		$this->assertEmpty($parameter['links']['hostFilter']);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		self::bootKernel();
 	}

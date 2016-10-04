@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Entity\User;
 use Tartana\Security\Authentication\Provider\WsseProvider;
 use Tartana\Security\Authentication\Token\WsseUserToken;
@@ -10,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class WsseProviderTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testAuthenticate ()
+	public function testAuthenticate()
 	{
 		$user = new User();
 		$user->setPassword('admin');
@@ -29,7 +30,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($token->getUser(), $authenticatedToken->getUser());
 	}
 
-	public function testAuthenticateWrongPassword ()
+	public function testAuthenticateWrongPassword()
 	{
 		$this->setExpectedException(AuthenticationException::class);
 
@@ -44,7 +45,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$provider->authenticate(WsseUserToken::generateToken('admin', 'admin'));
 	}
 
-	public function testAuthenticateTokenExpired ()
+	public function testAuthenticateTokenExpired()
 	{
 		$this->setExpectedException(AuthenticationException::class);
 
@@ -62,7 +63,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$provider->authenticate($token);
 	}
 
-	public function testAuthenticateTokenInFuture ()
+	public function testAuthenticateTokenInFuture()
 	{
 		$this->setExpectedException(AuthenticationException::class);
 
@@ -80,7 +81,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$provider->authenticate($token);
 	}
 
-	public function testAuthenticateNoUser ()
+	public function testAuthenticateNoUser()
 	{
 		$this->setExpectedException(AuthenticationException::class);
 
@@ -89,14 +90,14 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$provider->authenticate(WsseUserToken::generateToken('admin', 'admin'));
 	}
 
-	public function testSupports ()
+	public function testSupports()
 	{
 		$userProvider = $this->getMockBuilder(UserProviderInterface::class)->getMock();
 		$provider = new WsseProvider($userProvider);
 		$this->assertTrue($provider->supports(WsseUserToken::generateToken('admin', 'admin')));
 	}
 
-	public function testNotSupports ()
+	public function testNotSupports()
 	{
 		$userProvider = $this->getMockBuilder(UserProviderInterface::class)->getMock();
 		$provider = new WsseProvider($userProvider);

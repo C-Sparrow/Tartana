@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -9,7 +10,7 @@ use Tartana\Host\Youtubecom;
 class YoutubecomTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testFetchLinkList ()
+	public function testFetchLinkList()
 	{
 		$downloader = new Youtubecom(new Registry());
 		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=PL5DF954DB82987243');
@@ -18,7 +19,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$this->assertStringStartsWith('https://www.youtube.com/watch', $links[0]);
 	}
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
 		$downloader = new Youtubecom(new Registry());
 
@@ -37,7 +38,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Senor Chang.mp4', $download->getFileName());
 	}
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
 		$downloader = new Youtubecom(new Registry());
 
@@ -57,13 +58,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('test.mp4', $file['path']);
 		}
 	}
 
-	public function testDownloadLinksEmbed ()
+	public function testDownloadLinksEmbed()
 	{
 		$downloader = new Youtubecom(new Registry());
 
@@ -83,13 +83,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('test.mp4', $file['path']);
 		}
 	}
 
-	public function testDownloadLinksRestricted ()
+	public function testDownloadLinksRestricted()
 	{
 		$downloader = new Youtubecom(new Registry());
 
@@ -106,19 +105,18 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('test.mp4', $file['path']);
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Host;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\RequestException;
@@ -16,21 +17,26 @@ use Tartana\Host\Rapidgatornet;
 class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
 		$mock = new MockHandler(
-				[
-						new Response(200, [],
-								json_encode(
-										[
+			[
+						new Response(
+							200,
+							[],
+							json_encode(
+								[
 												'response' => [
 														'filename' => 'hello.txt',
 														'size' => 123,
 														'hash' => 1234
 												],
 												'response_status' => 200
-										]))
-				]);
+									]
+							)
+						)
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -55,7 +61,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1234, $download->getHash());
 	}
 
-	public function testFetchDownloadInfoInvalidResponseStatus ()
+	public function testFetchDownloadInfoInvalidResponseStatus()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], json_encode([
@@ -84,7 +90,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testFetchDownloadInfoException ()
+	public function testFetchDownloadInfoException()
 	{
 		$mock = new MockHandler([
 				new RequestException('Failed on unit test', new Request('GET', 'test'))
@@ -110,7 +116,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testFetchDownloadInfoWrongLogin ()
+	public function testFetchDownloadInfoWrongLogin()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], json_encode([
@@ -138,27 +144,32 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testLoginAndDownload ()
+	public function testLoginAndDownload()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], json_encode([
 								'response_status' => 200
 						])),
-						new Response(200, [],
-								json_encode(
-										[
+						new Response(
+							200,
+							[],
+							json_encode(
+								[
 												'response' => [
 														'url' => 'foo.bar/hdhdhdh'
 												],
 												'response_status' => 200
-										])),
+									]
+							)
+						),
 						new Response(200, [
 								'Content-Disposition' => [
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock)
@@ -184,14 +195,13 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());
 
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $download->getFileName());
 		}
 	}
 
-	public function testDownloadInvalidDownloadUrl ()
+	public function testDownloadInvalidDownloadUrl()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], json_encode([
@@ -224,28 +234,30 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	private function getCookie ()
+	private function getCookie()
 	{
-		return new CookieJar(true,
-				[
+		return new CookieJar(
+			true,
+			[
 						[
 								'Name' => 'PHPSESSID',
 								'Expires' => 0,
 								'Value' => '123',
 								'Domain' => '.rapidgator.net'
 						]
-				]);
+			]
+		);
 	}
 }

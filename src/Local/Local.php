@@ -1,5 +1,6 @@
 <?php
 namespace Local;
+
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**

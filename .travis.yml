@@ -25,6 +25,7 @@ before_script:
   
 script:
   - vendor/bin/phpunit
+  - vendor/bin/phpcs --report=full -p -s --standard=scripts/phpcs/Tartana src tests
   
 after_script:
   - php scripts/coverage-checker.php

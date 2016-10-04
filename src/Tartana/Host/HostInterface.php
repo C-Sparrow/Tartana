@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Host;
+
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SimpleBus\Message\Bus\MessageBus;
@@ -18,23 +19,23 @@ interface HostInterface
 	 * @param string $link
 	 * @return string[]
 	 */
-	public function fetchLinkList ($link);
+	public function fetchLinkList($link);
 
 	/**
 	 * Prefetches download information like file name size, etc.
 	 *
 	 * @param \Tartana\Entity\Download[] $downloads
 	 */
-	public function fetchDownloadInfo (array $downloads);
+	public function fetchDownloadInfo(array $downloads);
 
 	/**
 	 * Downloads the given downloads objects.
 	 *
 	 * @param \Tartana\Entity\Download[] $downloads
 	 */
-	public function download (array $downloads);
+	public function download(array $downloads);
 
-	public function setLogger (LoggerInterface $logger = null);
+	public function setLogger(LoggerInterface $logger = null);
 
-	public function setCommandBus (MessageBus $commandBus = null);
+	public function setCommandBus(MessageBus $commandBus = null);
 }

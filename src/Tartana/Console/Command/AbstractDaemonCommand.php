@@ -49,35 +49,28 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 
 		$pidFile = $this->getName() . '_' . $environment . '.pid';
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
-		if ($action == 'start')
-		{
-			if ($fs->has($pidFile))
-			{
+		if ($action == 'start') {
+			if ($fs->has($pidFile)) {
 				$pids = array_filter(explode(':', $fs->read($pidFile)['contents']));
-				if (!empty($pids))
-				{
+				if (!empty($pids)) {
 					$runningPids = [];
-					foreach ($pids as $key => $pid)
-					{
-						if (!Util::isPidRunning($pid))
-						{
+					foreach ($pids as $key => $pid) {
+						if (!Util::isPidRunning($pid)) {
 							continue;
 						}
 
 						$runningPids[$key] = $pid;
 					}
 
-					if ($runningPids == $pids)
-					{
-						$this->log('Daemon for command ' . $this->getName() . ' is already running with the pids ' . implode(':', $pids),
-								Logger::INFO);
+					if ($runningPids == $pids) {
+						$this->log(
+							'Daemon for command ' . $this->getName() . ' is already running with the pids ' . implode(':', $pids),
+							Logger::INFO
+						);
 						return;
-					}
-					else
-					{
+					} else {
 						// Killing all running processes and starting again
-						foreach ($runningPids as $pid)
-						{
+						foreach ($runningPids as $pid) {
 							$this->killPid($pid);
 						}
 						$fs->delete($pidFile);
@@ -85,9 +78,8 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 				}
 			}
 
-			if ($background)
-			{
-				// Stripping out the not needed tokens
+			if ($background) {
+			// Stripping out the not needed tokens
 				$inputString = (string)$input;
 				$inputString = str_replace([
 						'-b ',
@@ -110,18 +102,16 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 			$this->doWork($input, $output);
 			$fs->delete($pidFile);
 		}
-		if ($action == 'stop' && $fs->has($pidFile))
-		{
+		if ($action == 'stop' && $fs->has($pidFile)) {
 			$pids = explode(':', $fs->read($pidFile)['contents']);
-			if (!empty($pids))
-			{
-				$this->log('Daemon for command ' . $this->getName() . ' is running with the pids ' . implode(':', $pids) . ' killing it',
-						Logger::INFO);
+			if (!empty($pids)) {
+				$this->log(
+					'Daemon for command ' . $this->getName() . ' is running with the pids ' . implode(':', $pids) . ' killing it',
+					Logger::INFO
+				);
 
-				foreach ($pids as $pid)
-				{
-					if (!Util::isPidRunning($pid))
-					{
+				foreach ($pids as $pid) {
+					if (!Util::isPidRunning($pid)) {
 						continue;
 					}
 					$this->killPid($pid);
@@ -150,12 +140,10 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
 
 		$pids = [];
-		if ($fs->has($pidFile))
-		{
+		if ($fs->has($pidFile)) {
 			$pids = array_filter(explode(':', $fs->read($pidFile)['contents']));
 		}
-		if (!in_array($pid, $pids))
-		{
+		if (!in_array($pid, $pids)) {
 			$pids[] = $pid;
 		}
 

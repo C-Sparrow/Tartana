@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use Local\Event\Listener\ChangeDownloadStateListener;
@@ -12,7 +13,7 @@ use Tests\Unit\Local\LocalBaseTestCase;
 class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 {
 
-	public function testCorrectInvalidPath ()
+	public function testCorrectInvalidPath()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -25,17 +26,23 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 				'downloads' => $fs->getPathPrefix()
 		]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(
-						new ChangeDownloadState([
+			new CommandEvent(
+				new ChangeDownloadState(
+					[
 								$download,
 								$download1
-						], Download::$STATES_ALL, Download::STATE_DOWNLOADING_NOT_STARTED)));
+						],
+					Download::$STATES_ALL,
+					Download::STATE_DOWNLOADING_NOT_STARTED
+				)
+			)
+		);
 
-		$this->assertEquals($fs->applyPathPrefix('unit'), $download->getDestination());
-		$this->assertEquals($fs->applyPathPrefix('unit1'), $download1->getDestination());
+						$this->assertEquals($fs->applyPathPrefix('unit'), $download->getDestination());
+						$this->assertEquals($fs->applyPathPrefix('unit1'), $download1->getDestination());
 	}
 
-	public function testCorrectInvalidPathWrongState ()
+	public function testCorrectInvalidPathWrongState()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -46,14 +53,19 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 				'downloads' => $fs->getPathPrefix()
 		]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState([
+			new CommandEvent(new ChangeDownloadState(
+				[
 						$download
-				], Download::$STATES_ALL, Download::STATE_DOWNLOADING_COMPLETED)));
+				],
+				Download::$STATES_ALL,
+				Download::STATE_DOWNLOADING_COMPLETED
+			))
+		);
 
-		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
+				$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
 	}
 
-	public function testCorrectInvalidPathWrongCommand ()
+	public function testCorrectInvalidPathWrongCommand()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -70,7 +82,7 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
 	}
 
-	public function testCorrectInvalidPathWrongStateWrongDestination ()
+	public function testCorrectInvalidPathWrongStateWrongDestination()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__ . 'invalid/unit');
@@ -79,14 +91,19 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 				'downloads' => __DIR__ . '/wrong'
 		]));
 		$listener->onChangeDownloadStateAfter(
-				new CommandEvent(new ChangeDownloadState([
+			new CommandEvent(new ChangeDownloadState(
+				[
 						$download
-				], Download::$STATES_ALL, Download::STATE_DOWNLOADING_NOT_STARTED)));
+				],
+				Download::$STATES_ALL,
+				Download::STATE_DOWNLOADING_NOT_STARTED
+			))
+		);
 
-		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
+				$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test/');

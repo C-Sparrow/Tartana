@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Component\Command;
+
 use Symfony\Component\Process\ProcessUtils;
 
 class Command
@@ -17,7 +18,7 @@ class Command
 
 	private $append = false;
 
-	public function __construct ($command)
+	public function __construct($command)
 	{
 		$this->command = $command;
 	}
@@ -28,7 +29,7 @@ class Command
 	 * @param string $commandName
 	 * @return Command
 	 */
-	public static function getAppCommand ($commandName)
+	public static function getAppCommand($commandName)
 	{
 		$command = new Command('php');
 		$command->addArgument(TARTANA_PATH_ROOT . '/cli/app.php');
@@ -42,7 +43,7 @@ class Command
 	 *
 	 * @return string
 	 */
-	public function getCommand ()
+	public function getCommand()
 	{
 		return $this->command;
 	}
@@ -52,7 +53,7 @@ class Command
 	 *
 	 * @return string[]
 	 */
-	public function getArguments ()
+	public function getArguments()
 	{
 		return $this->arguments;
 	}
@@ -64,16 +65,14 @@ class Command
 	 * @param boolean $escape
 	 * @return \Tartana\Component\Command\Command
 	 */
-	public function addArgument ($argument, $escape = true)
+	public function addArgument($argument, $escape = true)
 	{
 		// Ignore empty arguments
-		if (! $argument)
-		{
+		if (!$argument) {
 			return $this;
 		}
 
-		if ($escape)
-		{
+		if ($escape) {
 			$argument = ProcessUtils::escapeArgument($argument);
 		}
 		$this->arguments[] = $argument;
@@ -90,18 +89,15 @@ class Command
 	 * @param boolean $escape
 	 * @return \Tartana\Component\Command\Command
 	 */
-	public function replaceArgument ($oldArgument, $newArgument, $escape = true)
+	public function replaceArgument($oldArgument, $newArgument, $escape = true)
 	{
-		if ($escape)
-		{
+		if ($escape) {
 			$newArgument = ProcessUtils::escapeArgument($newArgument);
 		}
 		$oldArgumentEscaped = ProcessUtils::escapeArgument($oldArgument);
 
-		foreach ($this->arguments as $key => $arg)
-		{
-			if ($arg == $oldArgument || $arg == $oldArgumentEscaped)
-			{
+		foreach ($this->arguments as $key => $arg) {
+			if ($arg == $oldArgument || $arg == $oldArgumentEscaped) {
 				$this->arguments[$key] = $newArgument;
 			}
 		}
@@ -113,7 +109,7 @@ class Command
 	 *
 	 * @return boolean
 	 */
-	public function isAsync ()
+	public function isAsync()
 	{
 		return $this->async;
 	}
@@ -122,12 +118,11 @@ class Command
 	 * Tells the command it should have async state.
 	 *
 	 * @param boolean $async
-	 * @return Tartana\Component\Command\Command
+	 * @return \Tartana\Component\Command\Command
 	 */
-	public function setAsync ($async)
+	public function setAsync($async)
 	{
-		if ($async && ! $this->getOutputFile())
-		{
+		if ($async && !$this->getOutputFile()) {
 			// Pipe to dev null
 			$this->setOutputFile('/dev/null');
 		}
@@ -140,7 +135,7 @@ class Command
 	 *
 	 * @return boolean
 	 */
-	public function isCaptureErrorInOutput ()
+	public function isCaptureErrorInOutput()
 	{
 		return $this->captureError;
 	}
@@ -149,9 +144,9 @@ class Command
 	 * Tells the command it should capture errors in the output.
 	 *
 	 * @param boolean $captureError
-	 * @return Tartana\Component\Command\Command
+	 * @return \Tartana\Component\Command\Command
 	 */
-	public function setCaptureErrorInOutput ($captureError)
+	public function setCaptureErrorInOutput($captureError)
 	{
 		$this->captureError = $captureError;
 		return $this;
@@ -162,7 +157,7 @@ class Command
 	 *
 	 * @return string|null
 	 */
-	public function getOutputFile ()
+	public function getOutputFile()
 	{
 		return $this->outputFile;
 	}
@@ -171,9 +166,9 @@ class Command
 	 * Tells the command it should pipe the output to the given file.
 	 *
 	 * @param string $outputFile
-	 * @return Tartana\Component\Command\Command
+	 * @return \Tartana\Component\Command\Command
 	 */
-	public function setOutputFile ($outputFile)
+	public function setOutputFile($outputFile)
 	{
 		$this->outputFile = $outputFile;
 		return $this;
@@ -183,9 +178,9 @@ class Command
 	 * Returns if the the output should be appended to the output file.
 	 *
 	 * @return boolean
-	 * @see Tartana\Component\Command\Command::getOutputFile()
+	 * @see \Tartana\Component\Command\Command::getOutputFile()
 	 */
-	public function isAppend ()
+	public function isAppend()
 	{
 		return $this->append;
 	}
@@ -194,40 +189,36 @@ class Command
 	 * Tells the command it should append the output to the file.
 	 *
 	 * @param boolean $append
-	 * @return Tartana\Component\Command\Command
-	 * @see Tartana\Component\Command\Command::getOutputFile()
+	 * @return \Tartana\Component\Command\Command
+	 * @see \Tartana\Component\Command\Command::getOutputFile()
 	 */
-	public function setAppend ($append)
+	public function setAppend($append)
 	{
 		$this->append = $append;
 		return $this;
 	}
 
-	public function __toString ()
+	public function __toString()
 	{
 		$buffer = $this->getCommand();
 
 		// Add the arguments
-		if (! empty($this->arguments))
-		{
+		if (!empty($this->arguments)) {
 			$buffer .= ' ' . trim(implode(' ', $this->getArguments()));
 		}
 
 		// Output to the file if set
-		if ($this->getOutputFile())
-		{
+		if ($this->getOutputFile()) {
 			$buffer .= ' >' . ($this->isAppend() ? '>' : '') . ' ' . $this->getOutputFile();
 		}
 
 		// Redirect std error to stdout
-		if ($this->isCaptureErrorInOutput())
-		{
+		if ($this->isCaptureErrorInOutput()) {
 			$buffer .= ' 2>&1';
 		}
 
 		// Run the command in async mode if set
-		if ($this->isAsync())
-		{
+		if ($this->isAsync()) {
 			$buffer .= ' & echo $!';
 		}
 

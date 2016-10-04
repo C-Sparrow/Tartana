@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Handler;
+
 use Monolog\Logger;
 use Tartana\Domain\Command\ProcessCompletedDownloads;
 use Tartana\Entity\Download;
@@ -18,7 +19,7 @@ class ProcessCompletedDownloadsHandler
 
 	private $commandBus = null;
 
-	public function __construct (EventDispatcherInterface $dispatcher, MessageBus $commandBus)
+	public function __construct(EventDispatcherInterface $dispatcher, MessageBus $commandBus)
 	{
 		$this->dispatcher = $dispatcher;
 		$this->commandBus = $commandBus;
@@ -29,19 +30,17 @@ class ProcessCompletedDownloadsHandler
 	 *
 	 * @param ProcessCompletedDownloads $command
 	 */
-	public function handle (ProcessCompletedDownloads $command)
+	public function handle(ProcessCompletedDownloads $command)
 	{
 		$downloads = $command->getDownloads();
-		if (empty($downloads))
-		{
+		if (empty($downloads)) {
 			return;
 		}
 
 		$path = $downloads[0]->getDestination();
 		$this->log('Handling the completed downloads of the path: ' . $path, Logger::INFO);
 
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$download->setState(Download::STATE_PROCESSING_NOT_STARTED);
 			$download->setProgress(0, true);
 		}
@@ -50,10 +49,8 @@ class ProcessCompletedDownloadsHandler
 		$this->log('Sending downloads finished event with folder: ' . $path . '.', Logger::INFO);
 		$this->dispatcher->dispatch('downloads.completed', new DownloadsCompletedEvent($command->getRepository(), $downloads));
 
-		foreach ($downloads as $download)
-		{
-			if ($download->getState() == Download::STATE_PROCESSING_NOT_STARTED)
-			{
+		foreach ($downloads as $download) {
+			if ($download->getState() == Download::STATE_PROCESSING_NOT_STARTED) {
 				$download->setState(Download::STATE_PROCESSING_COMPLETED);
 			}
 		}

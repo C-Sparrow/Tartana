@@ -1,5 +1,6 @@
 <?php
 namespace Synology;
+
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**

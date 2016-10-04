@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -9,10 +10,9 @@ use Tartana\Host\Uploadednet;
 class UploadednetTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -38,10 +38,9 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotEmpty($download->getSize());
 	}
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -61,13 +60,13 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 		]));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');

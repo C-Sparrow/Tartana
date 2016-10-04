@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -14,10 +15,9 @@ use Tartana\Event\Listener\ConvertSoundListener;
 class ConvertSoundListenerTest extends KernelTestCase
 {
 
-	public function testConvertFile ()
+	public function testConvertFile()
 	{
-		if (! (new Runner())->execute(new Command('which ffmpeg')))
-		{
+		if (! (new Runner())->execute(new Command('which ffmpeg'))) {
 			$this->markTestSkipped('FFmpeg is not on the path!');
 			return;
 		}
@@ -47,12 +47,12 @@ class ConvertSoundListenerTest extends KernelTestCase
 		$this->assertTrue($fs->has('test/test.mp4'));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		self::bootKernel();
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');

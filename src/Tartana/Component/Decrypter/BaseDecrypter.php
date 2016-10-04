@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Component\Decrypter;
+
 use League\Flysystem\Adapter\Local;
 use Monolog\Logger;
 use Tartana\Mixins\LoggerAwareTrait;
@@ -9,23 +10,19 @@ abstract class BaseDecrypter implements DecrypterInterface
 
 	use LoggerAwareTrait;
 
-	public function decrypt ($dlc)
+	public function decrypt($dlc)
 	{
 		$this->log('Started file decrypting', Logger::INFO);
 
-		if (@file_exists(realpath($dlc)))
-		{
+		if (@file_exists(realpath($dlc))) {
 			$dlc = realpath($dlc);
 			$fs = new Local(dirname($dlc));
 			$content = $fs->read($fs->removePathPrefix($dlc))['contents'];
-		}
-		else
-		{
+		} else {
 			$content = $dlc;
 		}
 
-		if (! $content)
-		{
+		if (! $content) {
 			throw new \RuntimeException('Empty content.');
 		}
 
@@ -36,5 +33,5 @@ abstract class BaseDecrypter implements DecrypterInterface
 		return $links;
 	}
 
-	abstract protected function getLinks ($content);
+	abstract protected function getLinks($content);
 }

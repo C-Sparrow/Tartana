@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Component;
+
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
 
 class RunnerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testRunCommand ()
+	public function testRunCommand()
 	{
 		$command = new Command('echo');
 		$command->addArgument('Unit Test');
@@ -17,7 +18,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('Unit Test', $output);
 	}
 
-	public function testRunCommandAsync ()
+	public function testRunCommandAsync()
 	{
 		$command = new Command('(sleep 2; echo Unit Test)');
 		$command->setAsync(true);
@@ -29,7 +30,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(is_numeric($output), 'Output is: ' . var_export($output, true));
 	}
 
-	public function testRunCommandSetEnvironment ()
+	public function testRunCommandSetEnvironment()
 	{
 		$command = new Command('echo');
 		$command->addArgument('/cli/app.php');
@@ -40,7 +41,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$this->assertContains('--env prod', $output);
 	}
 
-	public function testRunCommandChangeEnvironment ()
+	public function testRunCommandChangeEnvironment()
 	{
 		$command = new Command('echo');
 		$command->addArgument('/cli/app.php');
@@ -52,7 +53,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$this->assertContains('--env prod', $output);
 	}
 
-	public function testRunCommandWithCallback ()
+	public function testRunCommandWithCallback()
 	{
 		$command = new Command('echo');
 		$command->addArgument('Unit Test');
@@ -60,7 +61,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
 		$runner = new Runner();
 
 		$buffer = [];
-		$output = $runner->execute($command, function  ($line) use ( &$buffer) {
+		$output = $runner->execute($command, function ($line) use (&$buffer) {
 			$buffer[] = $line;
 		});
 

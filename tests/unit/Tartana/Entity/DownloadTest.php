@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Entity\Download;
 
 class DownloadTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testEmptyDownload ()
+	public function testEmptyDownload()
 	{
 		$download = new Download();
 
@@ -23,35 +24,35 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
 	}
 
-	public function testSetGetId ()
+	public function testSetGetId()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setId(12));
 		$this->assertEquals(12, $download->getId());
 	}
 
-	public function testSetGetLink ()
+	public function testSetGetLink()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setLink('http://foo.bar/tege'));
 		$this->assertEquals('http://foo.bar/tege', $download->getLink());
 	}
 
-	public function testSetGetDestination ()
+	public function testSetGetDestination()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setDestination(__DIR__));
 		$this->assertEquals(__DIR__, $download->getDestination());
 	}
 
-	public function testSetGetMessage ()
+	public function testSetGetMessage()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setMessage('unit test'));
 		$this->assertEquals('unit test', $download->getMessage());
 	}
 
-	public function testSetGetProgress ()
+	public function testSetGetProgress()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setProgress(2));
@@ -60,7 +61,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(2.12, $download->getProgress());
 	}
 
-	public function testSetGetProgressReset ()
+	public function testSetGetProgressReset()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setProgress(20));
@@ -69,7 +70,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(10, $download->getProgress());
 	}
 
-	public function testSetInvalidProgress ()
+	public function testSetInvalidProgress()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setProgress(0));
@@ -85,14 +86,14 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(10, $download->getProgress());
 	}
 
-	public function testSetGetState ()
+	public function testSetGetState()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setState(Download::STATE_DOWNLOADING_ERROR));
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testSetInvalidState ()
+	public function testSetInvalidState()
 	{
 		$download = new Download();
 		$oldState = $download->getState();
@@ -101,28 +102,28 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($oldState, $download->getState());
 	}
 
-	public function testSetGetFileName ()
+	public function testSetGetFileName()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setFileName('unit-test.txt'));
 		$this->assertEquals('unit-test.txt', $download->getFileName());
 	}
 
-	public function testSetGetPid ()
+	public function testSetGetPid()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setPid(345));
 		$this->assertEquals(345, $download->getPid());
 	}
 
-	public function testSetGetSize ()
+	public function testSetGetSize()
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setSize(345));
 		$this->assertEquals(345, $download->getSize());
 	}
 
-	public function testSetGetHash ()
+	public function testSetGetHash()
 	{
 		$hash = md5(345);
 		$download = new Download();
@@ -130,7 +131,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($hash, $download->getHash());
 	}
 
-	public function testReset ()
+	public function testReset()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__);

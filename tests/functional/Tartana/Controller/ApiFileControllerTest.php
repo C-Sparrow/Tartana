@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Controller;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -8,7 +9,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ApiFileControllerTest extends WebTestCase
 {
 
-	public function testV1FileAdd ()
+	public function testV1FileAdd()
 	{
 		$client = static::createClient();
 
@@ -29,7 +30,7 @@ class ApiFileControllerTest extends WebTestCase
 		$this->assertNotEmpty($resp->message);
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/data/Links');
 		$fs->delete('test.txt');

@@ -21,8 +21,7 @@ class LocalDownloadRepository implements DownloadRepository
 		$repository = $this->entityManager->getRepository('Tartana:Download');
 
 		$criteria = [];
-		if ($state !== null)
-		{
+		if ($state !== null) {
 			$criteria['state'] = $state;
 		}
 

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -10,7 +11,7 @@ use GuzzleHttp\Exception\RequestException;
 class DropboxcomTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDownloadLinksUnauthorized ()
+	public function testDownloadLinksUnauthorized()
 	{
 		$downloader = new Dropboxcom(new Registry());
 
@@ -29,16 +30,14 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('symfony.png', $file['path']);
 		}
 	}
 
-	public function testDownloadLinksAuthorized ()
+	public function testDownloadLinksAuthorized()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -62,16 +61,14 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('symfony.png', $file['path']);
 		}
 	}
 
-	public function testDownloadInvalidLinksAuthorized ()
+	public function testDownloadInvalidLinksAuthorized()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml'))
-		{
+		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -92,7 +89,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		Promise\unwrap($downloader->download($downloads));
 	}
 
-	public function testDownloadWrongAccessToken ()
+	public function testDownloadWrongAccessToken()
 	{
 		$downloader = new Dropboxcom(new Registry([
 				'dropboxcom' => [
@@ -112,13 +109,13 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		Promise\unwrap($downloader->download($downloads));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		@$fs->deleteDir('test');

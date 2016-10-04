@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -13,7 +14,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class ExtractListenerTest extends TartanaBaseTestCase
 {
 
-	public function testPasswordFilePath ()
+	public function testPasswordFilePath()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/pw.txt', 'password', new Config());
@@ -21,12 +22,14 @@ class ExtractListenerTest extends TartanaBaseTestCase
 		$fs->createDir('test1', new Config());
 
 		$runner = $this->getMockRunner(
-				[
+			[
 						$this->callback(
-								function  (Command $command) use ( $fs) {
+							function (Command $command) use ($fs) {
 									return $command->getCommand() == 'php' && strpos($command, __DIR__ . '/test/pw.txt');
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
@@ -34,26 +37,29 @@ class ExtractListenerTest extends TartanaBaseTestCase
 				$download
 		]);
 
-		$listener = new ExtractListener($runner,
-				new Registry(
-						[
+		$listener = new ExtractListener(
+			$runner,
+			new Registry(
+				[
 								'extract' => [
 										'destination' => $fs->applyPathPrefix('test1'),
 										'passwordFile' => $fs->applyPathPrefix('test/pw.txt')
 								]
-						]));
+					]
+			)
+		);
 
 		$listener->onProcessCompletedDownloads($event);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');

@@ -10,7 +10,7 @@ class ChangeDownloadState
 
 	private $toState = null;
 
-	public function __construct (array $downloads, $fromState, $toState)
+	public function __construct(array $downloads, $fromState, $toState)
 	{
 		$this->downloads = $downloads;
 		$this->fromState = $fromState;
@@ -21,17 +21,17 @@ class ChangeDownloadState
 	 *
 	 * @return \Tartana\Entity\Download[]
 	 */
-	public function getDownloads ()
+	public function getDownloads()
 	{
 		return $this->downloads;
 	}
 
-	public function getFromState ()
+	public function getFromState()
 	{
 		return $this->fromState;
 	}
 
-	public function getToState ()
+	public function getToState()
 	{
 		return $this->toState;
 	}

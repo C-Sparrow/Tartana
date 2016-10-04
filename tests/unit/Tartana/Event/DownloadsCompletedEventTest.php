@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event;
+
 use Tartana\Domain\DownloadRepository;
 use Tartana\Entity\Download;
 use Tartana\Event\DownloadsCompletedEvent;
@@ -7,7 +8,7 @@ use Tartana\Event\DownloadsCompletedEvent;
 class DownloadsCompletedEventTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDownloadsCompletedEvent ()
+	public function testDownloadsCompletedEvent()
 	{
 		$repository = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$event = new DownloadsCompletedEvent($repository, [

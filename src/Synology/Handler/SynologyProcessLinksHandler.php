@@ -1,5 +1,6 @@
 <?php
 namespace Synology\Handler;
+
 use GuzzleHttp\ClientInterface;
 use Joomla\Registry\Registry;
 use Tartana\Domain\Command\ProcessLinks;
@@ -12,7 +13,7 @@ class SynologyProcessLinksHandler
 
 	private $configuration = null;
 
-	public function __construct (ClientInterface $client, Registry $configuration)
+	public function __construct(ClientInterface $client, Registry $configuration)
 	{
 		$this->setClient($client);
 		$this->setUrl($configuration->get('synology.address', 'https://localhost:5001/webapi'));
@@ -22,12 +23,11 @@ class SynologyProcessLinksHandler
 		$this->configuration = $configuration;
 	}
 
-	public function handle (ProcessLinks $links)
+	public function handle(ProcessLinks $links)
 	{
 		$destinationFolder = LocalProcessLinksHandler::createJobDir($this->configuration->get('downloads'), false);
 		// Something is wrong
-		if (empty($destinationFolder))
-		{
+		if (empty($destinationFolder)) {
 			return;
 		}
 

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command\Extract;
+
 use League\Flysystem\Adapter\AbstractAdapter;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
@@ -10,33 +11,27 @@ class UnzipCommand extends SevenzCommand
 
 	private $executable = null;
 
-	protected function configure ()
+	protected function configure()
 	{
 		parent::configure();
 
 		$this->setName('unzip');
 	}
 
-	protected function isSuccessfullFinished ($output)
+	protected function isSuccessfullFinished($output)
 	{
-		if ($this->is7zAvailable())
-		{
+		if ($this->is7zAvailable()) {
 			return parent::isSuccessfullFinished($output);
-		}
-		else
-		{
+		} else {
 			return strpos($output, 'cannot find zipfile directory') === false && strpos($output, 'archive had fatal errors') === false;
 		}
 	}
 
-	protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination)
+	protected function getExtractCommand($password, AbstractAdapter $source, AbstractAdapter $destination)
 	{
-		if ($this->is7zAvailable())
-		{
+		if ($this->is7zAvailable()) {
 			return parent::getExtractCommand($password, $source, $destination);
-		}
-		else
-		{
+		} else {
 			$command = new Command('unzip');
 			// Overwrite existing files
 			$command->addArgument('-o');
@@ -51,13 +46,11 @@ class UnzipCommand extends SevenzCommand
 		}
 	}
 
-	protected function getFilesToDelete (AbstractAdapter $source)
+	protected function getFilesToDelete(AbstractAdapter $source)
 	{
 		$filesToDelete = [];
-		foreach ($source->listContents() as $file)
-		{
-			if (! Util::endsWith($file['path'], '.zip'))
-			{
+		foreach ($source->listContents() as $file) {
+			if (! Util::endsWith($file['path'], '.zip')) {
 				continue;
 			}
 
@@ -66,25 +59,21 @@ class UnzipCommand extends SevenzCommand
 		return $filesToDelete;
 	}
 
-	protected function getFileExtension ()
+	protected function getFileExtension()
 	{
 		return 'zip';
 	}
 
-	private function is7zAvailable ()
+	private function is7zAvailable()
 	{
-		if ($this->executable === null)
-		{
-			// On the DSM 6 7z is available only
+		if ($this->executable === null) {
+		// On the DSM 6 7z is available only
 			$cmd = new Command('which');
 			$cmd->addArgument('7z');
 			$cmd->setAsync(false);
-			if ($this->runner->execute($cmd))
-			{
+			if ($this->runner->execute($cmd)) {
 				$this->executable = '7z';
-			}
-			else
-			{
+			} else {
 				$this->executable = 'unzip';
 			}
 		}

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command\Extract;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\Local;
@@ -23,7 +24,7 @@ abstract class ExtractCommand extends Command
 
 	private $configuration = null;
 
-	public function __construct (EventDispatcherInterface $dispatcher, Runner $runner, Registry $configuration)
+	public function __construct(EventDispatcherInterface $dispatcher, Runner $runner, Registry $configuration)
 	{
 		// Setting the command name based on the class
 		parent::__construct(str_replace('command', '', strtolower((new \ReflectionClass($this))->getShortName())));
@@ -40,7 +41,7 @@ abstract class ExtractCommand extends Command
 	 * @param AbstractAdapter $source
 	 * @return string[]
 	 */
-	abstract protected function getFilesToDelete (AbstractAdapter $source);
+	abstract protected function getFilesToDelete(AbstractAdapter $source);
 
 	/**
 	 * Returns if the command has failed based on the given output.
@@ -48,7 +49,7 @@ abstract class ExtractCommand extends Command
 	 * @param string $output
 	 * @return boolean
 	 */
-	abstract protected function isSuccessfullFinished ($output);
+	abstract protected function isSuccessfullFinished($output);
 
 	/**
 	 * Returns the command to execute.
@@ -58,7 +59,7 @@ abstract class ExtractCommand extends Command
 	 * @param AbstractAdapter $destination
 	 * @return \Tartana\Component\Command\Command
 	 */
-	abstract protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination);
+	abstract protected function getExtractCommand($password, AbstractAdapter $source, AbstractAdapter $destination);
 
 	/**
 	 * Can be used by subclasses to do things during command execution like
@@ -68,11 +69,11 @@ abstract class ExtractCommand extends Command
 	 * @param AbstractAdapter $source
 	 * @param AbstractAdapter $destination
 	 */
-	protected function processLine ($line, AbstractAdapter $source, AbstractAdapter $destination)
+	protected function processLine($line, AbstractAdapter $source, AbstractAdapter $destination)
 	{
 	}
 
-	protected function configure ()
+	protected function configure()
 	{
 		$this->setDescription('Extracts files. This command is running in foreground!');
 
@@ -81,7 +82,7 @@ abstract class ExtractCommand extends Command
 		$this->addArgument('pwfile', InputArgument::OPTIONAL, 'The file with passwords to use to extract.');
 	}
 
-	protected function execute (InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
 		$source = $input->getArgument('source');
@@ -93,8 +94,7 @@ abstract class ExtractCommand extends Command
 		$passwords = [
 				''
 		];
-		if ($pwFile && @file_exists($pwFile))
-		{
+		if ($pwFile && @file_exists($pwFile)) {
 			$pwFile = realpath($pwFile);
 			$fs = new Local(dirname($pwFile));
 			$pws = $fs->read(str_replace($fs->getPathPrefix(), '', $pwFile))['contents'];
@@ -109,62 +109,52 @@ abstract class ExtractCommand extends Command
 		$success = false;
 
 		// Extract with passwords check
-		foreach ($passwords as $pw)
-		{
+		foreach ($passwords as $pw) {
 			$me = $this;
 			$command = $this->getExtractCommand($pw, $source, $destination);
 			$this->log('Running pure command to extract the files: ' . $command);
 
-			$buffer = $this->runner->execute($command,
-					function  ($line) use ( $output, &$buffer, $me, $source, $destination) {
+			$buffer = $this->runner->execute(
+				$command,
+				function ($line) use ($output, &$buffer, $me, $source, $destination) {
 						$line = trim($line);
-						if ($line)
-						{
-							$output->writeln($line);
+					if ($line) {
+						$output->writeln($line);
 
-							$me->processLine($line, $source, $destination);
-						}
-					});
+						$me->processLine($line, $source, $destination);
+					}
+				}
+			);
 
 			$success = $this->isSuccessfullFinished($buffer);
 
 			// Delete the output file
-			if ($source->has('extract.out'))
-			{
+			if ($source->has('extract.out')) {
 				$source->delete('extract.out');
 			}
 
 			// If the fiels should be deleted on success
-			if ($success && $delete)
-			{
+			if ($success && $delete) {
 				$files = $this->getFilesToDelete($source);
-				if (is_array($files))
-				{
-					foreach ($files as $file)
-					{
-						if ($source->has($file))
-						{
+				if (is_array($files)) {
+					foreach ($files as $file) {
+						if ($source->has($file)) {
 							$source->delete($file);
 						}
 					}
 				}
-				if (empty($source->listContents()))
-				{
+				if (empty($source->listContents())) {
 					$source->deleteDir('');
 				}
 			}
-			if ($success)
-			{
+			if ($success) {
 				break;
-			}
-			else
-			{
+			} else {
 				// If we failed, write the output to the file
 				$source->write('extract.out', $buffer, new Config());
 			}
 		}
-		if ($this->dispatcher)
-		{
+		if ($this->dispatcher) {
 			$this->dispatcher->dispatch('processing.completed', new ProcessingCompletedEvent($source, $destination, $success));
 		}
 	}

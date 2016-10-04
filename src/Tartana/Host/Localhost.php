@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Host;
+
 use GuzzleHttp\Promise\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -20,59 +21,50 @@ class Localhost implements HostInterface
 
 	private $manager = null;
 
-	public function __construct (Registry $configuration = null, MountManager $manager = null)
+	public function __construct(Registry $configuration = null, MountManager $manager = null)
 	{
 		$this->configuration = $configuration;
 
-		if (empty($manager))
-		{
+		if (empty($manager)) {
 			$manager = new MountManager();
 		}
 		$this->manager = $manager;
 	}
 
-	public function fetchLinkList ($link)
+	public function fetchLinkList($link)
 	{
 		return [
 				$link
 		];
 	}
 
-	public function fetchDownloadInfo (array $downloads)
+	public function fetchDownloadInfo(array $downloads)
 	{
-		foreach ($downloads as $download)
-		{
-			if ($download->getFileName())
-			{
+		foreach ($downloads as $download) {
+			if ($download->getFileName()) {
 				continue;
 			}
 
 			$fs = $this->getSourceAdapter($download);
-			if (! empty($fs))
-			{
+			if (! empty($fs)) {
 				$download->setFileName(basename($download->getLink()));
 
-				if ($fs instanceof Local)
-				{
+				if ($fs instanceof Local) {
 					$download->setHash(md5_file($download->getLink()));
 				}
-			}
-			else
-			{
+			} else {
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
 			}
 		}
 	}
 
-	public function download (array $downloads)
+	public function download(array $downloads)
 	{
 		$promises = [];
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$destination = Util::realPath($download->getDestination());
-			if (empty($destination))
-			{
+			if (empty($destination)) {
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_DESTINATION');
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
 				$this->handleCommand(new SaveDownloads([
@@ -83,8 +75,7 @@ class Localhost implements HostInterface
 			}
 
 			$src = $this->getSourceAdapter($download);
-			if (empty($src))
-			{
+			if (empty($src)) {
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_PATH');
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
 				$this->handleCommand(new SaveDownloads([
@@ -101,32 +92,27 @@ class Localhost implements HostInterface
 			$manager->mountFilesystem('dst-' . $download->getId(), $dest);
 
 			$promise = new Promise(
-					function  () use ( &$promise, $download, $manager) {
+				function () use (&$promise, $download, $manager) {
 						$fileName = basename($download->getLink());
 						$destFileName = $download->getFileName() ? $download->getFileName() : $fileName;
 						$id = $download->getId();
-						if (! @$manager->copy('src-' . $id . '://' . $fileName, 'dst-' . $id . '://' . $destFileName))
-						{
-							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_COPY_FAILED');
-							$download->setState(Download::STATE_DOWNLOADING_ERROR);
-						}
-						else if (! empty($download->getHash()) && $download->getHash() != md5_file(
-								$manager->getFilesystem('dst-' . $id)
+					if (! @$manager->copy('src-' . $id . '://' . $fileName, 'dst-' . $id . '://' . $destFileName)) {
+						$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_COPY_FAILED');
+						$download->setState(Download::STATE_DOWNLOADING_ERROR);
+					} elseif (! empty($download->getHash()) && $download->getHash() != md5_file(
+						$manager->getFilesystem('dst-' . $id)
 									->getAdapter()
-									->applyPathPrefix($destFileName)))
-						{
-							$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_HASH');
-							$download->setState(Download::STATE_DOWNLOADING_ERROR);
+						->applyPathPrefix($destFileName)
+					)) {
+						$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_HASH');
+						$download->setState(Download::STATE_DOWNLOADING_ERROR);
 
-							if ($manager->has('dst-' . $id . '://' . $destFileName))
-							{
-								$manager->delete('dst-' . $id . '://' . $destFileName);
-							}
+						if ($manager->has('dst-' . $id . '://' . $destFileName)) {
+							$manager->delete('dst-' . $id . '://' . $destFileName);
 						}
-						else
-						{
-							$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
-						}
+					} else {
+						$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+					}
 						$download->setFinishedAt(new \DateTime());
 
 						$this->handleCommand(new SaveDownloads([
@@ -134,7 +120,8 @@ class Localhost implements HostInterface
 						]));
 
 						$promise->resolve(true);
-					});
+				}
+			);
 			$promises[] = $promise;
 		}
 
@@ -148,17 +135,15 @@ class Localhost implements HostInterface
 	 * @param Download $download
 	 * @return null|\League\Flysystem\AdapterInterface
 	 */
-	protected function getSourceAdapter (Download $download)
+	protected function getSourceAdapter(Download $download)
 	{
 		$uri = Util::parseUrl($download->getLink());
 
 		$path = Util::realPath($uri['path']);
-		if (empty($path))
-		{
-			// Perhaps relative
+		if (empty($path)) {
+		// Perhaps relative
 			$path = Util::realPath(ltrim($uri['path'], '/'));
-			if (empty($path))
-			{
+			if (empty($path)) {
 				return null;
 			}
 		}
@@ -166,7 +151,7 @@ class Localhost implements HostInterface
 		return new Local(dirname($path));
 	}
 
-	protected function getConfiguration ()
+	protected function getConfiguration()
 	{
 		return $this->configuration;
 	}

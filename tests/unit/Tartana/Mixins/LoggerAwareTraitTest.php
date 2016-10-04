@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Mixins;
+
 use Monolog\Logger;
 use Monolog\Handler\TestHandler;
 
 class LoggerAwareTraitTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testLogNoLogger ()
+	public function testLogNoLogger()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\LoggerAwareTrait');
 
@@ -15,7 +16,7 @@ class LoggerAwareTraitTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($trait->getLogger());
 	}
 
-	public function testLogSetNullLogger ()
+	public function testLogSetNullLogger()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\LoggerAwareTrait');
 
@@ -25,7 +26,7 @@ class LoggerAwareTraitTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($trait->getLogger());
 	}
 
-	public function testLogWithLoggerDefaultPriority ()
+	public function testLogWithLoggerDefaultPriority()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\LoggerAwareTrait');
 
@@ -40,7 +41,7 @@ class LoggerAwareTraitTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($h->hasDebugThatContains('test'));
 	}
 
-	public function testLogWithLoggerEmergency ()
+	public function testLogWithLoggerEmergency()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\LoggerAwareTrait');
 

@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Functional\Tartana\Controller;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
 
-	public function testIndex ()
+	public function testIndex()
 	{
 		$client = static::createClient();
 
@@ -22,7 +23,7 @@ class DefaultControllerTest extends WebTestCase
 			->count());
 	}
 
-	public function testDashboard ()
+	public function testDashboard()
 	{
 		$client = static::createClient();
 
@@ -37,7 +38,7 @@ class DefaultControllerTest extends WebTestCase
 			->count());
 	}
 
-	public function testLogin ()
+	public function testLogin()
 	{
 		$client = static::createClient();
 
@@ -50,7 +51,7 @@ class DefaultControllerTest extends WebTestCase
 			->count());
 	}
 
-	public function testDownloads ()
+	public function testDownloads()
 	{
 		$client = static::createClient();
 
@@ -62,7 +63,7 @@ class DefaultControllerTest extends WebTestCase
 			->count());
 	}
 
-	public function testParameters ()
+	public function testParameters()
 	{
 		$client = static::createClient();
 
@@ -74,7 +75,7 @@ class DefaultControllerTest extends WebTestCase
 			->count());
 	}
 
-	public function testLogs ()
+	public function testLogs()
 	{
 		$client = static::createClient();
 

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Local\Handler;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Local\Handler\LocalSaveDownloadsHandler;
 use Tartana\Domain\Command\SaveDownloads;
@@ -8,7 +9,7 @@ use Tartana\Entity\Download;
 class LocalSaveDownloadsHandlerTest extends WebTestCase
 {
 
-	public function testCreateDownload ()
+	public function testCreateDownload()
 	{
 		$this->loadFixtures([]);
 
@@ -32,7 +33,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 		$this->assertEquals('http://foo.bar/lhadu', $downloads[0]->getLink());
 	}
 
-	public function testCreateDownloadNoLink ()
+	public function testCreateDownloadNoLink()
 	{
 		$this->loadFixtures([]);
 
@@ -46,7 +47,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 		]));
 	}
 
-	public function testCreateDownloadNoDestination ()
+	public function testCreateDownloadNoDestination()
 	{
 		$this->loadFixtures([]);
 
@@ -63,7 +64,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 		]));
 	}
 
-	public function testUpdateDownload ()
+	public function testUpdateDownload()
 	{
 		$this->loadFixtures([]);
 
@@ -95,7 +96,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 		$this->assertEquals(10.33, $downloads[0]->getProgress());
 	}
 
-	public function testUpdateDownloadClone ()
+	public function testUpdateDownloadClone()
 	{
 		$this->loadFixtures([]);
 

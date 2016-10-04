@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Synology\DependencyInjection;
+
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use Synology\DependencyInjection\SynologyConfiguration;
 
@@ -7,14 +8,14 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 {
 	use ConfigurationTestCaseTrait;
 
-	public function testEnabledValueIsNotProvided ()
+	public function testEnabledValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
 				[]
 		], 'enabled');
 	}
 
-	public function testAddressValueIsNotProvided ()
+	public function testAddressValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
 				[
@@ -23,7 +24,7 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 		], 'address');
 	}
 
-	public function testUsernameValueIsNotProvided ()
+	public function testUsernameValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
 				[
@@ -33,35 +34,39 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 		], 'username');
 	}
 
-	public function testPasswordValueIsNotProvided ()
+	public function testPasswordValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid(
-				[
+			[
 						[
 								'enabled' => true,
 								'address' => 'http://localhost:5001',
 								'username' => 'admin'
 						]
-				], 'password');
+			],
+			'password'
+		);
 	}
 
-	public function testDownloadsValueIsNotProvided ()
+	public function testDownloadsValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid(
-				[
+			[
 						[
 								'enabled' => true,
 								'address' => 'http://localhost:5001',
 								'username' => 'admin',
 								'password' => 'admin'
 						]
-				], 'downloads');
+			],
+			'downloads'
+		);
 	}
 
-	public function testDownloadShareValueIsNotProvided ()
+	public function testDownloadShareValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid(
-				[
+			[
 						[
 								'enabled' => true,
 								'address' => 'http://localhost:5001',
@@ -69,13 +74,15 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 								'password' => 'admin',
 								'downloads' => '/path/to/dir'
 						]
-				], 'downloadShare');
+			],
+			'downloadShare'
+		);
 	}
 
-	public function testProcessedValueContainsRequiredValue ()
+	public function testProcessedValueContainsRequiredValue()
 	{
 		$this->assertProcessedConfigurationEquals(
-				[
+			[
 						[
 								'enabled' => true,
 								'address' => 'http://localhost:5001',
@@ -85,17 +92,18 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 								'downloadShare' => 'to/share'
 						]
 				],
-				[
+			[
 						'enabled' => true,
 						'address' => 'http://localhost:5001',
 						'username' => 'admin',
 						'password' => 'admin',
 						'downloads' => '/path/to/dir',
 						'downloadShare' => 'to/share'
-				]);
+			]
+		);
 	}
 
-	protected function getConfiguration ()
+	protected function getConfiguration()
 	{
 		return new SynologyConfiguration();
 	}

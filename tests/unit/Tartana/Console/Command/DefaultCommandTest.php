@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use Tartana\Console\Command\DefaultCommand;
@@ -15,7 +16,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testExecuteWithDlcFile ()
+	public function testExecuteWithDlcFile()
 	{
 		$fs = new Local(__DIR__);
 		$fs->copy('../../Component/Decrypter/files/simple.dlc', 'testdlcs/simple.dlc');
@@ -26,27 +27,31 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
-			->with($this->callback(function  (ParseLinks $command) {
-			return $command->getPath() == 'simple.dlc';
-		}));
+			->with($this->callback(function (ParseLinks $command) {
+				return $command->getPath() == 'simple.dlc';
+			}));
 
 		$application = new Application();
 		$application->add(
-				new DefaultCommand($repositoryMock, $messageBusMock,
-						new Registry([
+			new DefaultCommand(
+				$repositoryMock,
+				$messageBusMock,
+				new Registry([
 								'links' => [
 										'folder' => $fs->applyPathPrefix('testdlcs')
 								]
-						])));
-		$command = $application->find('default');
+					])
+			)
+		);
+				$command = $application->find('default');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
+				$commandTester = new CommandTester($command);
+				$commandTester->execute(array(
 				'command' => $command->getName()
-		));
+				));
 	}
 
-	public function testExecuteWithCompletedDownloads ()
+	public function testExecuteWithCompletedDownloads()
 	{
 		$downloads = [];
 
@@ -63,21 +68,23 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with(
 				$this->callback(
-						function  (ProcessCompletedDownloads $command) {
+					function (ProcessCompletedDownloads $command) {
 							return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test';
-						}));
+					}
+				)
+			);
 
-		$application = new Application();
-		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
-		$command = $application->find('default');
+				$application = new Application();
+				$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
+				$command = $application->find('default');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
+				$commandTester = new CommandTester($command);
+				$commandTester->execute(array(
 				'command' => $command->getName()
-		));
+				));
 	}
 
-	public function testExecuteWithNotCompletedDownloads ()
+	public function testExecuteWithNotCompletedDownloads()
 	{
 		$downloads = [];
 
@@ -107,7 +114,7 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		));
 	}
 
-	public function testExecuteWithNotCompletedAndCompletedDownloads ()
+	public function testExecuteWithNotCompletedAndCompletedDownloads()
 	{
 		$downloads = [];
 
@@ -132,21 +139,23 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with(
 				$this->callback(
-						function  (ProcessCompletedDownloads $command) {
+					function (ProcessCompletedDownloads $command) {
 							return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test1';
-						}));
+					}
+				)
+			);
 
-		$application = new Application();
-		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
+				$application = new Application();
+				$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
 
-		$command = $application->find('default');
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(array(
+				$command = $application->find('default');
+				$commandTester = new CommandTester($command);
+				$commandTester->execute(array(
 				'command' => $command->getName()
-		));
+				));
 	}
 
-	public function testExecuteWithNotStartedDownloads ()
+	public function testExecuteWithNotStartedDownloads()
 	{
 		$downloads = [];
 
@@ -161,9 +170,9 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$messageBusMock = $this->getMockBuilder(MessageBus::class)->getMock();
 		$messageBusMock->expects($this->once())
 			->method('handle')
-			->with($this->callback(function  (StartDownloads $command) {
-			return $command->getRepository() !== null;
-		}));
+			->with($this->callback(function (StartDownloads $command) {
+				return $command->getRepository() !== null;
+			}));
 
 		$application = new Application();
 		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
@@ -175,21 +184,20 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 
-		if ($fs->has('testdlcs'))
-		{
+		if ($fs->has('testdlcs')) {
 			$fs->deleteDir('testdlcs');
 		}
 	}

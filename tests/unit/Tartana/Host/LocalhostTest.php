@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Host;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -13,24 +14,23 @@ use League\Flysystem\Filesystem;
 class LocalhostTest extends TartanaBaseTestCase
 {
 
-	public function testFetchLinkList ()
+	public function testFetchLinkList()
 	{
 		$downloader = new Localhost(new Registry());
 		$links = $downloader->fetchLinkList('file://localhost/' . __DIR__);
 
 		$this->assertEquals([
-				'file://localhost/' . __DIR__
+			'file://localhost/' . __DIR__
 		], $links);
 	}
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -45,13 +45,10 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(md5_file(str_replace('file://localhost', '', $downloads[0]->getLink())), $downloads[0]->getHash());
 
 		$this->assertCount(count($downloads), $src->listContents());
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$contains = false;
-			foreach ($downloads as $d)
-			{
-				if ($file['path'] == $d->getFileName())
-				{
+			foreach ($downloads as $d) {
+				if ($file['path'] == $d->getFileName()) {
 					$contains = true;
 				}
 			}
@@ -59,7 +56,7 @@ class LocalhostTest extends TartanaBaseTestCase
 		}
 	}
 
-	public function testFetchDownloadInfoInvalidLink ()
+	public function testFetchDownloadInfoInvalidLink()
 	{
 		$download = new Download();
 		$download->setLink('file://localhost/invalid');
@@ -67,14 +64,14 @@ class LocalhostTest extends TartanaBaseTestCase
 
 		$downloader = new Localhost(new Registry());
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testFetchDownloadInfoFileNameSet ()
+	public function testFetchDownloadInfoFileNameSet()
 	{
 		$download = new Download();
 		$download->setLink('file://localhost/invalid');
@@ -83,7 +80,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 		$downloader = new Localhost(new Registry());
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEquals('hello.txt', $download->getFileName());
@@ -91,14 +88,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
 	}
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -113,13 +109,10 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$contains = false;
-			foreach ($downloads as $d)
-			{
-				if ('file://localhost' . str_replace('/test1/', '/test/', $dest->applyPathPrefix($file['path'])) == $d->getLink())
-				{
+			foreach ($downloads as $d) {
+				if ('file://localhost' . str_replace('/test1/', '/test/', $dest->applyPathPrefix($file['path'])) == $d->getLink()) {
 					$contains = true;
 				}
 			}
@@ -127,14 +120,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		}
 	}
 
-	public function testDownloadLinkInvalidHash ()
+	public function testDownloadLinkInvalidHash()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -151,14 +143,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testDownloadLinksNewFileName ()
+	public function testDownloadLinksNewFileName()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -173,13 +164,10 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$contains = false;
-			foreach ($downloads as $d)
-			{
-				if ($file['path'] == $d->getFileName())
-				{
+			foreach ($downloads as $d) {
+				if ($file['path'] == $d->getFileName()) {
 					$contains = true;
 				}
 			}
@@ -187,14 +175,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		}
 	}
 
-	public function testDownloadRelativeLinks ()
+	public function testDownloadRelativeLinks()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . str_replace(TARTANA_PATH_ROOT, '', $src->applyPathPrefix($file['path'])));
 			$download->setDestination($dest->getPathPrefix());
@@ -208,14 +195,12 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$contains = false;
-			foreach ($downloads as $d)
-			{
-				if ('file://localhost' . str_replace('/test1/', '/test/', str_replace(TARTANA_PATH_ROOT, '', $dest->applyPathPrefix($file['path']))) ==
-						 $d->getLink())
-				{
+			$path = str_replace(TARTANA_PATH_ROOT, '', $dest->applyPathPrefix($file['path']));
+			$path = str_replace('/test1/', '/test/', $path);
+			foreach ($downloads as $d) {
+				if ('file://localhost' . $path == $d->getLink()) {
 					$contains = true;
 				}
 			}
@@ -223,14 +208,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		}
 	}
 
-	public function testDownloadInvalidLinks ()
+	public function testDownloadInvalidLinks()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -251,7 +235,7 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $failedDownload->getState());
 	}
 
-	public function testDownloadEmpty ()
+	public function testDownloadEmpty()
 	{
 		$downloader = new Localhost();
 		Promise\unwrap($downloader->download([]));
@@ -260,14 +244,13 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertEmpty($fs->listContents());
 	}
 
-	public function testDownloadInvalidDestination ()
+	public function testDownloadInvalidDestination()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination('/invalid');
@@ -277,27 +260,25 @@ class LocalhostTest extends TartanaBaseTestCase
 		$downloader = new Localhost(new Registry());
 		Promise\unwrap($downloader->download($downloads));
 
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$this->assertNotEmpty($download->getMessage());
 			$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 		}
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testDownloadNoPermission ()
+	public function testDownloadNoPermission()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1', LOCK_EX, Local::DISALLOW_LINKS, [
-				'dir' => [
-						'private' => 0400
-				]
+			'dir' => [
+				'private' => 0400
+			]
 		]);
 		$dest->setVisibility('', AdapterInterface::VISIBILITY_PRIVATE);
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$download = new Download();
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
 			$download->setDestination($dest->getPathPrefix());
@@ -307,17 +288,16 @@ class LocalhostTest extends TartanaBaseTestCase
 		$downloader = new Localhost(new Registry());
 		Promise\unwrap($downloader->download($downloads));
 
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$this->assertNotEmpty($download->getMessage());
 			$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 		}
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testDownloadNoPath ()
+	public function testDownloadNoPath()
 	{
-		$src = new Local(__DIR__ . '/test');
+		new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -329,22 +309,20 @@ class LocalhostTest extends TartanaBaseTestCase
 		$downloader = new Localhost(new Registry());
 		Promise\unwrap($downloader->download($downloads));
 
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$this->assertNotEmpty($download->getMessage());
 			$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 		}
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testMountManager ()
+	public function testMountManager()
 	{
 		$src = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		foreach ($src->listContents() as $key => $file)
-		{
+		foreach ($src->listContents() as $key => $file) {
 			$download = new Download();
 			$download->setId($key);
 			$download->setLink('file://localhost' . $src->applyPathPrefix($file['path']));
@@ -353,19 +331,18 @@ class LocalhostTest extends TartanaBaseTestCase
 		}
 
 		$tests = [];
-		foreach ($downloads as $d)
-		{
+		foreach ($downloads as $d) {
 			$tests[] = [
-					$this->equalTo('src-' . $d->getId()),
-					$this->callback(function  (Filesystem $f) {
-						return $f->getAdapter() instanceof Local;
-					})
+				$this->equalTo('src-' . $d->getId()),
+				$this->callback(function (Filesystem $f) {
+					return $f->getAdapter() instanceof Local;
+				})
 			];
 			$tests[] = [
-					$this->equalTo('dst-' . $d->getId()),
-					$this->callback(function  (Filesystem $f) {
-						return $f->getAdapter() instanceof Local;
-					})
+				$this->equalTo('dst-' . $d->getId()),
+				$this->callback(function (Filesystem $f) {
+					return $f->getAdapter() instanceof Local;
+				})
 			];
 		}
 
@@ -380,18 +357,17 @@ class LocalhostTest extends TartanaBaseTestCase
 		Promise\unwrap($downloader->download($downloads));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
-		foreach ($fs->listContents('files', false) as $rar)
-		{
+		foreach ($fs->listContents('files', false) as $rar) {
 			$fs->copy($rar['path'], str_replace('files/', 'test/', $rar['path']));
 		}
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');

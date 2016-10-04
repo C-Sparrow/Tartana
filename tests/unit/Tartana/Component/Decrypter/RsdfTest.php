@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Component\Decrypter;
+
 use Tartana\Component\Decrypter\Rsdf;
 
 class RsdfTest extends BaseDecrypterTestCase
 {
 
-	public function testDecryptFile2 ()
+	public function testDecryptFile2()
 	{
 		$file = __DIR__ . '/files/simple1.rsdf';
 		$dec = $this->getDecrypter();
@@ -14,13 +15,12 @@ class RsdfTest extends BaseDecrypterTestCase
 		$this->assertTrue(is_array($links));
 		$this->assertGreaterThanOrEqual(2, count($links));
 
-		foreach ($links as $link)
-		{
+		foreach ($links as $link) {
 			$this->assertContains('http', $link);
 		}
 	}
 
-	protected function getDecrypter ()
+	protected function getDecrypter()
 	{
 		return new Rsdf();
 	}

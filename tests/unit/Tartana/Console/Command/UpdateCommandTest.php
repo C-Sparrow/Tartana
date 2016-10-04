@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Console\Command;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Symfony\Component\Console\Application;
@@ -13,27 +14,29 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class UpdateCommandTest extends TartanaBaseTestCase
 {
 
-	public function testUpdateGithub ()
+	public function testUpdateGithub()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command) {
 							return strpos($command, 'unzip') !== false;
 						}),
 						$this->callback(
-								function  (Command $command) {
+							function (Command $command) {
 									return strpos($command, 'doctrine:migrations:migrate') !== false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$host1 = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host1->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$asset = new \stdClass();
 					$asset->browser_download_url = 'http://tartana/tartana.zip';
 					$obj = new \stdClass();
@@ -44,10 +47,11 @@ class UpdateCommandTest extends TartanaBaseTestCase
 					$fs->write($downloads[0]->getFileName(), json_encode([
 							$obj
 					]), new Config());
-				})
-			->with($this->callback(function  (array $downloads) {
-			return $downloads[0]->getFileName() == 'github-update-data.json';
-		}));
+				}
+			)
+			->with($this->callback(function (array $downloads) {
+				return $downloads[0]->getFileName() == 'github-update-data.json';
+			}));
 		$host1->expects($this->once())
 			->method('setCommandBus')
 			->with($this->equalTo(null));
@@ -66,30 +70,32 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateGithubInvalidResponseUrl ()
+	public function testUpdateGithubInvalidResponseUrl()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						})
-				]);
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$obj = new \stdClass();
 					$obj->assets = [];
 					$fs = new Local($downloads[0]->getDestination());
 					$fs->write($downloads[0]->getFileName(), json_encode([
 							$obj
 					]), new Config());
-				})
-			->with($this->callback(function  (array $downloads) {
-			return $downloads[0]->getFileName() == 'github-update-data.json';
-		}));
+				}
+			)
+			->with($this->callback(function (array $downloads) {
+				return $downloads[0]->getFileName() == 'github-update-data.json';
+			}));
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'github', $this->getMockHostFactory($host)));
@@ -102,21 +108,23 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateNormalUrl ()
+	public function testUpdateNormalUrl()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command) {
 							return strpos($command, 'unzip') !== false;
 						}),
 						$this->callback(
-								function  (Command $command) {
+							function (Command $command) {
 									return strpos($command, 'doctrine:migrations:migrate') !== false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'test', $this->getMockHostFactory($this->getMockHost())));
@@ -129,12 +137,17 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateEmptyCache ()
+	public function testUpdateEmptyCache()
 	{
 		$application = new Application();
 		$application->add(
-				new UpdateCommand($this->getMockBuilder(Runner::class)
-					->getMock(), 'test', $this->getMockHostFactory($this->getMockHost())));
+			new UpdateCommand(
+				$this->getMockBuilder(Runner::class)
+				->getMock(),
+				'test',
+				$this->getMockHostFactory($this->getMockHost())
+			)
+		);
 
 		$command = $application->find('update');
 		$commandTester = new CommandTester($command);
@@ -150,21 +163,23 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		$this->assertEmpty($fs->listContents(''));
 	}
 
-	public function testUpdateHasZipAlready ()
+	public function testUpdateHasZipAlready()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command) {
 							return strpos($command, 'unzip') !== false;
 						}),
 						$this->callback(
-								function  (Command $command) {
+							function (Command $command) {
 									return strpos($command, 'doctrine:migrations:migrate') !== false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$fs = new Local(__DIR__ . '/test');
 		$this->createZipForUpdate(TARTANA_PATH_ROOT . '/var/tmp/tartana.zip');
@@ -180,23 +195,25 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateInvalidZipFile ()
+	public function testUpdateInvalidZipFile()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						})
-				]);
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$fs = new Local($downloads[0]->getDestination());
 					$fs->write($downloads[0]->getFileName(), 'invalid content', new Config());
-				});
+				}
+			);
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'test', $this->getMockHostFactory($host)));
@@ -209,14 +226,15 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateNoDownloader ()
+	public function testUpdateNoDownloader()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						})
-				]);
+			]
+		);
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'test', $this->getMockHostFactory(null)));
@@ -229,22 +247,24 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateOlderVersion ()
+	public function testUpdateOlderVersion()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						})
-				]);
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$this->createZipForUpdate($downloads[0]->getDestination() . '/' . $downloads[0]->getFileName(), '0.0.1');
-				});
+				}
+			);
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'test', $this->getMockHostFactory($host)));
@@ -257,29 +277,32 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateOlderVersionForce ()
+	public function testUpdateOlderVersionForce()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						}),
-						$this->callback(function  (Command $command) {
+						$this->callback(function (Command $command) {
 							return strpos($command, 'unzip') !== false;
 						}),
 						$this->callback(
-								function  (Command $command) {
+							function (Command $command) {
 									return strpos($command, 'doctrine:migrations:migrate') !== false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$this->createZipForUpdate($downloads[0]->getDestination() . '/' . $downloads[0]->getFileName(), '0.0.1');
-				});
+				}
+			);
 
 		$application = new Application();
 		$application->add(new UpdateCommand($runner, 'test', $this->getMockHostFactory($host)));
@@ -293,14 +316,15 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateInvalidZipFetch ()
+	public function testUpdateInvalidZipFetch()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'stop') !== false;
 						})
-				]);
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
@@ -320,7 +344,7 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	public function testUpdateEmptyUrl ()
+	public function testUpdateEmptyUrl()
 	{
 		$runner = $this->getMockRunner();
 
@@ -335,10 +359,9 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		]);
 	}
 
-	private function createZipForUpdate ($path, $version = null)
+	private function createZipForUpdate($path, $version = null)
 	{
-		if ($version === null)
-		{
+		if ($version === null) {
 			$fs = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
 			$version = $fs->read('version.txt')['contents'];
 			preg_match_all("/(\d+)\.(\d+)\.(\d+)/", $version, $matches);
@@ -352,18 +375,19 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		return $version;
 	}
 
-	private function getMockHost ()
+	private function getMockHost()
 	{
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->willReturnCallback(
-				function  (array $downloads) {
+				function (array $downloads) {
 					$this->createZipForUpdate($downloads[0]->getDestination() . '/' . $downloads[0]->getFileName());
-				})
-			->with($this->callback(function  (array $downloads) {
-			return ! empty($downloads[0]->getLink());
-		}));
+				}
+			)
+			->with($this->callback(function (array $downloads) {
+				return ! empty($downloads[0]->getLink());
+			}));
 
 		$host->expects($this->once())
 			->method('setCommandBus')
@@ -371,16 +395,14 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		return $host;
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT);
 
-		if ($fs->has('var/tmp/tartana.zip'))
-		{
+		if ($fs->has('var/tmp/tartana.zip')) {
 			$fs->delete('var/tmp/tartana.zip');
 		}
-		if ($fs->has('var/tmp/github-update-data.json'))
-		{
+		if ($fs->has('var/tmp/github-update-data.json')) {
 			$fs->delete('var/tmp/github-update-data.json');
 		}
 
@@ -389,15 +411,13 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		$fs = new Local(__DIR__ . '/test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT);
-		if ($fs->has('var/tmp/tartana.zip'))
-		{
+		if ($fs->has('var/tmp/tartana.zip')) {
 			$fs->delete('var/tmp/tartana.zip');
 		}
-		if ($fs->has('var/tmp/github-update-data.json'))
-		{
+		if ($fs->has('var/tmp/github-update-data.json')) {
 			$fs->delete('var/tmp/github-update-data.json');
 		}
 		$fs->write('var/cache/.gitkeep', '', new Config());
@@ -405,8 +425,7 @@ class UpdateCommandTest extends TartanaBaseTestCase
 		$fs->rename('app/config/internal/version.txt.backup.for.test', 'app/config/internal/version.txt');
 
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}

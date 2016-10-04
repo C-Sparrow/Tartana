@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Domain\Command\ChangeDownloadState;
 use Tartana\Entity\Download;
 
 class ChangeDownloadStateTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testChangeDownloadStateCommand ()
+	public function testChangeDownloadStateCommand()
 	{
 		$download = new Download();
 		$download->setId(2);

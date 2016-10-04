@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local;
+
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Tartana\Entity\Download;
@@ -8,17 +9,16 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class LocalBaseTestCase extends TartanaBaseTestCase
 {
 
-	protected function getMockEntityManager ($callbacks = [], $flushCount = 1, $downloads = [])
+	protected function getMockEntityManager($callbacks = [], $flushCount = 1, $downloads = [])
 	{
-		foreach ($callbacks as $key => $callback)
-		{
+		foreach ($callbacks as $key => $callback) {
 			$callbacks[$key] = [
 					$callback
 			];
 		}
 
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-		$entityManager->method('merge')->willReturnCallback(function  (Download $e) {
+		$entityManager->method('merge')->willReturnCallback(function (Download $e) {
 			return $e;
 		});
 

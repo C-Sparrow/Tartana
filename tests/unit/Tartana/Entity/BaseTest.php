@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Entity\Base;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testEmptyBase ()
+	public function testEmptyBase()
 	{
 		$entity = new Base();
 
@@ -13,7 +14,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($entity->toArray());
 	}
 
-	public function testBaseWithFields ()
+	public function testBaseWithFields()
 	{
 		$entity = new Base();
 		$entity->test = 'hello';

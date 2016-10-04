@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Tartana\Mixins\JsonSerializableTrait;
@@ -22,12 +23,12 @@ class User extends BaseUser implements \JsonSerializable
 	 */
 	protected $id;
 
-	public function __construct ()
+	public function __construct()
 	{
 		parent::__construct();
 	}
 
-	public function jsonSerialize ()
+	public function jsonSerialize()
 	{
 		$vars = $this->traitJsonSerialize();
 

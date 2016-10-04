@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\DependencyInjection\Security\Factory\WsseFactory;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\DependencyInjection\Container;
@@ -9,7 +10,7 @@ use Symfony\Component\DependencyInjection\Definition;
 class WsseFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testSetDefinitions ()
+	public function testSetDefinitions()
 	{
 		$container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 		$definition = $this->getMockBuilder(Definition::class)->getMock();
@@ -24,21 +25,21 @@ class WsseFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('hello', $data[2]);
 	}
 
-	public function testGetPosition ()
+	public function testGetPosition()
 	{
 		$factory = new WsseFactory();
 
 		$this->assertEquals('pre_auth', $factory->getPosition());
 	}
 
-	public function testGetKey ()
+	public function testGetKey()
 	{
 		$factory = new WsseFactory();
 
 		$this->assertEquals('wsse', $factory->getKey());
 	}
 
-	public function testAddConfiguration ()
+	public function testAddConfiguration()
 	{
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('unit');

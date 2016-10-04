@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event\Listener;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Symfony\Component\Console\Application;
@@ -14,7 +15,7 @@ use Tartana\Component\Command\Runner;
 class ConvertSoundCommandTest extends TartanaBaseTestCase
 {
 
-	public function testConvertFile ()
+	public function testConvertFile()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.mp4', 'mp4', new Config());
@@ -22,49 +23,56 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$fs->createDir('test1', new Config());
 
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function  (Command $command) {
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'which ffmpeg') !== false;
 						}),
 						[
 								$this->callback(
-										function  (Command $command) {
+									function (Command $command) {
 											return strpos($command, 'ffmpeg') !== false && ! $command->isAsync();
-										}),
+									}
+								),
 								$this->callback(
-										function  ($callback) {
+									function ($callback) {
 											$callback('unit test');
 											return $callback != null;
-										})
+									}
+								)
 						]
-				], [
+				],
+			[
 						'yes'
-				]);
+			]
+		);
 
-		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-		$dispatcher->expects($this->once())
-			->method('dispatch')
-			->with($this->equalTo('processing.completed'),
-				$this->callback(function  (ProcessingCompletedEvent $event) {
-					return $event->isSuccess();
-				}));
+				$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+				$dispatcher->expects($this->once())
+				->method('dispatch')
+				->with(
+					$this->equalTo('processing.completed'),
+					$this->callback(function (ProcessingCompletedEvent $event) {
+						return $event->isSuccess();
+				    })
+				);
 
-		$application = new Application();
-		$application->add(new ConvertSoundCommand($runner, $dispatcher));
-		$command = $application->find('convert:sound');
+				$application = new Application();
+				$application->add(new ConvertSoundCommand($runner, $dispatcher));
+				$command = $application->find('convert:sound');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(
-				[
+				$commandTester = new CommandTester($command);
+				$commandTester->execute(
+					[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+					]
+				);
 
 		$this->assertContains('unit test', trim($commandTester->getDisplay()));
 	}
 
-	public function testConvertInvalidFile ()
+	public function testConvertInvalidFile()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.mp4', 'mp4', new Config());
@@ -81,25 +89,28 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 		$dispatcher->expects($this->once())
 			->method('dispatch')
-			->with($this->equalTo('processing.completed'),
-				$this->callback(function  (ProcessingCompletedEvent $event) {
+			->with(
+				$this->equalTo('processing.completed'),
+				$this->callback(function (ProcessingCompletedEvent $event) {
 					return ! $event->isSuccess();
-				}));
+				})
+			);
 
-		$application = new Application();
-		$application->add(new ConvertSoundCommand($runner, $dispatcher));
-		$command = $application->find('convert:sound');
+				$application = new Application();
+				$application->add(new ConvertSoundCommand($runner, $dispatcher));
+				$command = $application->find('convert:sound');
 
-		$commandTester = new CommandTester($command);
-		$commandTester->execute(
-				[
+				$commandTester = new CommandTester($command);
+				$commandTester->execute(
+					[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+					]
+				);
 	}
 
-	public function testConvertFileInvalidSource ()
+	public function testConvertFileInvalidSource()
 	{
 		$fs = new Local(__DIR__);
 		$fs->createDir('test1', new Config());
@@ -110,14 +121,15 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => __DIR__ . '/invalid',
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 	}
 
-	public function testConvertFileInvalidDestination ()
+	public function testConvertFileInvalidDestination()
 	{
 		$fs = new Local(__DIR__);
 		$fs->createDir('test', new Config());
@@ -130,14 +142,15 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 	}
 
-	public function testConvertFileFFMpegNotAvailable ()
+	public function testConvertFileFFMpegNotAvailable()
 	{
 		$fs = new Local(__DIR__);
 		$fs->createDir('test', new Config());
@@ -145,25 +158,29 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 		$application = new Application();
 		$application->add(
-				new ConvertSoundCommand(
-						$this->getMockRunner(
-								[
-										$this->callback(function  (Command $command) {
+			new ConvertSoundCommand(
+				$this->getMockRunner(
+					[
+										$this->callback(function (Command $command) {
 											return true;
 										})
-								])));
+							]
+				)
+			)
+		);
 		$command = $application->find('convert:sound');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');

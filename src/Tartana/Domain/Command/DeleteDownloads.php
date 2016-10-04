@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Domain\Command;
+
 use Tartana\Util;
 
 class DeleteDownloads
@@ -7,7 +8,7 @@ class DeleteDownloads
 
 	private $downloads = null;
 
-	public function __construct (array $downloads)
+	public function __construct(array $downloads)
 	{
 		$this->downloads = Util::cloneObjects($downloads);
 	}
@@ -16,7 +17,7 @@ class DeleteDownloads
 	 *
 	 * @return Download[]
 	 */
-	public function getDownloads ()
+	public function getDownloads()
 	{
 		return $this->downloads;
 	}

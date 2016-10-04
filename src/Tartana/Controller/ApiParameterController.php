@@ -21,10 +21,8 @@ class ApiParameterController extends Controller
 
 		$root = new Local($this->container->getParameter('kernel.root_dir') . '/config');
 		$parameters = Yaml::parse($root->read('parameters.yml')['contents']);
-		if (is_array($parameters))
-		{
-			foreach ($parameters['parameters'] as $key => $parameter)
-			{
+		if (is_array($parameters)) {
+			foreach ($parameters['parameters'] as $key => $parameter) {
 				$p = [
 						'value' => $parameter,
 						'key' => $key
@@ -53,9 +51,8 @@ class ApiParameterController extends Controller
 	{
 		$parameters = $request->request->all();
 		$labels = [];
-		foreach ($parameters as $key => $p)
-		{
-			// http://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays
+		foreach ($parameters as $key => $p) {
+		// http://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays
 			$newKey = str_replace('_', '.', $key);
 			unset($parameters[$key]);
 			$parameters[$newKey] = $p;
@@ -67,8 +64,10 @@ class ApiParameterController extends Controller
 
 		$data = [
 				'success' => true,
-				'message' => sprintf($this->container->get('Translator')->trans('TARTANA_VIEW_PARAMETERS_SET_PARAMETER_SUCCESS'),
-						implode(',', $labels))
+				'message' => sprintf(
+					$this->container->get('Translator')->trans('TARTANA_VIEW_PARAMETERS_SET_PARAMETER_SUCCESS'),
+					implode(',', $labels)
+				)
 		];
 
 		return new JsonResponse($data);

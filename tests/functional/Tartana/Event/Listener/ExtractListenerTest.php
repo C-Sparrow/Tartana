@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -11,7 +12,7 @@ use Tartana\Event\Listener\ExtractListener;
 class ExtractListenerTest extends KernelTestCase
 {
 
-	public function testExtractRarFile ()
+	public function testExtractRarFile()
 	{
 		$this->copyArchives('rars');
 
@@ -25,8 +26,7 @@ class ExtractListenerTest extends KernelTestCase
 		]);
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$d = new Download();
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
@@ -39,7 +39,7 @@ class ExtractListenerTest extends KernelTestCase
 		$this->assertEmpty($src->listContents());
 	}
 
-	public function testExtract7zFile ()
+	public function testExtract7zFile()
 	{
 		$this->copyArchives('7z', 'multipart');
 
@@ -53,8 +53,7 @@ class ExtractListenerTest extends KernelTestCase
 		]);
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$d = new Download();
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
@@ -67,7 +66,7 @@ class ExtractListenerTest extends KernelTestCase
 		$this->assertEmpty($src->listContents());
 	}
 
-	public function testExtractRarFileAsync ()
+	public function testExtractRarFileAsync()
 	{
 		$this->copyArchives('rars');
 
@@ -81,8 +80,7 @@ class ExtractListenerTest extends KernelTestCase
 		]);
 
 		$downloads = [];
-		foreach ($src->listContents() as $file)
-		{
+		foreach ($src->listContents() as $file) {
 			$d = new Download();
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
@@ -92,35 +90,32 @@ class ExtractListenerTest extends KernelTestCase
 		$listener->onProcessCompletedDownloads($event);
 
 		// As we run it async we wait at least 10 seconds
-		for ($i = 0; $i < 3 && ! $dst->has('test/Downloads/symfony.png'); $i ++)
-		{
+		for ($i = 0; $i < 3 && ! $dst->has('test/Downloads/symfony.png'); $i ++) {
 			sleep(1);
 		}
 
 		$this->assertTrue($dst->has('test/Downloads/symfony.png'));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		self::bootKernel();
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 	}
 
-	private function copyArchives ($type, $folder = 'simple')
+	private function copyArchives($type, $folder = 'simple')
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
-		foreach ($fs->listContents('../../Console/Command/Extract/' . $type . '/' . $folder, false) as $archive)
-		{
-			if ($archive['type'] != 'file')
-			{
+		foreach ($fs->listContents('../../Console/Command/Extract/' . $type . '/' . $folder, false) as $archive) {
+			if ($archive['type'] != 'file') {
 				continue;
 			}
 			$fs->copy($archive['path'], str_replace('../../Console/Command/Extract/' . $type . '/' . $folder, 'test/', $archive['path']));

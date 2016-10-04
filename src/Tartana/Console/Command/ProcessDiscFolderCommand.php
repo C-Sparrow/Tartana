@@ -23,7 +23,8 @@ class ProcessDiscFolderCommand extends SymfonyCommand
 	protected function configure()
 	{
 		$this->setDescription(
-				'Converts folders with the name CD and which contains mp3 files to a flat structure. This command is running in foreground!');
+			'Converts folders with the name CD and which contains mp3 files to a flat structure. This command is running in foreground!'
+		);
 
 		$this->addArgument('source', InputArgument::REQUIRED, 'The folder to process.');
 	}
@@ -31,39 +32,32 @@ class ProcessDiscFolderCommand extends SymfonyCommand
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$source = Util::realPath($input->getArgument('source'));
-		if (empty($source))
-		{
+		if (empty($source)) {
 			$this->log('Source directory no found to convert.', Logger::ERROR);
 			return;
 		}
 
 		$source = new Local($source);
 
-		foreach ($source->listContents('', true) as $directory)
-		{
-			if ($directory['type'] != 'dir')
-			{
+		foreach ($source->listContents('', true) as $directory) {
+			if ($directory['type'] != 'dir') {
 				// Not a directory
 				continue;
 			}
 
 			$dirName = basename($directory['path']);
-			if ($dirName != 'CD' && $dirName != 'Cover')
-			{
-				// Not meant to be processed
+			if ($dirName != 'CD' && $dirName != 'Cover') {
+			// Not meant to be processed
 				continue;
 			}
 
-			foreach ($source->listContents($directory['path'], false) as $file)
-			{
-				if ($file['type'] != 'file')
-				{
+			foreach ($source->listContents($directory['path'], false) as $file) {
+				if ($file['type'] != 'file') {
 					continue;
 				}
 				$source->rename($file['path'], dirname(dirname($file['path'])) . '/' . basename($file['path']));
 			}
-			if (empty($source->listContents($directory['path'], false)))
-			{
+			if (empty($source->listContents($directory['path'], false))) {
 				$source->deleteDir($directory['path']);
 			}
 		}

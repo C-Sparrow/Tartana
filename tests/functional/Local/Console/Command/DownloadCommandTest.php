@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Local\Console\Command;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Tartana\Host\HostFactory;
 use Tartana\Host\HostInterface;
@@ -10,7 +11,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class DownloadCommandTest extends WebTestCase
 {
 
-	public function testExecute ()
+	public function testExecute()
 	{
 		$this->loadFixtures([
 				'Local\DataFixtures\ORM\LoadDownloadData'

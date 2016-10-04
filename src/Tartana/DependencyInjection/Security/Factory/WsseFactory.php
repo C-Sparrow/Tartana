@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\DependencyInjection\Security\Factory;
+
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -10,11 +11,13 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 class WsseFactory implements SecurityFactoryInterface
 {
 
-	public function create (ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
+	public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
 	{
 		$providerId = 'security.authentication.provider.wsse.' . $id;
-		$container->setDefinition($providerId, new DefinitionDecorator('wsse.security.authentication.provider'))->replaceArgument(0,
-				new Reference($userProvider));
+		$container->setDefinition($providerId, new DefinitionDecorator('wsse.security.authentication.provider'))->replaceArgument(
+			0,
+			new Reference($userProvider)
+		);
 
 		$listenerId = 'security.authentication.listener.wsse.' . $id;
 		$container->setDefinition($listenerId, new DefinitionDecorator('wsse.security.authentication.listener'));
@@ -26,20 +29,19 @@ class WsseFactory implements SecurityFactoryInterface
 		);
 	}
 
-	public function getPosition ()
+	public function getPosition()
 	{
 		return 'pre_auth';
 	}
 
-	public function getKey ()
+	public function getKey()
 	{
 		return 'wsse';
 	}
 
-	public function addConfiguration (NodeDefinition $node)
+	public function addConfiguration(NodeDefinition $node)
 	{
-		if ($node instanceof ArrayNodeDefinition)
-		{
+		if ($node instanceof ArrayNodeDefinition) {
 			$node->children()
 				->scalarNode('lifetime')
 				->defaultValue(300)

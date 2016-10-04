@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Controller;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -11,7 +12,7 @@ class ApiLogControllerTest extends WebTestCase
 
 	private $client = null;
 
-	public function testV1FindLogs ()
+	public function testV1FindLogs()
 	{
 		$logger = $this->client->getContainer()->get('Logger');
 		$logger->log(Logger::ERROR, 'Unit test.');
@@ -32,7 +33,7 @@ class ApiLogControllerTest extends WebTestCase
 		$this->assertContains('Unit test.', $resp->data[0]->message);
 	}
 
-	public function testV1FindLogsMany ()
+	public function testV1FindLogsMany()
 	{
 		$logger = $this->client->getContainer()->get('Logger');
 		$logger->log(Logger::INFO, 'Unit test.');
@@ -60,15 +61,14 @@ class ApiLogControllerTest extends WebTestCase
 		$this->assertNotEmpty($resp->data);
 		$this->assertCount(12, $resp->data);
 
-		foreach ($resp->data as $log)
-		{
+		foreach ($resp->data as $log) {
 			$this->assertNotEmpty($log->date);
 			$this->assertNotEmpty($log->message);
 			$this->assertContains('Unit test.', $log->message);
 		}
 	}
 
-	public function testV1ClearAll ()
+	public function testV1ClearAll()
 	{
 		$logger = $this->client->getContainer()->get('Logger');
 		$logger->log(Logger::INFO, 'Unit test.');
@@ -89,7 +89,7 @@ class ApiLogControllerTest extends WebTestCase
 			->getParameter('tartana.log.path'));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$this->loadFixtures([]);
 

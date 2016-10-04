@@ -36,26 +36,22 @@ class ServerCommand extends AbstractDaemonCommand
 		$command->setCaptureErrorInOutput(true);
 		$command->addArgument('-S 0.0.0.0:' . $port, false);
 		$command->addArgument(
-				TARTANA_PATH_ROOT . '/vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/config/router_' . $environment . '.php');
+			TARTANA_PATH_ROOT . '/vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/config/router_' . $environment . '.php'
+		);
 		$pid = $this->getCommandRunner()->execute($command);
 
 		$this->attachPid($input, $pid);
 
-		do
-		{
+		do {
 			$output = trim($this->getCommandRunner()->execute(Command::getAppCommand('default')));
-			if ($output)
-			{
+			if ($output) {
 				$this->log('Default command returned with output, set log level to debug to get the reason', Logger::ERROR);
 				$this->log('Output was: ' . $output);
-			}
-			else
-			{
+			} else {
 				// @codeCoverageIgnoreStart
 				sleep(10);
 				// @codeCoverageIgnoreEnd
 			}
-		}
-		while (!$output);
+		} while (!$output);
 	}
 }

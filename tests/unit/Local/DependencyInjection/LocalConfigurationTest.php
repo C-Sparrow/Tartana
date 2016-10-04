@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\DependencyInjection;
+
 use Local\DependencyInjection\LocalConfiguration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 
@@ -7,14 +8,14 @@ class LocalConfigurationTest extends \PHPUnit_Framework_TestCase
 {
 	use ConfigurationTestCaseTrait;
 
-	public function testEnabledValueIsNotProvided ()
+	public function testEnabledValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
 				[]
 		], 'enabled');
 	}
 
-	public function testDownloadsValueIsNotProvided ()
+	public function testDownloadsValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
 				[
@@ -23,7 +24,7 @@ class LocalConfigurationTest extends \PHPUnit_Framework_TestCase
 		], 'downloads');
 	}
 
-	public function testProcessedValueContainsRequiredValue ()
+	public function testProcessedValueContainsRequiredValue()
 	{
 		$this->assertProcessedConfigurationEquals([
 				[
@@ -36,7 +37,7 @@ class LocalConfigurationTest extends \PHPUnit_Framework_TestCase
 		]);
 	}
 
-	protected function getConfiguration ()
+	protected function getConfiguration()
 	{
 		return new LocalConfiguration();
 	}

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Handler;
+
 use Joomla\Registry\Registry;
 use SimpleBus\Message\Bus\MessageBus;
 use Tartana\Component\Decrypter\DecrypterFactory;
@@ -19,33 +20,27 @@ class ParseLinksHandler
 
 	private $configuration = null;
 
-	public function __construct (DecrypterFactory $factory, MessageBus $commandBus, Registry $configuration)
+	public function __construct(DecrypterFactory $factory, MessageBus $commandBus, Registry $configuration)
 	{
 		$this->factory = $factory;
 		$this->commandBus = $commandBus;
 		$this->configuration = $configuration;
 	}
 
-	public function handle (ParseLinks $file)
+	public function handle(ParseLinks $file)
 	{
 		$this->log('Started to parse links for the file ' . $file->getFolder()
 			->applyPathPrefix($file->getPath()));
 
 		$links = [];
 		$decrypter = $this->factory->createDecryptor($file->getPath());
-		if (empty($decrypter))
-		{
+		if (empty($decrypter)) {
 			$this->log('Found no decrypter for the file ' . $file->getPath());
-		}
-		else
-		{
-			try
-			{
+		} else {
+			try {
 				$links = $decrypter->decrypt($file->getFolder()
 					->read($file->getPath())['contents']);
-			}
-			catch (\Exception $e)
-			{
+			} catch (\Exception $e) {
 				$this->log('Exception decrypting file ' . $file->getPath() . ' ' . $e->getMessage(), Logger::ERROR);
 			}
 		}
@@ -55,22 +50,18 @@ class ParseLinksHandler
 		$linksHostFilter = $this->configuration->get('links.hostFilter');
 		$this->log('Host filter is: ' . $linksHostFilter);
 
-		foreach ($links as $key => $value)
-		{
+		foreach ($links as $key => $value) {
 			$value = trim($value);
-			if ($this->configuration->get('links.convertToHttps', false) && strpos($value, 'http://') === 0)
-			{
+			if ($this->configuration->get('links.convertToHttps', false) && strpos($value, 'http://') === 0) {
 				$links[$key] = str_replace('http://', 'https://', $value);
 			}
-			if (! empty($value) && (! $linksHostFilter || preg_match("/" . $linksHostFilter . "/", $value)))
-			{
+			if (! empty($value) && (! $linksHostFilter || preg_match("/" . $linksHostFilter . "/", $value))) {
 				continue;
 			}
 			unset($links[$key]);
 		}
 
-		if (! empty($links))
-		{
+		if (! empty($links)) {
 			$this->log('Sending process links command');
 			$this->commandBus->handle(new ProcessLinks(array_values($links)));
 			$this->log('Deleting file');

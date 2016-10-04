@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Component;
+
 use Tartana\Component\Command\Command;
 
 class CommandTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testCommandName ()
+	public function testCommandName()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -14,7 +15,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($command->getArguments());
 	}
 
-	public function testCommandGetAddArgument ()
+	public function testCommandGetAddArgument()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -26,7 +27,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("'test'", $command->getArguments()[0]);
 	}
 
-	public function testCommandEmptyArgument ()
+	public function testCommandEmptyArgument()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -35,7 +36,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit", (string) $command);
 	}
 
-	public function testCommandArgumentNotEscaped ()
+	public function testCommandArgumentNotEscaped()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -44,7 +45,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit test", (string) $command);
 	}
 
-	public function testCommandReplaceArgument ()
+	public function testCommandReplaceArgument()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -57,7 +58,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("'new'", $command->getArguments()[0]);
 	}
 
-	public function testCommandReplaceArgumentNotEscaped ()
+	public function testCommandReplaceArgumentNotEscaped()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -70,7 +71,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("new", $command->getArguments()[0]);
 	}
 
-	public function testCommandReplaceArgumentMixedEscaped ()
+	public function testCommandReplaceArgumentMixedEscaped()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -83,7 +84,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("'new'", $command->getArguments()[0]);
 	}
 
-	public function testCommandReplaceArgumentMixedNotEscaped ()
+	public function testCommandReplaceArgumentMixedNotEscaped()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -96,7 +97,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("new", $command->getArguments()[0]);
 	}
 
-	public function testCommandAsync ()
+	public function testCommandAsync()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -105,7 +106,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit > /dev/null & echo $!", (string) $command);
 	}
 
-	public function testCommandAsyncArguments ()
+	public function testCommandAsyncArguments()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -115,7 +116,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit 'test' > /dev/null & echo $!", (string) $command);
 	}
 
-	public function testCommandCaptureError ()
+	public function testCommandCaptureError()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(true));
@@ -123,7 +124,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit 2>&1", (string) $command);
 	}
 
-	public function testCommandCaptureErrorArguments ()
+	public function testCommandCaptureErrorArguments()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(true));
@@ -132,7 +133,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit 'test' 2>&1", (string) $command);
 	}
 
-	public function testCommandOutputFile ()
+	public function testCommandOutputFile()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -141,7 +142,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit > test.out", (string) $command);
 	}
 
-	public function testCommandOutputFileArguments ()
+	public function testCommandOutputFileArguments()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -151,7 +152,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit 'test' > test.out", (string) $command);
 	}
 
-	public function testCommandAppendOutputFile ()
+	public function testCommandAppendOutputFile()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));
@@ -161,7 +162,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("unit >> test.out", (string) $command);
 	}
 
-	public function testCommandAppendOutputFileArguments ()
+	public function testCommandAppendOutputFileArguments()
 	{
 		$command = new Command('unit');
 		$this->assertEquals($command, $command->setCaptureErrorInOutput(false));

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Local\Handler;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Tartana\Domain\Command\DeleteDownloads;
 use Tartana\Entity\Download;
@@ -7,7 +8,7 @@ use Tartana\Entity\Download;
 class LocalDeleteDownloadsHandlerTest extends WebTestCase
 {
 
-	public function testDeleteDownloads ()
+	public function testDeleteDownloads()
 	{
 		$this->loadFixtures([
 				'Local\DataFixtures\ORM\LoadDownloadData'
@@ -21,8 +22,7 @@ class LocalDeleteDownloadsHandlerTest extends WebTestCase
 		$downloads = $repository->findDownloads();
 
 		$this->assertNotEmpty($downloads);
-		foreach ($downloads as $download)
-		{
+		foreach ($downloads as $download) {
 			$this->assertGreaterThan(0, $download->getId());
 			$commandBus->handle(new DeleteDownloads([
 					$download

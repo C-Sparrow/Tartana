@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Domain;
+
 use Tartana\Entity\Log;
 
 class FileLogRepository implements LogRepository
@@ -7,25 +8,22 @@ class FileLogRepository implements LogRepository
 
 	private $file = null;
 
-	public function __construct ($file)
+	public function __construct($file)
 	{
 		$this->file = $file;
 	}
 
-	public function findLogs ($count = 10)
+	public function findLogs($count = 10)
 	{
-		if (! file_exists($this->file))
-		{
+		if (! file_exists($this->file)) {
 			return [];
 		}
 
 		$lines = $this->getLastLines($this->file, $count);
 		$logs = [];
-		foreach ($lines as $line)
-		{
+		foreach ($lines as $line) {
 			$log = $this->parse($line);
-			if ($log)
-			{
+			if ($log) {
 				$logs[] = $log;
 			}
 		}
@@ -36,22 +34,26 @@ class FileLogRepository implements LogRepository
 	 *
 	 * @param string $log
 	 */
-	private function parse ($log)
+	private function parse($log)
 	{
-		if (! is_string($log) || strlen($log) === 0)
-		{
+		if (! is_string($log) || strlen($log) === 0) {
 			return null;
 		}
 
 		preg_match("/\[(?P<date>.*)\] (?P<channel>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/", $log, $data);
 
-		if (! isset($data['date']))
-		{
+		if (! isset($data['date'])) {
 			return null;
 		}
 
-		return new Log($data['channel'], $data['message'], \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']), $data['level'],
-				json_decode($data['context'], true), json_decode($data['extra'], true));
+		return new Log(
+			$data['channel'],
+			$data['message'],
+			\DateTime::createFromFormat('Y-m-d H:i:s', $data['date']),
+			$data['level'],
+			json_decode($data['context'], true),
+			json_decode($data['extra'], true)
+		);
 	}
 
 	/**
@@ -64,7 +66,7 @@ class FileLogRepository implements LogRepository
 	 * @return string[]
 	 * @see http://stackoverflow.com/questions/6451232/reading-large-files-from-end
 	 */
-	private function getLastLines ($path, $lineCount, $blockSize = 512)
+	private function getLastLines($path, $lineCount, $blockSize = 512)
 	{
 		$lines = [];
 
@@ -75,13 +77,11 @@ class FileLogRepository implements LogRepository
 		$fh = fopen($path, 'r');
 		// go to the end of the file
 		fseek($fh, 0, SEEK_END);
-		do
-		{
+		do {
 			// need to know whether we can actually go back
 			// $blockSize bytes
 			$canRead = $blockSize;
-			if (ftell($fh) < $blockSize)
-			{
+			if (ftell($fh) < $blockSize) {
 				$canRead = ftell($fh);
 			}
 
@@ -101,10 +101,8 @@ class FileLogRepository implements LogRepository
 			$newLines = array_slice($splitData, 0, - 1);
 
 			// When empty lines, ignore them
-			foreach ($newLines as $key => $newLine)
-			{
-				if (trim($newLine))
-				{
+			foreach ($newLines as $key => $newLine) {
+				if (trim($newLine)) {
 					continue;
 				}
 				unset($newLines[$key]);
@@ -112,10 +110,8 @@ class FileLogRepository implements LogRepository
 
 			$lines = array_merge($lines, $newLines);
 			$leftover = $splitData[count($splitData) - 1];
-		}
-		while (count($lines) < $lineCount && ftell($fh) != 0);
-		if (ftell($fh) == 0)
-		{
+		} while (count($lines) < $lineCount && ftell($fh) != 0);
+		if (ftell($fh) == 0) {
 			$lines[] = $leftover;
 		}
 		fclose($fh);

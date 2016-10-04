@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Security\Firewall;
+
 use Monolog\Logger;
 use Tartana\Mixins\LoggerAwareTrait;
 use Tartana\Security\Authentication\Token\WsseUserToken;
@@ -20,25 +21,22 @@ class WsseListener implements ListenerInterface
 
 	protected $authenticationManager;
 
-	public function __construct (TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager)
+	public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager)
 	{
 		$this->tokenStorage = $tokenStorage;
 		$this->authenticationManager = $authenticationManager;
 	}
 
-	public function handle (GetResponseEvent $event)
+	public function handle(GetResponseEvent $event)
 	{
 		$request = $event->getRequest();
 
 		// Check if authentication Token is present
-		if ($request->headers->has('x-wsse'))
-		{
-
-			// Token parser
+		if ($request->headers->has('x-wsse')) {
+		// Token parser
 			$wsseRegex = '/UsernameToken Username="([^"]+)", PasswordDigest="([^"]+)", Nonce="([^"]+)", Created="([^"]+)"/';
 
-			if (preg_match($wsseRegex, $request->headers->get('x-wsse'), $matches))
-			{
+			if (preg_match($wsseRegex, $request->headers->get('x-wsse'), $matches)) {
 				$token = new WsseUserToken();
 				$token->setUser($matches[1]);
 
@@ -46,16 +44,13 @@ class WsseListener implements ListenerInterface
 				$token->nonce = $matches[3];
 				$token->created = $matches[4];
 
-				try
-				{
+				try {
 					// Authentication process
 					$authToken = $this->authenticationManager->authenticate($token);
 					$this->tokenStorage->setToken($authToken);
 
 					return;
-				}
-				catch (NonceExpiredException $expired)
-				{
+				} catch (NonceExpiredException $expired) {
 					$failedMessage = 'WSSE Nonce Expired for ' . $token->getUsername() . '. Why ? ' . $expired->getMessage();
 					$this->log($failedMessage, Logger::ERROR);
 
@@ -66,9 +61,7 @@ class WsseListener implements ListenerInterface
 					$event->setResponse($response);
 
 					return;
-				}
-				catch (AuthenticationException $failed)
-				{
+				} catch (AuthenticationException $failed) {
 					$failedMessage = 'WSSE Login failed for ' . $token->getUsername() . '. Why ? ' . $failed->getMessage();
 					$this->log($failedMessage, Logger::ERROR);
 
@@ -79,9 +72,7 @@ class WsseListener implements ListenerInterface
 					$event->setResponse($response);
 
 					return;
-				}
-				catch (\Exception $e)
-				{
+				} catch (\Exception $e) {
 					$failedMessage = $e->getMessage();
 					$this->log($failedMessage, Logger::ERROR);
 

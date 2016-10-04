@@ -1,5 +1,6 @@
 <?php
 namespace Test\Unit\Synology\Handler;
+
 use Local\Domain\LocalDownloadRepository;
 use Tartana\Domain\Command\ProcessCompletedDownloads;
 use Tartana\Entity\Download;
@@ -9,7 +10,7 @@ use Synology\Handler\SynologyProcessCompletedDownloadsHandler;
 class SynologyProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testWithDownloads ()
+	public function testWithDownloads()
 	{
 		$dispatcherMock = $this->getMockDispatcher();
 		$dispatcherMock->expects($this->once())
@@ -24,7 +25,7 @@ class SynologyProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_Te
 		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
 	}
 
-	public function testEmptyDownloads ()
+	public function testEmptyDownloads()
 	{
 		$dispatcherMock = $this->getMockDispatcher();
 		$dispatcherMock->expects($this->never())
@@ -34,7 +35,7 @@ class SynologyProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_Te
 		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), []));
 	}
 
-	private function getMockDispatcher ()
+	private function getMockDispatcher()
 	{
 		$dispatcherMock = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 		$dispatcherMock->method('dispatch')->willReturn(true);
@@ -42,7 +43,7 @@ class SynologyProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_Te
 		return $dispatcherMock;
 	}
 
-	private function getMockRepository ()
+	private function getMockRepository()
 	{
 		$repositoryMock = $this->getMockBuilder(LocalDownloadRepository::class)
 			->disableOriginalConstructor()

@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Event;
+
 use League\Flysystem\Adapter\NullAdapter;
 use Tartana\Event\ProcessingProgressEvent;
 
 class ProcessingProgressEventTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testProcessingProgressEventValidProgress ()
+	public function testProcessingProgressEventValidProgress()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
@@ -18,7 +19,7 @@ class ProcessingProgressEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(10, $event->getProgress());
 	}
 
-	public function testProcessingProgressEventString ()
+	public function testProcessingProgressEventString()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
@@ -27,7 +28,7 @@ class ProcessingProgressEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0, $event->getProgress());
 	}
 
-	public function testProcessingProgressEventTooLarge ()
+	public function testProcessingProgressEventTooLarge()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();
@@ -36,7 +37,7 @@ class ProcessingProgressEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(100, $event->getProgress());
 	}
 
-	public function testProcessingProgressEventTooLow ()
+	public function testProcessingProgressEventTooLow()
 	{
 		$src = new NullAdapter();
 		$dst = new NullAdapter();

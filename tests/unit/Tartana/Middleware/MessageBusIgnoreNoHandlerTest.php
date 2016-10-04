@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Handler;
+
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Middleware\MessageBusIgnoreNoHandler;
 use SimpleBus\Message\Bus\MessageBus;
@@ -9,7 +10,7 @@ use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
 class MessageBusIgnoreNoHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testNoHandlerNoException ()
+	public function testNoHandlerNoException()
 	{
 		$messageBus = new MessageBusSupportingMiddleware([
 				new MessageBusIgnoreNoHandler()
@@ -21,7 +22,7 @@ class MessageBusIgnoreNoHandlerTest extends \PHPUnit_Framework_TestCase
 	 * @expectedException RuntimeException
 	 * @expectedExceptionMessage unit test
 	 */
-	public function testIgnoreOtherExceptions ()
+	public function testIgnoreOtherExceptions()
 	{
 		$messageBus = new MessageBusSupportingMiddleware([
 				new MessageBusIgnoreNoHandler(),
@@ -34,7 +35,7 @@ class MessageBusIgnoreNoHandlerTest extends \PHPUnit_Framework_TestCase
 class MessageBusIgnoreNoHandlerTestMiddleware implements MessageBusMiddleware
 {
 
-	public function handle ($message, callable $next)
+	public function handle($message, callable $next)
 	{
 		throw new \RuntimeException('unit test');
 	}

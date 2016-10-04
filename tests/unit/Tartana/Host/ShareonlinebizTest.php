@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Host;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\RequestException;
@@ -16,7 +17,7 @@ use Tartana\Host\Shareonlinebiz;
 class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testFetchDownloadInfo ()
+	public function testFetchDownloadInfo()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7')
@@ -44,7 +45,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('hfasdzwgh27hs7', $download->getHash());
 	}
 
-	public function testFetchDownloadInfoNoOkStatus ()
+	public function testFetchDownloadInfoNoOkStatus()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], 'AED327AE;DELETED;hello.txt;1448732;hfasdzwgh27hs7')
@@ -70,7 +71,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testFetchDownloadInfoWrongInfo ()
+	public function testFetchDownloadInfoWrongInfo()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], 'no csv content'),
@@ -97,7 +98,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_NOT_STARTED, $download->getState());
 	}
 
-	public function testFetchDownloadInfoException ()
+	public function testFetchDownloadInfoException()
 	{
 		$mock = new MockHandler([
 				new RequestException('Failed on unit test', new Request('GET', 'test'))
@@ -123,10 +124,10 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_ERROR, $download->getState());
 	}
 
-	public function testLogin ()
+	public function testLogin()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], 'hello'),
 						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
 						new Response(200, [
@@ -134,7 +135,8 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -161,14 +163,13 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $downloads[0]->getFileName());
 		}
 	}
 
-	public function testInvalidLogin ()
+	public function testInvalidLogin()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], 'hell')
@@ -201,7 +202,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testEmptyLogin ()
+	public function testEmptyLogin()
 	{
 		$mock = new MockHandler([
 				new Response(200, [], 'hello')
@@ -229,14 +230,15 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testInvalidRedirect ()
+	public function testInvalidRedirect()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], 'hello'),
 						new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
 						new Response(200, [], 'wrong body')
-				]);
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -265,14 +267,15 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testInvalidEmptyRedirect ()
+	public function testInvalidEmptyRedirect()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], 'hello'),
 						new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
 						new Response(200, [], ';var dl="";s')
-				]);
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -301,31 +304,35 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($dest->listContents());
 	}
 
-	public function testCookie ()
+	public function testCookie()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
 						new Response(200, [
 								'Content-Disposition' => [
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client(
-				[
+			[
 						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(true,
-								[
+						'cookies' => new CookieJar(
+							true,
+							[
 										[
 												'Name' => 'a',
 												'Expires' => time() + 1000,
 												'Value' => '123',
 												'Domain' => '.share-online.biz'
 										]
-								])
-				]);
+							]
+						)
+			]
+		);
 
 		$dest = new Local(__DIR__ . '/test');
 
@@ -347,17 +354,16 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $downloads[0]->getFileName());
 		}
 	}
 
-	public function testExpiredCookie ()
+	public function testExpiredCookie()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], 'hello'),
 						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
 						new Response(200, [
@@ -365,21 +371,25 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client(
-				[
+			[
 						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(true,
-								[
+						'cookies' => new CookieJar(
+							true,
+							[
 										[
 												'Name' => 'a',
 												'Expires' => time() - 1000,
 												'Value' => '123',
 												'Domain' => '.share-online.biz'
 										]
-								])
-				]);
+							]
+						)
+			]
+		);
 
 		$dest = new Local(__DIR__ . '/test');
 
@@ -401,17 +411,16 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $downloads[0]->getFileName());
 		}
 	}
 
-	public function testNotRequiredCookie ()
+	public function testNotRequiredCookie()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [], 'hello'),
 						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
 						new Response(200, [
@@ -419,21 +428,25 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client(
-				[
+			[
 						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(true,
-								[
+						'cookies' => new CookieJar(
+							true,
+							[
 										[
 												'Name' => 'ab',
 												'Expires' => time() + 1000,
 												'Value' => '123',
 												'Domain' => '.share-online.biz'
 										]
-								])
-				]);
+							]
+						)
+			]
+		);
 
 		$dest = new Local(__DIR__ . '/test');
 
@@ -455,20 +468,19 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $downloads[0]->getState());
 
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $downloads[0]->getFileName());
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');

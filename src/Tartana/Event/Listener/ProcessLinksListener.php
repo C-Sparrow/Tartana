@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Event\Listener;
+
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Event\CommandEvent;
 use Tartana\Mixins\HostFactoryAwareTrait;
@@ -9,19 +10,16 @@ class ProcessLinksListener
 
 	use HostFactoryAwareTrait;
 
-	public function onProcessLinksBefore (CommandEvent $event)
+	public function onProcessLinksBefore(CommandEvent $event)
 	{
-		if (! $event->getCommand() instanceof ProcessLinks)
-		{
+		if (! $event->getCommand() instanceof ProcessLinks) {
 			return;
 		}
 
 		$links = [];
-		foreach ($event->getCommand()->getLinks() as $link)
-		{
+		foreach ($event->getCommand()->getLinks() as $link) {
 			$downloader = $this->getDownloader($link);
-			if (empty($downloader))
-			{
+			if (empty($downloader)) {
 				$links[] = $link;
 				continue;
 			}

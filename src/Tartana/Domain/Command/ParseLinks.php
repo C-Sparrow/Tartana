@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Domain\Command;
+
 use League\Flysystem\Adapter\AbstractAdapter;
 
 class ParseLinks
@@ -9,18 +10,18 @@ class ParseLinks
 
 	private $path;
 
-	public function __construct (AbstractAdapter $fs, $path)
+	public function __construct(AbstractAdapter $fs, $path)
 	{
 		$this->fs = $fs;
 		$this->path = $path;
 	}
 
-	public function getPath ()
+	public function getPath()
 	{
 		return $this->path;
 	}
 
-	public function getFolder ()
+	public function getFolder()
 	{
 		return $this->fs;
 	}

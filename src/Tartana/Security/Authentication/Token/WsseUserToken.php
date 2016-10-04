@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Security\Authentication\Token;
+
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class WsseUserToken extends AbstractToken
@@ -11,19 +12,19 @@ class WsseUserToken extends AbstractToken
 
 	public $nonce;
 
-	public function __construct (array $roles = array())
+	public function __construct(array $roles = array())
 	{
 		parent::__construct($roles);
 
 		$this->setAuthenticated(count($roles) > 0);
 	}
 
-	public function getCredentials ()
+	public function getCredentials()
 	{
 		return '';
 	}
 
-	public static function generateToken ($username, $password, $roles = [])
+	public static function generateToken($username, $password, $roles = [])
 	{
 		$token = new self($roles);
 		$token->setUser($username);
@@ -33,14 +34,13 @@ class WsseUserToken extends AbstractToken
 		return $token;
 	}
 
-	private static function makeNonce ()
+	private static function makeNonce()
 	{
 		$chars = "123456789abcdefghijklmnopqrstuvwxyz";
 		$random = "" . microtime();
 		$random .= mt_rand();
 		$mi = strlen($chars) - 1;
-		for ($i = 0; $i < 10; $i ++)
-		{
+		for ($i = 0; $i < 10; $i ++) {
 			$random .= $chars[mt_rand(0, $mi)];
 		}
 		$nonce = md5($random);

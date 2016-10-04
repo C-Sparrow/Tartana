@@ -6,12 +6,12 @@ class SaveParameters
 
 	private $parameters;
 
-	public function __construct (array $parameters)
+	public function __construct(array $parameters)
 	{
 		$this->parameters = $parameters;
 	}
 
-	public function getParameters ()
+	public function getParameters()
 	{
 		return $this->parameters;
 	}

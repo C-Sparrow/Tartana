@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Handler;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Tartana\Domain\Command\SaveParameters;
@@ -10,32 +11,28 @@ class SaveParametersHandler
 
 	private $parameterFile = null;
 
-	public function __construct ($parameterFile)
+	public function __construct($parameterFile)
 	{
 		$this->parameterFile = $parameterFile;
 	}
 
-	public function handle (SaveParameters $command)
+	public function handle(SaveParameters $command)
 	{
-		if (! file_exists($this->parameterFile))
-		{
+		if (! file_exists($this->parameterFile)) {
 			return;
 		}
 
 		$fs = new Local(dirname($this->parameterFile));
 		$originalParameters = Yaml::parse($fs->read($fs->removePathPrefix($this->parameterFile))['contents']);
 
-		if (! key_exists('parameters', $originalParameters))
-		{
-			// Not a valid parameters file
+		if (! key_exists('parameters', $originalParameters)) {
+		// Not a valid parameters file
 			return;
 		}
 
 		$originalParameters = $originalParameters['parameters'];
-		foreach ($originalParameters as $key => $originalParameter)
-		{
-			if (key_exists($key, $command->getParameters()))
-			{
+		foreach ($originalParameters as $key => $originalParameter) {
+			if (key_exists($key, $command->getParameters())) {
 				$originalParameters[$key] = $command->getParameters()[$key];
 			}
 		}

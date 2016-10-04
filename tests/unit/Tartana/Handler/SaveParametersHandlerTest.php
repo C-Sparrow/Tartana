@@ -1,5 +1,6 @@
 <?php
 namespace Test\Unit\Tartana\Handler;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Tartana\Domain\Command\SaveParameters;
@@ -11,7 +12,7 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 
 	const PARAMETER_FILE = 'test.yml';
 
-	public function testHandleSetParameter ()
+	public function testHandleSetParameter()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -34,7 +35,7 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($data, $savedParameters);
 	}
 
-	public function testHandleSetParameterOnInvalidFile ()
+	public function testHandleSetParameterOnInvalidFile()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -58,7 +59,7 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($data, $savedParameters);
 	}
 
-	public function testHandleSetParameterNoFile ()
+	public function testHandleSetParameterNoFile()
 	{
 		$fs = new Local(__DIR__ . '/test');
 
@@ -70,20 +71,18 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($fs->has(self::PARAMETER_FILE));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 

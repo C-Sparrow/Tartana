@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Component\Command;
+
 use Symfony\Component\Process\Process;
 use Tartana\Mixins\LoggerAwareTrait;
 
@@ -10,7 +11,7 @@ class Runner
 
 	private $environment = null;
 
-	public function __construct ($environment = null)
+	public function __construct($environment = null)
 	{
 		$this->environment = $environment;
 	}
@@ -23,55 +24,46 @@ class Runner
 	 * If a callback is set the output will be delegated line by line to the
 	 * given callback, then the given command will never run in async mode!
 	 *
-	 * @param \Tartana\Component\Command $command
-	 * @param
-	 *        	$callback
+	 * @param \Tartana\Component\Command\Command $command
+	 * @param $callback
 	 * @return string|integer
 	 */
-	public function execute (Command $command, $callback = null)
+	public function execute(Command $command, $callback = null)
 	{
-		if ($this->environment !== null)
-		{
+		if ($this->environment !== null) {
 			// Setting the correct environment
 			$isAppCommand = false;
 			$envSet = false;
-			foreach ($command->getArguments() as $arg)
-			{
-				if (strpos($arg, '/cli/app.php') !== false)
-				{
+			foreach ($command->getArguments() as $arg) {
+				if (strpos($arg, '/cli/app.php') !== false) {
 					$isAppCommand = true;
 				}
 
 				// If the argument has -e or --env replace it
-				if ($isAppCommand && (strpos($arg, '-e ') !== false || strpos($arg, '--env ') !== false))
-				{
+				if ($isAppCommand && (strpos($arg, '-e ') !== false || strpos($arg, '--env ') !== false)) {
 					$command->replaceArgument($arg, '--env ' . $this->environment, false);
 					$envSet = true;
 				}
 			}
 
-			if ($isAppCommand && ! $envSet)
-			{
+			if ($isAppCommand && !$envSet) {
 				$command->addArgument('--env ' . $this->environment, false);
 			}
 		}
 
 		$this->log('Running real command on runner: ' . $command);
-		$process = new Process((string) $command);
+		$process = new Process((string)$command);
 		$process->setTimeout(null);
 		$process->setIdleTimeout(null);
 
-		if ($callback)
-		{
+		if ($callback) {
 			// Can not get the output of an async command
 			$command->setAsync(false);
 
-			$process->run(function  ($type, $buffer) use ( $callback) {
+			$process->run(function ($type, $buffer) use ($callback) {
 				$callback($buffer);
 			});
-		}
-		else
-		{
+		} else {
 			$process->run();
 		}
 		$this->log('Finished real command on runner: ' . $command);

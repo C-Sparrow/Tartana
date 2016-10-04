@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Local\DependencyInjection;
+
 use Local\Domain\LocalDownloadRepository;
 use Local\Handler\LocalDeleteDownloadsHandler;
 use Local\Handler\LocalProcessLinksHandler;
@@ -9,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class LocalContainerTest extends KernelTestCase
 {
 
-	public function testHasDownloadRepository ()
+	public function testHasDownloadRepository()
 	{
 		$container = static::$kernel->getContainer();
 		$repository = $container->get('DownloadRepository');
@@ -17,7 +18,7 @@ class LocalContainerTest extends KernelTestCase
 		$this->assertInstanceOf(LocalDownloadRepository::class, $repository);
 	}
 
-	public function testHasLocalProcessLinksHandler ()
+	public function testHasLocalProcessLinksHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('LocalProcessLinksHandler');
@@ -25,7 +26,7 @@ class LocalContainerTest extends KernelTestCase
 		$this->assertInstanceOf(LocalProcessLinksHandler::class, $handler);
 	}
 
-	public function testHasLocalStartDownloadsHandler ()
+	public function testHasLocalStartDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('LocalStartDownloadsHandler');
@@ -33,7 +34,7 @@ class LocalContainerTest extends KernelTestCase
 		$this->assertInstanceOf(LocalStartDownloadsHandler::class, $handler);
 	}
 
-	public function testHasLocalDeleteDownloadsHandler ()
+	public function testHasLocalDeleteDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('LocalDeleteDownloadsHandler');
@@ -41,7 +42,7 @@ class LocalContainerTest extends KernelTestCase
 		$this->assertInstanceOf(LocalDeleteDownloadsHandler::class, $handler);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		self::bootKernel();
 	}

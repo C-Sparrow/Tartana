@@ -1,18 +1,18 @@
 <?php
 namespace Tartana\Event\Listener;
-use Tartana\Component\Archive\Extract;
+
 use Tartana\Component\Command\Command;
 use Tartana\Util;
 
 class ExtractListener extends AbstractProcessingListener
 {
 
-	protected function getConfigurationKey ()
+	protected function getConfigurationKey()
 	{
 		return 'extract.destination';
 	}
 
-	protected function getFileExtensionsForCommand ()
+	protected function getFileExtensionsForCommand()
 	{
 		return [
 				'rar' => 'unrar',
@@ -21,7 +21,7 @@ class ExtractListener extends AbstractProcessingListener
 		];
 	}
 
-	protected function prepareCommand (Command $command)
+	protected function prepareCommand(Command $command)
 	{
 		$command->addArgument(Util::realPath($this->configuration->get('extract.passwordFile')));
 

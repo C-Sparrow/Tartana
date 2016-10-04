@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Domain\Command\ProcessLinks;
 
 class ProcessLinksTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testProcessLinksCommand ()
+	public function testProcessLinksCommand()
 	{
 		$command = new ProcessLinks([
 				'http://foo.bar/sdf'

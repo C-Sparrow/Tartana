@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Synology\DependencyInjection;
+
 use Tartana\Domain\DownloadRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Synology\Domain\SynologyDownloadRepository;
@@ -9,7 +10,7 @@ use Synology\Handler\SynologyProcessLinksHandler;
 class SynologyContainerTest extends KernelTestCase
 {
 
-	public function testHasDownloadRepository ()
+	public function testHasDownloadRepository()
 	{
 		$container = static::$kernel->getContainer();
 		$repository = $container->get('DownloadRepository');
@@ -17,7 +18,7 @@ class SynologyContainerTest extends KernelTestCase
 		$this->assertInstanceOf(SynologyDownloadRepository::class, $repository);
 	}
 
-	public function testHasSynologyProcessLinksHandler ()
+	public function testHasSynologyProcessLinksHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('SynologyProcessLinksHandler');
@@ -25,7 +26,7 @@ class SynologyContainerTest extends KernelTestCase
 		$this->assertInstanceOf(SynologyProcessLinksHandler::class, $handler);
 	}
 
-	public function testHasSynologyProcessCompletedDownloadsHandler ()
+	public function testHasSynologyProcessCompletedDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
 		$handler = $container->get('SynologyProcessCompletedDownloadsHandler');
@@ -33,7 +34,7 @@ class SynologyContainerTest extends KernelTestCase
 		$this->assertInstanceOf(SynologyProcessCompletedDownloadsHandler::class, $handler);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		self::bootKernel([
 				'environment' => 'test_synology'

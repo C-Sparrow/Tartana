@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Mixins;
+
 use SimpleBus\Message\Bus\MessageBus;
 
 trait CommandBusAwareTrait
@@ -7,20 +8,19 @@ trait CommandBusAwareTrait
 
 	private $commandBus = null;
 
-	public function getCommandBus ()
+	public function getCommandBus()
 	{
 		return $this->commandBus;
 	}
 
-	public function setCommandBus (MessageBus $commandBus = null)
+	public function setCommandBus(MessageBus $commandBus = null)
 	{
 		$this->commandBus = $commandBus;
 	}
 
-	public function handleCommand ($command)
+	public function handleCommand($command)
 	{
-		if ($this->getCommandBus())
-		{
+		if ($this->getCommandBus()) {
 			$this->getCommandBus()->handle($command);
 		}
 	}

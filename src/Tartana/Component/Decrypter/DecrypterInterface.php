@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Component\Decrypter;
+
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -13,7 +14,7 @@ interface DecrypterInterface
 	 * @return string[]
 	 * @throws \RuntimeException if something goes wrong
 	 */
-	public function decrypt ($string);
+	public function decrypt($string);
 
-	public function setLogger (LoggerInterface $logger = null);
+	public function setLogger(LoggerInterface $logger = null);
 }

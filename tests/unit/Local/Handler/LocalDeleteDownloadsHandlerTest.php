@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Handler;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Local\Handler\LocalDeleteDownloadsHandler;
 use Tartana\Domain\Command\DeleteDownloads;
@@ -8,19 +9,19 @@ use Tartana\Entity\Download;
 class LocalDeleteDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDeleteDownloads ()
+	public function testDeleteDownloads()
 	{
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->expects($this->once())
 			->method('merge')
-			->willReturnCallback(function  (Download $e) {
-			return $e;
-		});
+			->willReturnCallback(function (Download $e) {
+				return $e;
+			});
 		$entityManager->expects($this->once())
 			->method('remove')
-			->with($this->callback(function  (Download $download) {
-			return $download->getId() == 1;
-		}));
+			->with($this->callback(function (Download $download) {
+				return $download->getId() == 1;
+			}));
 		$entityManager->expects($this->once())
 			->method('flush');
 
@@ -33,7 +34,7 @@ class LocalDeleteDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		$handler->handle(new DeleteDownloads($downloads));
 	}
 
-	public function testDeleteDownloadsNoDownloads ()
+	public function testDeleteDownloadsNoDownloads()
 	{
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->expects($this->never())

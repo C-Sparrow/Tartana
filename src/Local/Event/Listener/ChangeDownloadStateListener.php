@@ -1,5 +1,6 @@
 <?php
 namespace Local\Event\Listener;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use Tartana\Domain\Command\ChangeDownloadState;
@@ -17,38 +18,33 @@ class ChangeDownloadStateListener
 
 	private $configuration = null;
 
-	public function __construct (Registry $configuration)
+	public function __construct(Registry $configuration)
 	{
 		$this->configuration = $configuration;
 	}
 
-	public function onChangeDownloadStateAfter (CommandEvent $event)
+	public function onChangeDownloadStateAfter(CommandEvent $event)
 	{
-		if (! $event->getCommand() instanceof ChangeDownloadState)
-		{
+		if (! $event->getCommand() instanceof ChangeDownloadState) {
 			return;
 		}
 
-		if ($event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED)
-		{
+		if ($event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED) {
 			return;
 		}
 
 		$destination = rtrim(Util::realPath($this->configuration->get('downloads')), '/');
 		// Something is wrong
-		if (empty($destination))
-		{
+		if (empty($destination)) {
 			return;
 		}
 
 		$this->log('Checking if all downloads belong to the destination ' . $destination);
 
 		$toSave = [];
-		foreach ($event->getCommand()->getDownloads() as $download)
-		{
+		foreach ($event->getCommand()->getDownloads() as $download) {
 			$base = rtrim(dirname($download->getDestination()), '/');
-			if (strpos($destination, $base) !== false)
-			{
+			if (strpos($destination, $base) !== false) {
 				continue;
 			}
 
@@ -59,8 +55,7 @@ class ChangeDownloadStateListener
 			$toSave[] = $download;
 		}
 
-		if (! empty($toSave))
-		{
+		if (! empty($toSave)) {
 			$this->handleCommand(new SaveDownloads($toSave));
 		}
 	}

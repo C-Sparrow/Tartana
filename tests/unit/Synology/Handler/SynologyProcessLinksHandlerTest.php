@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Synology\Handler;
+
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use Joomla\Registry\Registry;
@@ -12,7 +13,7 @@ use Tartana\Util;
 class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testProcessLinks ()
+	public function testProcessLinks()
 	{
 		$handler = new SynologyProcessLinksHandler($this->getMockClient(), new Registry([
 				'downloads' => __DIR__ . '/test'
@@ -30,15 +31,14 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertStringStartsWith('job-', $fs->listContents()[0]['path']);
 	}
 
-	public function testProcessLinksDirectoryExists ()
+	public function testProcessLinksDirectoryExists()
 	{
 		$handler = new SynologyProcessLinksHandler($this->getMockClient(), new Registry([
 				'downloads' => __DIR__ . '/test'
 		]));
 
 		$fs = new Local(__DIR__ . '/test');
-		for ($i = 0; $i < 5; $i ++)
-		{
+		for ($i = 0; $i < 5; $i ++) {
 			$fs->createDir('job-' . date('YmdHis', time() + $i) . '-1', new Config());
 		}
 
@@ -53,10 +53,8 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertCount(count($existingDirectories) + 1, $fs->listContents());
 
 		$hasNewNumber = false;
-		foreach ($fs->listContents() as $dir)
-		{
-			if (Util::endsWith($dir['path'], '-2'))
-			{
+		foreach ($fs->listContents() as $dir) {
+			if (Util::endsWith($dir['path'], '-2')) {
 				$hasNewNumber = true;
 				break;
 			}
@@ -64,7 +62,7 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($hasNewNumber);
 	}
 
-	public function testProcessLinksInvalidDirectory ()
+	public function testProcessLinksInvalidDirectory()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
@@ -77,41 +75,38 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 				'http://bar.foo/uzwhka'
 		]));
 
-		foreach ($fs->listContents() as $file)
-		{
+		foreach ($fs->listContents() as $file) {
 			$this->assertNotEquals('dir', $file['type']);
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->createDir('test', new Config());
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test/');
 	}
 
-	private function getMockClient ()
+	private function getMockClient()
 	{
 		$client = $this->getMockBuilder(ClientInterface::class)->getMock();
 		$client->method('request')->will(
-				$this->returnCallback(
-						function  ($method, $url, $arguments) {
+			$this->returnCallback(
+				function ($method, $url, $arguments) {
 							$content = [
 									'success' => true,
 									'data' => []
 							];
 
 							parse_str($arguments['body'], $arguments);
-							if (key_exists('method', $arguments))
-							{
-								switch ($arguments['method'])
-								{
+							if (key_exists('method', $arguments)) {
+								switch ($arguments['method']) {
 									case 'login':
 										$content['data']['sid'] = 1234;
 								}
@@ -119,7 +114,9 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 							return new Response(200, [
 									'Content-Type' => 'application/json'
 							], json_encode($content));
-						}));
-		return $client;
+				}
+			)
+		);
+				return $client;
 	}
 }

@@ -37,11 +37,19 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 	{
 		$this->setDescription('Manages the downloads!');
 
-		$this->addArgument('action', InputArgument::OPTIONAL,
-				'The action, can be: status, clearall, clearcompleted, clearfailed, resumefailed, resumeall or reprocess.', 'status');
+		$this->addArgument(
+			'action',
+			InputArgument::OPTIONAL,
+			'The action, can be: status, clearall, clearcompleted, clearfailed, resumefailed, resumeall or reprocess.',
+			'status'
+		);
 
-		$this->addOption('destination', 'd', InputOption::VALUE_OPTIONAL,
-				'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.');
+		$this->addOption(
+			'destination',
+			'd',
+			InputOption::VALUE_OPTIONAL,
+			'The status and the other actions can take a destination option to show otartr modify only downloads with the given destination.'
+		);
 		$this->addOption('compact', 'c', InputOption::VALUE_NONE, 'Shows a compact list of downloads for the status action.');
 		$this->addOption('id', null, InputOption::VALUE_OPTIONAL, 'Shows the details of the download with the given id.', false);
 	}
@@ -57,22 +65,16 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 		$command = null;
 		/** @var Download[] $downloads **/
 		$downloads = [];
-		if (!empty($destination))
-		{
+		if (!empty($destination)) {
 			$downloads = $this->repository->findDownloadsByDestination($destination);
-		}
-		else
-		{
+		} else {
 			$downloads = $this->repository->findDownloads();
 		}
-		switch ($action)
-		{
+		switch ($action) {
 			case 'details':
 				$id = $input->getOption('id');
-				foreach ($downloads as $download)
-				{
-					if ($download->getId() != $id)
-					{
+				foreach ($downloads as $download) {
+					if ($download->getId() != $id) {
 						continue;
 					}
 					$sizes = [
@@ -99,10 +101,11 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 							$download->getFileName()
 					]);
 					$table->addRow(
-							[
+						[
 									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
 									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState())
-							]);
+						]
+					);
 					$table->addRow([
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
 							Util::readableSize($download->getSize(), $sizes)
@@ -128,23 +131,22 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				}
 				break;
 			case 'status':
-				if (!empty($downloads))
-				{
-					usort($downloads,
-							function (Download $d1, Download $d2)
-							{
-								return strcmp($d1->getDestination() . str_pad($d1->getId(), 10, '0', STR_PAD_LEFT),
-										$d2->getDestination() . str_pad($d2->getId(), 10, '0', STR_PAD_LEFT));
-							});
+				if (!empty($downloads)) {
+					usort(
+						$downloads,
+						function (Download $d1, Download $d2) {
+								return strcmp(
+									$d1->getDestination() . str_pad($d1->getId(), 10, '0', STR_PAD_LEFT),
+									$d2->getDestination() . str_pad($d2->getId(), 10, '0', STR_PAD_LEFT)
+								);
+						}
+					);
 				}
-				if ($compact)
-				{
+				if ($compact) {
 					$data = [];
-					foreach ($downloads as $download)
-					{
+					foreach ($downloads as $download) {
 						$destination = $download->getDestination();
-						if (!key_exists($destination, $data))
-						{
+						if (!key_exists($destination, $data)) {
 							$data[$destination] = [
 									'count' => 0,
 									'size' => 0,
@@ -153,8 +155,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 									'name' => ''
 							];
 
-							foreach (Download::$STATES_ALL as $state)
-							{
+							foreach (Download::$STATES_ALL as $state) {
 								$data[$destination]['state'][$state] = 0;
 							}
 						}
@@ -162,16 +163,14 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						$data[$destination]['size'] += $download->getSize();
 						if ($download->getState() != Download::STATE_DOWNLOADING_NOT_STARTED &&
 								 $download->getState() != Download::STATE_DOWNLOADING_STARTED &&
-								 $download->getState() != Download::STATE_DOWNLOADING_ERROR)
-						{
+								 $download->getState() != Download::STATE_DOWNLOADING_ERROR) {
 							$data[$destination]['downloaded-size'] += $download->getSize();
 						}
 
 						$data[$destination]['state'][$download->getState()] ++;
 
 						// Set the name when no one is set
-						if (empty($data[$destination]['name']) && !empty($download->getFileName()))
-						{
+						if (empty($data[$destination]['name']) && !empty($download->getFileName())) {
 							$data[$destination]['name'] = $download->getFileName();
 						}
 					}
@@ -183,8 +182,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 							$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_DOWNLOADED_SIZE'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME')
 					];
-					foreach (Download::$STATES_ALL as $state)
-					{
+					foreach (Download::$STATES_ALL as $state) {
 						$headers[] = $t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $state);
 					}
 
@@ -196,8 +194,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 							$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
 							$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 					];
-					foreach ($data as $destination => $content)
-					{
+					foreach ($data as $destination => $content) {
 						$output->writeln('');
 						$output->writeln('<comment>' . $headers[0] . ': ' . $destination . '</comment>');
 
@@ -220,8 +217,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 								Util::shorten($content['name'], 30)
 						]);
 
-						foreach (Download::$STATES_ALL as $key => $state)
-						{
+						foreach (Download::$STATES_ALL as $key => $state) {
 							$table->addRow([
 									$headers[$key + 5],
 									$content['state'][$state]
@@ -229,9 +225,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						}
 						$table->render();
 					}
-				}
-				else
-				{
+				} else {
 					$headers = [
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
 							$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
@@ -252,12 +246,9 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 
 					$lastDestinaton = null;
 					$table = null;
-					foreach ($downloads as $download)
-					{
-						if ($lastDestinaton != $download->getDestination())
-						{
-							if (!empty($table))
-							{
+					foreach ($downloads as $download) {
+						if ($lastDestinaton != $download->getDestination()) {
+							if (!empty($table)) {
 								$table->render();
 							}
 							$table = new Table($output);
@@ -267,7 +258,7 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 							$output->writeln('<comment>' . $t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION') . ': ' . $lastDestinaton . '</comment>');
 						}
 						$table->addRow(
-								[
+							[
 										$download->getId(),
 										$download->getProgress(),
 										Util::readableSize($download->getSize(), $sizes),
@@ -275,10 +266,10 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 										Util::shorten($download->getFileName(), 30),
 										Util::shorten($download->getLink(), 30),
 										Util::shorten($t->trans($download->getMessage()), 30)
-								]);
+							]
+						);
 					}
-					if (!empty($table))
-					{
+					if (!empty($table)) {
 						$table->render();
 					}
 				}
@@ -288,10 +279,8 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				break;
 			case 'clearcompleted':
 				$toDelete = [];
-				foreach ($downloads as $d)
-				{
-					if ($d->getState() == Download::STATE_PROCESSING_COMPLETED)
-					{
+				foreach ($downloads as $d) {
+					if ($d->getState() == Download::STATE_PROCESSING_COMPLETED) {
 						$toDelete[] = $d;
 					}
 				}
@@ -299,25 +288,27 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				break;
 			case 'clearfailed':
 				$toDelete = [];
-				foreach ($downloads as $d)
-				{
-					if ($d->getState() == Download::STATE_DOWNLOADING_ERROR || $d->getState() == Download::STATE_PROCESSING_ERROR)
-					{
+				foreach ($downloads as $d) {
+					if ($d->getState() == Download::STATE_DOWNLOADING_ERROR || $d->getState() == Download::STATE_PROCESSING_ERROR) {
 						$toDelete[] = $d;
 					}
 				}
 				$command = new DeleteDownloads($toDelete);
 				break;
 			case 'resumefailed':
-				$command = new ChangeDownloadState($downloads,
-						[
+				$command = new ChangeDownloadState(
+					$downloads,
+					[
 								Download::STATE_DOWNLOADING_ERROR,
 								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_NOT_STARTED);
+					],
+					Download::STATE_DOWNLOADING_NOT_STARTED
+				);
 				break;
 			case 'resumeall':
-				$command = new ChangeDownloadState($downloads,
-						[
+				$command = new ChangeDownloadState(
+					$downloads,
+					[
 								Download::STATE_DOWNLOADING_STARTED,
 								Download::STATE_DOWNLOADING_COMPLETED,
 								Download::STATE_DOWNLOADING_ERROR,
@@ -325,26 +316,28 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 								Download::STATE_PROCESSING_STARTED,
 								Download::STATE_PROCESSING_COMPLETED,
 								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_NOT_STARTED);
+					],
+					Download::STATE_DOWNLOADING_NOT_STARTED
+				);
 				break;
 			case 'reprocess':
-				$command = new ChangeDownloadState($downloads,
-						[
+				$command = new ChangeDownloadState(
+					$downloads,
+					[
 								Download::STATE_PROCESSING_NOT_STARTED,
 								Download::STATE_PROCESSING_STARTED,
 								Download::STATE_PROCESSING_COMPLETED,
 								Download::STATE_PROCESSING_ERROR
-						], Download::STATE_DOWNLOADING_COMPLETED);
+					],
+					Download::STATE_DOWNLOADING_COMPLETED
+				);
 				break;
 		}
 
-		if ($command !== null)
-		{
+		if ($command !== null) {
 			$this->handleCommand($command);
 			$output->writeln($t->trans('TARTANA_TEXT_COMMAND_RUN_SUCCESS'));
-		}
-		else if ($action != 'status' && $action != 'details')
-		{
+		} elseif ($action != 'status' && $action != 'details') {
 			$output->writeln($t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_NO_ACTION_FOUND'));
 		}
 	}

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Middleware;
+
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 use SimpleBus\Message\CallableResolver\Exception\UndefinedCallable;
 
@@ -9,15 +10,12 @@ use SimpleBus\Message\CallableResolver\Exception\UndefinedCallable;
 class MessageBusIgnoreNoHandler implements MessageBusMiddleware
 {
 
-	public function handle ($message, callable $next)
+	public function handle($message, callable $next)
 	{
-		try
-		{
+		try {
 			$next($message);
-		}
-		catch (UndefinedCallable $e)
-		{
-			// Ignoring it
+		} catch (UndefinedCallable $e) {
+		// Ignoring it
 		}
 	}
 }

@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Entity\User;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testEmptyUser ()
+	public function testEmptyUser()
 	{
 		$user = new User();
 
@@ -15,7 +16,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(isset($jsonSerialized['plainPassword']));
 	}
 
-	public function testUserJsonSerialize ()
+	public function testUserJsonSerialize()
 	{
 		$user = new User();
 		$user->setPassword('admin');

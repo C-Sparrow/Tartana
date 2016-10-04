@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Domain\Command\SaveParameters;
 
 class SaveParametersTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testGetParameters ()
+	public function testGetParameters()
 	{
 		$command = new SaveParameters([
 				'unit' => 'test'
@@ -16,7 +17,7 @@ class SaveParametersTest extends \PHPUnit_Framework_TestCase
 		], $command->getParameters());
 	}
 
-	public function testGetParametersEmpty ()
+	public function testGetParametersEmpty()
 	{
 		$command = new SaveParameters([]);
 

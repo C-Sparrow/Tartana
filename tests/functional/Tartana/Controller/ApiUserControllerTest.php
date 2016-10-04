@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Controller;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 class ApiUserControllerTest extends WebTestCase
@@ -7,7 +8,7 @@ class ApiUserControllerTest extends WebTestCase
 
 	private $client = null;
 
-	public function testV1FindUser ()
+	public function testV1FindUser()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/find', [
 				'username' => 'admin'
@@ -28,7 +29,7 @@ class ApiUserControllerTest extends WebTestCase
 		$this->assertFalse(isset($resp->data[0]->password));
 	}
 
-	public function testV1FindUserNotExist ()
+	public function testV1FindUserNotExist()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/find', [
 				'username' => 'notexisting'
@@ -44,7 +45,7 @@ class ApiUserControllerTest extends WebTestCase
 		$this->assertFalse(isset($resp->data));
 	}
 
-	public function testV1FindUserEmpty ()
+	public function testV1FindUserEmpty()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/find');
 
@@ -58,7 +59,7 @@ class ApiUserControllerTest extends WebTestCase
 		$this->assertFalse(isset($resp->data));
 	}
 
-	public function testV1Salt ()
+	public function testV1Salt()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/salt', [
 				'username' => 'admin'
@@ -75,7 +76,7 @@ class ApiUserControllerTest extends WebTestCase
 		$this->assertFalse(isset($resp->data->username));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$this->loadFixtures([
 				'Tartana\DataFixtures\ORM\LoadUserData'

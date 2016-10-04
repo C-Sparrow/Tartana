@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Mixins;
+
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 class HostFactoryAwareTraitTest extends TartanaBaseTestCase
 {
 
-	public function testGetDownloader ()
+	public function testGetDownloader()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\HostFactoryAwareTrait');
 
@@ -13,7 +14,7 @@ class HostFactoryAwareTraitTest extends TartanaBaseTestCase
 		$this->assertEmpty($trait->getDownloader('url'));
 	}
 
-	public function testGetDownloaderSetNullFactory ()
+	public function testGetDownloaderSetNullFactory()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\HostFactoryAwareTrait');
 
@@ -23,7 +24,7 @@ class HostFactoryAwareTraitTest extends TartanaBaseTestCase
 		$this->assertEmpty($trait->getDownloader('url'));
 	}
 
-	public function testHandleCommandWithCommandBus ()
+	public function testHandleCommandWithCommandBus()
 	{
 		$factory = $this->getMockHostFactory(null);
 

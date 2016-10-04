@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host\Common;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -9,7 +10,7 @@ use Tartana\Host\Common\Ftp;
 class FtpTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
 		$downloader = new Ftp(new Registry());
 
@@ -28,19 +29,18 @@ class FtpTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('ls-lR.gz', $file['path']);
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');

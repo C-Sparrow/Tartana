@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Monolog\Logger;
 use Tartana\Entity\Log;
 
 class LogTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testCreateLog ()
+	public function testCreateLog()
 	{
 		$date = new \DateTime();
 		$entity = new Log('unit', 'unit test message', $date, Logger::EMERGENCY, 'unit test context', 'extra content');

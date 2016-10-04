@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Host;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -14,19 +15,23 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class DropboxcomTest extends TartanaBaseTestCase
 {
 
-	public function testDownloadToken ()
+	public function testDownloadToken()
 	{
 		$mock = new MockHandler(
-				[
-						new Response(200,
-								[
+			[
+						new Response(
+							200,
+							[
 										'dropbox-api-result' => [
 												0 => json_encode([
 														'name' => 'hello.txt'
 												])
 										]
-								], 'hello')
-				]);
+							],
+							'hello'
+						)
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -59,23 +64,23 @@ class DropboxcomTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());
 
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $download->getFileName());
 		}
 	}
 
-	public function testDownloadNoToken ()
+	public function testDownloadNoToken()
 	{
 		$mock = new MockHandler(
-				[
+			[
 						new Response(200, [
 								'Content-Disposition' => [
 										0 => 'filename="hello.txt"'
 								]
 						], 'hello')
-				]);
+			]
+		);
 
 		$client = new Client([
 				'handler' => HandlerStack::create($mock),
@@ -97,20 +102,19 @@ class DropboxcomTest extends TartanaBaseTestCase
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());
 
 		$this->assertCount(1, $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('hello', $dest->read($file['path'])['contents']);
 			$this->assertEquals('hello.txt', $download->getFileName());
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');

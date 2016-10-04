@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Functional\Local\Handler;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Tartana\Domain\Command\ProcessLinks;
 
 class LocalProcessLinksHandlerTest extends WebTestCase
 {
 
-	public function testCreateDownload ()
+	public function testCreateDownload()
 	{
 		$this->loadFixtures([
 				'Local\DataFixtures\ORM\LoadDownloadData'

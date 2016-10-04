@@ -1,14 +1,15 @@
 <?php
 namespace Tests\Unit\Tartana\Component\Decrypter;
+
 use League\Flysystem\Adapter\Local;
 use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 {
 
-	abstract protected function getDecrypter ();
+	abstract protected function getDecrypter();
 
-	public function testDecryptFile ()
+	public function testDecryptFile()
 	{
 		$file = __DIR__ . '/files/simple.' . $this->getFileExtension();
 		$dec = $this->getDecrypter();
@@ -17,13 +18,12 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 		$this->assertTrue(is_array($links));
 		$this->assertGreaterThanOrEqual(2, count($links));
 
-		foreach ($links as $link)
-		{
+		foreach ($links as $link) {
 			$this->assertContains('http', $link);
 		}
 	}
 
-	public function testDecryptWrongFile ()
+	public function testDecryptWrongFile()
 	{
 		$file = __DIR__ . '/not-existing.' . $this->getFileExtension();
 		$dec = $this->getDecrypter();
@@ -32,7 +32,7 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 		$dec->decrypt($file);
 	}
 
-	public function testDecryptContent ()
+	public function testDecryptContent()
 	{
 		$fs = new Local(__DIR__);
 		$content = $fs->read('/files/simple.' . $this->getFileExtension())['contents'];
@@ -42,13 +42,12 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 		$this->assertTrue(is_array($links));
 		$this->assertGreaterThanOrEqual(2, count($links));
 
-		foreach ($links as $link)
-		{
+		foreach ($links as $link) {
 			$this->assertContains('http', $link);
 		}
 	}
 
-	public function testDecryptWrongContent ()
+	public function testDecryptWrongContent()
 	{
 		$dec = $this->getDecrypter();
 
@@ -56,7 +55,7 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 		$dec->decrypt('unit test');
 	}
 
-	public function testDecryptEmptyContent ()
+	public function testDecryptEmptyContent()
 	{
 		$dec = $this->getDecrypter();
 
@@ -65,7 +64,7 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 		$dec->decrypt(null);
 	}
 
-	private function getFileExtension ()
+	private function getFileExtension()
 	{
 		$name = strtolower((new \ReflectionClass($this))->getShortName());
 

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Event;
+
 use Tartana\Domain\DownloadRepository;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -10,13 +11,13 @@ class DownloadsCompletedEvent extends Event
 
 	private $downloads = null;
 
-	public function __construct (DownloadRepository $repository, array $downloads)
+	public function __construct(DownloadRepository $repository, array $downloads)
 	{
 		$this->repository = $repository;
 		$this->downloads = $downloads;
 	}
 
-	public function getRepository ()
+	public function getRepository()
 	{
 		return $this->repository;
 	}
@@ -25,7 +26,7 @@ class DownloadsCompletedEvent extends Event
 	 *
 	 * @return \Tartana\Entity\Download[]
 	 */
-	public function getDownloads ()
+	public function getDownloads()
 	{
 		return $this->downloads;
 	}

@@ -1,5 +1,6 @@
 <?php
 namespace Synology\Handler;
+
 use Monolog\Logger;
 use Tartana\Domain\Command\ProcessCompletedDownloads;
 use Tartana\Event\DownloadsCompletedEvent;
@@ -13,7 +14,7 @@ class SynologyProcessCompletedDownloadsHandler
 
 	private $dispatcher = null;
 
-	public function __construct (EventDispatcherInterface $dispatcher)
+	public function __construct(EventDispatcherInterface $dispatcher)
 	{
 		$this->dispatcher = $dispatcher;
 	}
@@ -23,10 +24,9 @@ class SynologyProcessCompletedDownloadsHandler
 	 *
 	 * @param ProcessCompletedDownloads $command
 	 */
-	public function handle (ProcessCompletedDownloads $command)
+	public function handle(ProcessCompletedDownloads $command)
 	{
-		if (! $command->getDownloads())
-		{
+		if (! $command->getDownloads()) {
 			return;
 		}
 

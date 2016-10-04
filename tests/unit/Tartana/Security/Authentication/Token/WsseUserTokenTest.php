@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use Tartana\Security\Authentication\Token\WsseUserToken;
 
 class WsseUserTokenTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testEmptyToken ()
+	public function testEmptyToken()
 	{
 		$token = new WsseUserToken();
 
@@ -13,7 +14,7 @@ class WsseUserTokenTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($token->isAuthenticated());
 	}
 
-	public function testTokenWithRoles ()
+	public function testTokenWithRoles()
 	{
 		$token = new WsseUserToken([
 				'unit-test'

@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command\Extract;
+
 use League\Flysystem\Adapter\AbstractAdapter;
 use Tartana\Component\Command\Command;
 use Tartana\Util;
@@ -7,19 +8,19 @@ use Tartana\Util;
 class SevenzCommand extends ExtractCommand
 {
 
-	protected function configure ()
+	protected function configure()
 	{
 		parent::configure();
 
 		$this->setName('7z');
 	}
 
-	protected function isSuccessfullFinished ($output)
+	protected function isSuccessfullFinished($output)
 	{
 		return strpos($output, 'Everything is Ok') !== false;
 	}
 
-	protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination)
+	protected function getExtractCommand($password, AbstractAdapter $source, AbstractAdapter $destination)
 	{
 		$command = new Command('7z');
 		// Extract
@@ -36,14 +37,12 @@ class SevenzCommand extends ExtractCommand
 		return $command;
 	}
 
-	protected function getFilesToDelete (AbstractAdapter $source)
+	protected function getFilesToDelete(AbstractAdapter $source)
 	{
 		$filesToDelete = [];
-		foreach ($source->listContents() as $file)
-		{
-			// Multipart archives do have the naming pattern test.7z.001
-			if (! Util::endsWith($file['path'], '.' . $this->getFileExtension()) && strpos($file['path'], '.7z.') === false)
-			{
+		foreach ($source->listContents() as $file) {
+		// Multipart archives do have the naming pattern test.7z.001
+			if (! Util::endsWith($file['path'], '.' . $this->getFileExtension()) && strpos($file['path'], '.7z.') === false) {
 				continue;
 			}
 
@@ -59,7 +58,7 @@ class SevenzCommand extends ExtractCommand
 	 *
 	 * @return string
 	 */
-	protected function getFileExtension ()
+	protected function getFileExtension()
 	{
 		return '7z';
 	}

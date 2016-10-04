@@ -15,7 +15,7 @@ interface DownloadRepository
 	 * @return \Tartana\Entity\Download[]
 	 * @see \Tartana\Entity\Download::getState()
 	 */
-	public function findDownloads ($state = null);
+	public function findDownloads($state = null);
 
 	/**
 	 * Returns an array of downloads which match the given destination.
@@ -23,5 +23,5 @@ interface DownloadRepository
 	 * @param string $destination
 	 * @return Download[]
 	 */
-	public function findDownloadsByDestination ($destination);
+	public function findDownloadsByDestination($destination);
 }

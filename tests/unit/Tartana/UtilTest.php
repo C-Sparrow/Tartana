@@ -1,17 +1,18 @@
 <?php
 namespace Test\Unit\Tartana;
+
 use Tartana\Util;
 
 class UtilTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testPidRunning ()
+	public function testPidRunning()
 	{
 		$this->assertTrue(Util::isPidRunning(getmypid()));
 		$this->assertFalse(Util::isPidRunning(851351385135123));
 	}
 
-	public function testReadableSize ()
+	public function testReadableSize()
 	{
 		$this->assertEquals('1 kB', Util::readableSize(1024));
 		$this->assertEquals('1 MB', Util::readableSize(1024 * 1024));
@@ -22,7 +23,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1', Util::readableSize(1024, []));
 	}
 
-	public function testRealPath ()
+	public function testRealPath()
 	{
 		// Check absolute path
 		$this->assertEquals(__DIR__, Util::realPath(__DIR__));
@@ -40,7 +41,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull(Util::realPath(0));
 	}
 
-	public function testClone ()
+	public function testClone()
 	{
 		$obj = new \stdClass();
 		$obj->test = 'unit';
@@ -53,7 +54,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('unit', $clone[0]->test);
 	}
 
-	public function testStartsWith ()
+	public function testStartsWith()
 	{
 		$this->assertTrue(Util::startsWith('test', 'test'));
 		$this->assertTrue(Util::startsWith('test hello', 'test'));
@@ -64,7 +65,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(Util::startsWith('', 'test'));
 	}
 
-	public function testEndsWith ()
+	public function testEndsWith()
 	{
 		$this->assertTrue(Util::endsWith('test', 'test'));
 		$this->assertTrue(Util::endsWith(' hello test', 'test'));
@@ -75,7 +76,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(Util::endsWith('', 'test'));
 	}
 
-	public function testShorten ()
+	public function testShorten()
 	{
 		$text = 'unit with so many charachters test';
 		$this->assertEquals('unit...test', Util::shorten($text, 8));
@@ -84,7 +85,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('uni...est', Util::shorten($text, 7));
 	}
 
-	public function testParseUrl ()
+	public function testParseUrl()
 	{
 		$uri = Util::parseUrl('http://user:pass@mirrors.kernel.org:8000/link/test.html?hello=foo#bar');
 
@@ -101,7 +102,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $uri['fragment']);
 	}
 
-	public function testParseInvalidUrl ()
+	public function testParseInvalidUrl()
 	{
 		$uri = Util::parseUrl('://invalid://');
 
@@ -118,7 +119,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('', $uri['fragment']);
 	}
 
-	public function testCleanHost ()
+	public function testCleanHost()
 	{
 		$this->assertEquals('foobar', Util::cleanHostName('foo.bar'));
 		$this->assertEquals('foobar', Util::cleanHostName(':foo-.bar'));

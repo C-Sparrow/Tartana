@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Controller;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,7 +12,7 @@ class ApiUserController extends Controller
 	/**
 	 * @Route("/api/v1/user/find", name="api_v1_user_find")
 	 */
-	public function findAction (Request $request)
+	public function findAction(Request $request)
 	{
 		return new JsonResponse($this->getData($request));
 	}
@@ -19,12 +20,11 @@ class ApiUserController extends Controller
 	/**
 	 * @Route("/api/v1/user/salt", name="api_v1_user_salt")
 	 */
-	public function saltAction (Request $request)
+	public function saltAction(Request $request)
 	{
 		$data = $this->getData($request);
 
-		if ($data['success'])
-		{
+		if ($data['success']) {
 			$user = $data['data'][0];
 			$data['data'] = [];
 			$data['data']['salt'] = $user->getSalt();
@@ -33,7 +33,7 @@ class ApiUserController extends Controller
 		return new JsonResponse($data);
 	}
 
-	private function getData (Request $request)
+	private function getData(Request $request)
 	{
 		$data = [
 				'success' => true,
@@ -43,13 +43,10 @@ class ApiUserController extends Controller
 		$userManager = $this->container->get('fos_user.user_manager');
 
 		$user = $userManager->findUserByUsername($request->get('username'));
-		if (! $user)
-		{
+		if (! $user) {
 			$data['success'] = false;
 			$data['message'] = $this->container->get('Translator')->trans('TARTANA_EXTRACT_MESSAGE_USER_NOT_FOUND');
-		}
-		else
-		{
+		} else {
 			$data['data'][] = $user;
 		}
 

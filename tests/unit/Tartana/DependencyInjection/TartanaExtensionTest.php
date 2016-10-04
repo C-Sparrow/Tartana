@@ -1,15 +1,16 @@
 <?php
 namespace Tests\Unit\Tartana\DependencyInjection;
+
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Tartana\DependencyInjection\TartanaExtension;
 
 class TartanaExtensionTest extends AbstractExtensionTestCase
 {
 
-	public function testLoadEnabled ()
+	public function testLoadEnabled()
 	{
 		$this->load(
-				[
+			[
 						'links' => [
 								'folder' => '/path/to/folder',
 								'convertToHttps' => true,
@@ -24,10 +25,12 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 								'destination' => '/path/to/folder',
 								'hostFilter' => 'foo.com'
 						]
-				]);
+			]
+		);
 
-		$this->assertContainerBuilderHasParameter('tartana.config',
-				[
+		$this->assertContainerBuilderHasParameter(
+			'tartana.config',
+			[
 						'links' => [
 								'folder' => '/path/to/folder',
 								'convertToHttps' => true,
@@ -42,7 +45,8 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 								'destination' => '/path/to/folder',
 								'hostFilter' => 'foo.com'
 						]
-				]);
+			]
+		);
 
 		$this->assertContainerBuilderHasService('config');
 		$this->assertContainerBuilderHasService('CommandBus');
@@ -92,7 +96,7 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('wsse.security.authentication.listener');
 	}
 
-	protected function getContainerExtensions ()
+	protected function getContainerExtensions()
 	{
 		return [
 				new TartanaExtension()

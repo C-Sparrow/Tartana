@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Component\Decrypter;
+
 use Psr\Log\LoggerInterface;
 use Tartana\Component\Decrypter\DecrypterFactory;
 use Tartana\Component\Decrypter\DecrypterInterface;
@@ -9,7 +10,7 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class DecrypterFactoryTest extends TartanaBaseTestCase
 {
 
-	public function testLocalHost ()
+	public function testLocalHost()
 	{
 		$factory = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('simple.dlc');
@@ -18,7 +19,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 		$this->assertInstanceOf(Dlc::class, $decryptor);
 	}
 
-	public function testClassNotExists ()
+	public function testClassNotExists()
 	{
 		$factory = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('test.notexists');
@@ -26,7 +27,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 		$this->assertEmpty($decryptor);
 	}
 
-	public function testNotCorrectInterface ()
+	public function testNotCorrectInterface()
 	{
 		$factory = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('test.Decrypterfactorytestinvalid');
@@ -34,7 +35,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 		$this->assertEmpty($decryptor);
 	}
 
-	public function testLoggerSet ()
+	public function testLoggerSet()
 	{
 		$logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 		$factory = new DecrypterFactory();

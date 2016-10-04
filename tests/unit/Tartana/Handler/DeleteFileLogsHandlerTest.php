@@ -1,5 +1,6 @@
 <?php
 namespace Test\Unit\Tartana\Handler;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Tartana\Domain\Command\DeleteLogs;
@@ -8,7 +9,7 @@ use Tartana\Handler\DeleteFileLogsHandler;
 class DeleteFileLogsHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDeleteLogs ()
+	public function testDeleteLogs()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'hello', new Config());
@@ -18,7 +19,7 @@ class DeleteFileLogsHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($fs->has('test.txt'));
 	}
 
-	public function testDeleteLogsFileDoesNotExists ()
+	public function testDeleteLogsFileDoesNotExists()
 	{
 		$handler = new DeleteFileLogsHandler(__DIR__ . '/invalid.txt');
 		$handler->handle(new DeleteLogs());
@@ -26,20 +27,18 @@ class DeleteFileLogsHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertFileNotExists(__DIR__ . '/invalid.txt');
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}

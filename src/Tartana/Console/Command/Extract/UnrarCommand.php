@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Console\Command\Extract;
+
 use League\Flysystem\Adapter\AbstractAdapter;
 use Tartana\Component\Command\Command;
 use Tartana\Event\ProcessingProgressEvent;
@@ -10,15 +11,14 @@ class UnrarCommand extends ExtractCommand
 
 	private $lastFileName = null;
 
-	protected function isSuccessfullFinished ($output)
+	protected function isSuccessfullFinished($output)
 	{
 		return Util::endsWith($output, 'All OK');
 	}
 
-	protected function getExtractCommand ($password, AbstractAdapter $source, AbstractAdapter $destination)
+	protected function getExtractCommand($password, AbstractAdapter $source, AbstractAdapter $destination)
 	{
-		if ($password == '')
-		{
+		if ($password == '') {
 			$password = '-';
 		}
 
@@ -41,7 +41,7 @@ class UnrarCommand extends ExtractCommand
 		return $command;
 	}
 
-	protected function getFilesToDelete (AbstractAdapter $source)
+	protected function getFilesToDelete(AbstractAdapter $source)
 	{
 		$filesToDelete = [];
 
@@ -53,30 +53,27 @@ class UnrarCommand extends ExtractCommand
 
 		// Delet the files which do belong to successfull unrar
 		preg_match_all("/^(Archive:?|Volume) (.*)/m", $list, $matches);
-		if (isset($matches[2]))
-		{
-			foreach ($matches[2] as $match)
-			{
+		if (isset($matches[2])) {
+			foreach ($matches[2] as $match) {
 				$filesToDelete[] = $source->removePathPrefix($match);
 			}
 		}
 		return $filesToDelete;
 	}
 
-	protected function processLine ($line, AbstractAdapter $source, AbstractAdapter $destination)
+	protected function processLine($line, AbstractAdapter $source, AbstractAdapter $destination)
 	{
 		parent::processLine($line, $source, $destination);
 
-		if ($this->dispatcher)
-		{
-			if (Util::startsWith($line, 'Extracting from '))
-			{
+		if ($this->dispatcher) {
+			if (Util::startsWith($line, 'Extracting from ')) {
 				$this->lastFileName = trim(str_replace('Extracting from ' . $source->getPathPrefix(), '', $line));
 			}
-			if ($this->lastFileName && preg_match("/\s[0-9]+%$/", $line, $matches))
-			{
-				$this->dispatcher->dispatch('processing.progress',
-						new ProcessingProgressEvent($source, $destination, $this->lastFileName, $matches[0]));
+			if ($this->lastFileName && preg_match("/\s[0-9]+%$/", $line, $matches)) {
+				$this->dispatcher->dispatch(
+					'processing.progress',
+					new ProcessingProgressEvent($source, $destination, $this->lastFileName, $matches[0])
+				);
 			}
 		}
 	}

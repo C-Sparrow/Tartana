@@ -23,22 +23,23 @@ class DownloadCommandTest extends LocalBaseTestCase
 	public function testExecute()
 	{
 		$commandBus = $this->getMockCommandBus(
-				[
-						$this->callback(
-								function (SaveDownloads $command)
-								{
-									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
-								})
-				]);
+			[
+				$this->callback(
+					function (SaveDownloads $command) {
+						return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
+					}
+				)
+			]
+		);
 
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('download')
 			->with(
-				$this->callback(function (array $downloads)
-				{
+				$this->callback(function (array $downloads) {
 					return $downloads[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
-				}));
+				})
+			);
 		$command = new DownloadCommand($this->getMockRepository(), $this->getMockHostFactory($host), $this->getMockRunner());
 		$command->addOption('env', 'e');
 		$command->setCommandBus($commandBus);
@@ -47,7 +48,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -61,7 +62,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -79,18 +80,19 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$started->setState(Download::STATE_DOWNLOADING_STARTED);
 
 		$commandBus = $this->getMockCommandBus(
-				[
-						$this->callback(
-								function (SaveDownloads $command)
-								{
-									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
-								})
-				]);
+			[
+				$this->callback(
+					function (SaveDownloads $command) {
+						return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_STARTED;
+					}
+				)
+			]
+		);
 
 		$command = new DownloadCommand($this->getMockRepository([], [
-				$started
+			$started
 		], [
-				$notStarted
+			$notStarted
 		]), $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock()), $this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -102,7 +104,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -120,13 +122,13 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$started->setState(Download::STATE_DOWNLOADING_STARTED);
 
 		$repositoryMock = $this->getMockRepository([], [
-				$started,
-				$started,
-				$started,
-				$started,
-				$started
+			$started,
+			$started,
+			$started,
+			$started,
+			$started
 		], [
-				$notStarted
+			$notStarted
 		]);
 
 		$factory = $this->getMockHostFactory();
@@ -142,7 +144,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -156,13 +158,14 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$downloadsNotStarted[] = $download;
 
 		$commandBus = $this->getMockCommandBus(
-				[
-						$this->callback(
-								function (SaveDownloads $command)
-								{
-									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
-								})
-				]);
+			[
+				$this->callback(
+					function (SaveDownloads $command) {
+						return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+					}
+				)
+			]
+		);
 
 		$command = new DownloadCommand($this->getMockRepository($downloadsNotStarted, [], []), $this->getMockHostFactory(), $this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -174,8 +177,8 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test',
-				'--force' => 1
+			'--env' => 'test',
+			'--force' => 1
 		]);
 	}
 
@@ -190,13 +193,14 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$zombies[] = $download;
 
 		$commandBus = $this->getMockCommandBus(
-				[
-						$this->callback(
-								function (SaveDownloads $command)
-								{
-									return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
-								})
-				]);
+			[
+				$this->callback(
+					function (SaveDownloads $command) {
+						return $command->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+					}
+				)
+			]
+		);
 
 		$command = new DownloadCommand($this->getMockRepository($zombies, [], []), $this->getMockHostFactory(), $this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -208,7 +212,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -232,7 +236,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -245,7 +249,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setPid(getmypid());
 
 		$command = new DownloadCommand($this->getMockRepository([
-				$download
+			$download
 		], [], []), $this->getMockHostFactory(), $this->getMockRunner());
 		$command->addOption('env', 'e');
 		$command->setCommandBus($this->getMockCommandBus());
@@ -256,7 +260,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -264,21 +268,25 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml',
-				Yaml::dump([
-						'sleepTime' => 0,
-						'parameters' => [
-								'tartana.local.downloads.speedlimit' => 10
-						]
-				]), new Config());
+		$fs->write(
+			'parameters.yml',
+			Yaml::dump([
+				'sleepTime' => 0,
+				'parameters' => [
+					'tartana.local.downloads.speedlimit' => 10
+				]
+			]),
+			new Config()
+		);
 
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
-		$factory->method('createHostDownloader')->with($this->anything(),
-				$this->callback(function (Registry $config)
-				{
-					return $config->get('speedlimit') == 2;
-				}));
+		$factory->method('createHostDownloader')->with(
+			$this->anything(),
+			$this->callback(function (Registry $config) {
+				return $config->get('speedlimit') == 2;
+			})
+		);
 
 		$command = new DownloadCommand($this->getMockRepository(), $factory, $this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -288,7 +296,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -296,13 +304,16 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml',
-				Yaml::dump([
-						'sleepTime' => 0,
-						'parameters' => [
-								'tartana.local.downloads.daylimit' => 10
-						]
-				]), new Config());
+		$fs->write(
+			'parameters.yml',
+			Yaml::dump([
+				'sleepTime' => 0,
+				'parameters' => [
+					'tartana.local.downloads.daylimit' => 10
+				]
+			]),
+			new Config()
+		);
 
 		$downloads = [];
 		$download = new Download();
@@ -315,14 +326,18 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;
 
-		$command = new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads),
-				$this->getMockHostFactory(
-						[
-								$this->getMockBuilder(HostInterface::class)
-									->getMock(),
-								$this->getMockBuilder(HostInterface::class)
-									->getMock()
-						]), $this->getMockRunner());
+		$command = new DownloadCommand(
+			$this->getMockRepository([], $downloads, $downloads, $downloads),
+			$this->getMockHostFactory(
+				[
+					$this->getMockBuilder(HostInterface::class)
+						->getMock(),
+					$this->getMockBuilder(HostInterface::class)
+						->getMock()
+				]
+			),
+			$this->getMockRunner()
+		);
 		$command->addOption('env', 'e');
 		$application = new Application();
 		$application->add($command);
@@ -330,7 +345,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -338,13 +353,16 @@ class DownloadCommandTest extends LocalBaseTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
-		$fs->write('parameters.yml',
-				Yaml::dump([
-						'sleepTime' => 0,
-						'parameters' => [
-								'tartana.local.downloads.daylimit' => 10
-						]
-				]), new Config());
+		$fs->write(
+			'parameters.yml',
+			Yaml::dump([
+				'sleepTime' => 0,
+				'parameters' => [
+					'tartana.local.downloads.daylimit' => 10
+				]
+			]),
+			new Config()
+		);
 
 		$downloads = [];
 		$download = new Download();
@@ -352,8 +370,11 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;
 
-		$command = new DownloadCommand($this->getMockRepository([], $downloads, $downloads, $downloads), $this->getMockHostFactory(),
-				$this->getMockRunner());
+		$command = new DownloadCommand(
+			$this->getMockRepository([], $downloads, $downloads, $downloads),
+			$this->getMockHostFactory(),
+			$this->getMockRunner()
+		);
 		$command->addOption('env', 'e');
 		$application = new Application();
 		$application->add($command);
@@ -361,7 +382,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -370,16 +391,17 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
 
 		$fs->write('hosters.yml', Yaml::dump([
-				'message' => 'unit-test'
+			'message' => 'unit-test'
 		]), new Config());
 
 		$factory = $this->getMockHostFactory($this->getMockBuilder(HostInterface::class)
 			->getMock());
-		$factory->method('createHostDownloader')->with($this->anything(),
-				$this->callback(function (Registry $config)
-				{
-					return $config->get('message') == 'unit-test';
-				}));
+		$factory->method('createHostDownloader')->with(
+			$this->anything(),
+			$this->callback(function (Registry $config) {
+				return $config->get('message') == 'unit-test';
+			})
+		);
 
 		$command = new DownloadCommand($this->getMockRepository(), $factory, $this->getMockRunner());
 		$command->addOption('env', 'e');
@@ -389,7 +411,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -409,16 +431,15 @@ class DownloadCommandTest extends LocalBaseTestCase
 			->getMock();
 		$host2->expects($this->once())
 			->method('setClient')
-			->with($this->callback(function (ClientInterface $c) use ($client)
-		{
-			return $client == $c;
-		}));
+			->with($this->callback(function (ClientInterface $c) use ($client) {
+				return $client == $c;
+			}));
 		$command = new DownloadCommand($this->getMockRepository([], [], [
-				new Download(),
-				new Download()
+			new Download(),
+			new Download()
 		]), $this->getMockHostFactory([
-				$host1,
-				$host2
+			$host1,
+			$host2
 		]), $this->getMockRunner());
 		$command->addOption('env', 'e');
 		$application = new Application();
@@ -427,7 +448,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
@@ -449,11 +470,11 @@ class DownloadCommandTest extends LocalBaseTestCase
 			->method('setClient');
 
 		$command = new DownloadCommand($this->getMockRepository([], [], [
-				new Download(),
-				new Download()
+			new Download(),
+			new Download()
 		]), $this->getMockHostFactory([
-				$host1,
-				$host2
+			$host1,
+			$host2
 		]), $this->getMockRunner());
 		$command->addOption('env', 'e');
 		$application = new Application();
@@ -462,29 +483,26 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'--env' => 'test'
+			'--env' => 'test'
 		]);
 	}
 
 	protected function setUp()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
-		if ($fs->has('parameters.yml'))
-		{
+		if ($fs->has('parameters.yml')) {
 			$fs->rename('parameters.yml', 'parameters.yml.backup.for.test');
 		}
-		if ($fs->has('hosters.yml'))
-		{
+		if ($fs->has('hosters.yml')) {
 			$fs->rename('hosters.yml', 'hosters.yml.backup.for.test');
 		}
 
 		$fs->write('parameters.yml', Yaml::dump([
-				'sleepTime' => 0
+			'sleepTime' => 0
 		]), new Config());
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
-		if ($fs->has('download_test.pid'))
-		{
+		if ($fs->has('download_test.pid')) {
 			$fs->delete('download_test.pid');
 		}
 	}
@@ -492,25 +510,21 @@ class DownloadCommandTest extends LocalBaseTestCase
 	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
-		if ($fs->has('parameters.yml.backup.for.test'))
-		{
+		if ($fs->has('parameters.yml.backup.for.test')) {
 			$fs->rename('parameters.yml.backup.for.test', 'parameters.yml');
 		}
-		if ($fs->has('hosters.yml.backup.for.test'))
-		{
+		if ($fs->has('hosters.yml.backup.for.test')) {
 			$fs->rename('hosters.yml.backup.for.test', 'hosters.yml');
 		}
 	}
 
 	protected function getMockRunner($callbacks = [], $returnData = [])
 	{
-		if (empty($callbacks))
-		{
+		if (empty($callbacks)) {
 			$callbacks = [
-					$this->callback(function (Command $command)
-					{
-						return strpos((string)$command, 'default') !== false;
-					})
+				$this->callback(function (Command $command) {
+					return strpos((string)$command, 'default') !== false;
+				})
 			];
 		}
 		return parent::getMockRunner($callbacks, $returnData);
@@ -518,8 +532,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 	protected function getMockRepository($zombieDownloads = [], $downloadsStarted = [], $downloadsNotStarted = null, $new = [])
 	{
-		if ($downloadsNotStarted === null)
-		{
+		if ($downloadsNotStarted === null) {
 			$downloadsNotStarted = [];
 
 			// Not started download
@@ -530,10 +543,10 @@ class DownloadCommandTest extends LocalBaseTestCase
 		}
 
 		return parent::getMockRepository([
-				$zombieDownloads,
-				$downloadsNotStarted,
-				$downloadsStarted,
-				$new
+			$zombieDownloads,
+			$downloadsNotStarted,
+			$downloadsStarted,
+			$new
 		]);
 	}
 }

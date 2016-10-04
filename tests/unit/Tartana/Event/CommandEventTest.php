@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Event;
+
 use Tartana\Event\CommandEvent;
 
 class CommandEventTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testGetCommandEvent ()
+	public function testGetCommandEvent()
 	{
 		$command = new \stdClass();
 		$event = new CommandEvent($command);
@@ -13,7 +14,7 @@ class CommandEventTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($command, $event->getCommand());
 	}
 
-	public function testSetCommandEvent ()
+	public function testSetCommandEvent()
 	{
 		$command = new \stdClass();
 		$event = new CommandEvent($command);

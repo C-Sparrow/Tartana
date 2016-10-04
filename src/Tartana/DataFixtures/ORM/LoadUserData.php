@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\DataFixtures\ORM;
+
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -12,7 +13,7 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 {
 	use ContainerAwareTrait;
 
-	public function load (ObjectManager $manager)
+	public function load(ObjectManager $manager)
 	{
 		$userManager = $this->container->get('fos_user.user_manager');
 

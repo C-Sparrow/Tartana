@@ -1,11 +1,12 @@
 <?php
 namespace Tests\Unit\Tartana\Mixins;
+
 use SimpleBus\Message\Bus\MessageBus;
 
 class CommandBusAwareTraitTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testHandleCommandNoCommandBus ()
+	public function testHandleCommandNoCommandBus()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\CommandBusAwareTrait');
 
@@ -14,7 +15,7 @@ class CommandBusAwareTraitTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($trait->getCommandBus());
 	}
 
-	public function testHandleCommandSetNullCommandBus ()
+	public function testHandleCommandSetNullCommandBus()
 	{
 		$trait = $this->getObjectForTrait('Tartana\Mixins\CommandBusAwareTrait');
 
@@ -24,7 +25,7 @@ class CommandBusAwareTraitTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($trait->getCommandBus());
 	}
 
-	public function testHandleCommandWithCommandBus ()
+	public function testHandleCommandWithCommandBus()
 	{
 		$command = new \stdClass();
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();

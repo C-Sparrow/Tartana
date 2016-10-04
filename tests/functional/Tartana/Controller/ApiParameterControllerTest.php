@@ -48,12 +48,9 @@ class ApiParameterControllerTest extends WebTestCase
 		$this->client = $client;
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');
-		if (!$fs->has('parameters.yml'))
-		{
+		if (!$fs->has('parameters.yml')) {
 			$fs->copy('parameters.dist.yml', 'parameters.yml');
-		}
-		else
-		{
+		} else {
 			$fs->copy('parameters.yml', 'parameters.yml.backup.for.test');
 		}
 	}
@@ -62,8 +59,7 @@ class ApiParameterControllerTest extends WebTestCase
 	{
 		$fs = new Local(TARTANA_PATH_ROOT);
 		$fs->write('var/cache/.gitkeep', '', new Config());
-		if ($fs->has('app/config/parameters.yml.backup.for.test'))
-		{
+		if ($fs->has('app/config/parameters.yml.backup.for.test')) {
 			$fs->rename('app/config/parameters.yml.backup.for.test', 'app/config/parameters.yml');
 		}
 	}

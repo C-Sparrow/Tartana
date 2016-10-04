@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Local\Handler;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Local\Handler\LocalSaveDownloadsHandler;
 use Tartana\Domain\Command\SaveDownloads;
@@ -9,19 +10,19 @@ use Tartana\Util;
 class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testSaveDownloads ()
+	public function testSaveDownloads()
 	{
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->expects($this->once())
 			->method('merge')
-			->willReturnCallback(function  (Download $e) {
-			return $e;
-		});
+			->willReturnCallback(function (Download $e) {
+				return $e;
+			});
 		$entityManager->expects($this->once())
 			->method('persist')
-			->with($this->callback(function  (Download $download) {
-			return $download->getId() == 1;
-		}));
+			->with($this->callback(function (Download $download) {
+				return $download->getId() == 1;
+			}));
 		$entityManager->expects($this->once())
 			->method('flush');
 
@@ -34,19 +35,19 @@ class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		$handler->handle(new SaveDownloads($downloads));
 	}
 
-	public function testSetDownloadWithTrailingSlash ()
+	public function testSetDownloadWithTrailingSlash()
 	{
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->expects($this->once())
 			->method('merge')
-			->willReturnCallback(function  (Download $e) {
-			return $e;
-		});
+			->willReturnCallback(function (Download $e) {
+				return $e;
+			});
 		$entityManager->expects($this->once())
 			->method('persist')
-			->with($this->callback(function  (Download $download) {
-			return ! Util::endsWith($download->getDestination(), '/');
-		}));
+			->with($this->callback(function (Download $download) {
+				return ! Util::endsWith($download->getDestination(), '/');
+			}));
 		$entityManager->expects($this->once())
 			->method('flush');
 
@@ -59,7 +60,7 @@ class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		]));
 	}
 
-	public function testDeleteDownloadsNoDownloads ()
+	public function testDeleteDownloadsNoDownloads()
 	{
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 		$entityManager->expects($this->never())

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Connection\Tartana\Host\Common;
+
 use GuzzleHttp\Promise;
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
@@ -12,7 +13,7 @@ use Tartana\Util;
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testDownloadLinks ()
+	public function testDownloadLinks()
 	{
 		$downloader = new Http(new Registry());
 
@@ -32,13 +33,12 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('downloads-list.png', $file['path']);
 		}
 	}
 
-	public function testDownloadLargeLink ()
+	public function testDownloadLargeLink()
 	{
 		$this->markTestSkipped('Uncomment to test large downloads!');
 
@@ -72,19 +72,18 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotEmpty($dest->listContents());
 		$this->assertCount(count($downloads), $dest->listContents());
-		foreach ($dest->listContents() as $file)
-		{
+		foreach ($dest->listContents() as $file) {
 			$this->assertEquals('ubuntu-14.04.3-desktop-amd64.iso', $file['path']);
 		}
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__ . '/');
 		$fs->deleteDir('test');
@@ -94,12 +93,10 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 class EchoHandler extends AbstractProcessingHandler
 {
 
-	protected function write (array $record)
+	protected function write(array $record)
 	{
-		foreach ($record as $value)
-		{
-			if (is_string($value) && Util::startsWith($value, 'Progress'))
-			{
+		foreach ($record as $value) {
+			if (is_string($value) && Util::startsWith($value, 'Progress')) {
 				fwrite(STDERR, $value . PHP_EOL);
 			}
 		}

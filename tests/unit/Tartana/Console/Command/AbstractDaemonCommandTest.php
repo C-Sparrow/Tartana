@@ -98,12 +98,12 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	public function testStartDeadPids()
 	{
 		$runner = $this->getMockRunner(
-				[
-						$this->callback(function (Command $command)
-						{
+			[
+						$this->callback(function (Command $command) {
 							return strpos($command, 'kill') !== false;
 						})
-				]);
+			]
+		);
 
 		$command = new SimpleDaemonCommand($runner);
 		$application = new Application();
@@ -127,13 +127,14 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	public function testStartInBackground()
 	{
 		$runner = $this->getMockRunner(
-				[
+			[
 						$this->callback(
-								function (Command $command)
-								{
+							function (Command $command) {
 									return strpos($command, 'simple') !== false && strpos($command, '--backgound') === false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$command = new SimpleDaemonCommand($runner);
 		$application = new Application();
@@ -156,13 +157,14 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	public function testStop()
 	{
 		$runner = $this->getMockRunner(
-				[
+			[
 						$this->callback(
-								function (Command $command)
-								{
+							function (Command $command) {
 									return strpos($command, "kill '-9' '" . getmypid() . "'") !== false;
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$command = new SimpleDaemonCommand($runner);
 		$application = new Application();
@@ -186,8 +188,7 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	protected function tearDown()
 	{
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
-		if ($fs->has(self::PID_FILE_NAME))
-		{
+		if ($fs->has(self::PID_FILE_NAME)) {
 			$fs->delete(self::PID_FILE_NAME);
 		}
 	}

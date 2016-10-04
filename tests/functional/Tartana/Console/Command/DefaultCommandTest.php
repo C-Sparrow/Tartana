@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Console\Command;
+
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -8,7 +9,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class DefaultCommandTest extends WebTestCase
 {
 
-	public function testExecute ()
+	public function testExecute()
 	{
 		$this->loadFixtures([
 				'Local\DataFixtures\ORM\LoadDownloadData'

@@ -1,5 +1,6 @@
 <?php
 namespace Local\Handler;
+
 use League\Flysystem\Adapter\Local;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
@@ -12,12 +13,12 @@ class LocalStartDownloadsHandler
 
 	private $runner = null;
 
-	public function __construct (Runner $runner)
+	public function __construct(Runner $runner)
 	{
 		$this->runner = $runner;
 	}
 
-	public function handle (StartDownloads $downloads)
+	public function handle(StartDownloads $downloads)
 	{
 		$command = Command::getAppCommand('download');
 		$command->setAsync(true);

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event\Listener;
+
 use Tartana\Domain\Command\ProcessLinks;
 use Tartana\Domain\Command\SaveParameters;
 use Tartana\Event\CommandEvent;
@@ -10,17 +11,17 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class ProcessLinksListenerTest extends TartanaBaseTestCase
 {
 
-	public function testProcessingLinks ()
+	public function testProcessingLinks()
 	{
 		$host = $this->getMockBuilder(HostInterface::class)->getMock();
 		$host->expects($this->once())
 			->method('fetchLinkList')
 			->willReturn([
 				'http://bar.foo'
-		])
-			->with($this->callback(function  ($link) {
-			return $link == 'http://foo.bar';
-		}));
+			])
+			->with($this->callback(function ($link) {
+				return $link == 'http://foo.bar';
+			}));
 
 		$listener = new ProcessLinksListener();
 		$listener->setHostFactory($this->getMockHostFactory($host));
@@ -37,7 +38,7 @@ class ProcessLinksListenerTest extends TartanaBaseTestCase
 		], $links);
 	}
 
-	public function testProcessingLinksNoDownloader ()
+	public function testProcessingLinksNoDownloader()
 	{
 		$listener = new ProcessLinksListener();
 		$listener->setHostFactory($this->getMockHostFactory(null));
@@ -54,7 +55,7 @@ class ProcessLinksListenerTest extends TartanaBaseTestCase
 		], $links);
 	}
 
-	public function testInvalidCommand ()
+	public function testInvalidCommand()
 	{
 		$listener = new ProcessLinksListener();
 		$listener->setHostFactory($this->getMockHostFactory());

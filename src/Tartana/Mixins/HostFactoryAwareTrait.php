@@ -1,5 +1,6 @@
 <?php
 namespace Tartana\Mixins;
+
 use Tartana\Host\HostFactory;
 
 trait HostFactoryAwareTrait
@@ -7,20 +8,19 @@ trait HostFactoryAwareTrait
 
 	private $factory = null;
 
-	public function getHostFactory ()
+	public function getHostFactory()
 	{
 		return $this->factory;
 	}
 
-	public function setHostFactory (HostFactory $factory = null)
+	public function setHostFactory(HostFactory $factory = null)
 	{
 		$this->factory = $factory;
 	}
 
-	public function getDownloader ($url)
+	public function getDownloader($url)
 	{
-		if ($this->getHostFactory())
-		{
+		if ($this->getHostFactory()) {
 			return $this->getHostFactory()->createHostDownloader($url);
 		}
 		return null;

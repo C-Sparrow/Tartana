@@ -10,5 +10,5 @@ interface LogRepository
 	 * @param integer $count
 	 * @return \Tartana\Entity\Log[]
 	 */
-	public function findLogs ($count = 10);
+	public function findLogs($count = 10);
 }

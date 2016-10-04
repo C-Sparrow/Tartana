@@ -1,5 +1,6 @@
 <?php
 namespace Synology\Domain;
+
 use GuzzleHttp\ClientInterface;
 use Joomla\Registry\Registry;
 use Tartana\Domain\DownloadRepository;
@@ -13,10 +14,9 @@ class SynologyDownloadRepository implements DownloadRepository
 
 	private $configuration = null;
 
-	public function __construct (ClientInterface $client = null, Registry $configuration)
+	public function __construct(ClientInterface $client = null, Registry $configuration)
 	{
-		if ($client !== null)
-		{
+		if ($client !== null) {
 			$this->setClient($client);
 		}
 		$this->setUrl($configuration->get('synology.address', 'https://localhost:5001/webapi'));
@@ -26,10 +26,9 @@ class SynologyDownloadRepository implements DownloadRepository
 		$this->configuration = $configuration;
 	}
 
-	public function findDownloads ($states = null)
+	public function findDownloads($states = null)
 	{
-		if ($states)
-		{
+		if ($states) {
 			$states = (array) $states;
 		}
 
@@ -40,11 +39,9 @@ class SynologyDownloadRepository implements DownloadRepository
 		$res = $this->synologyApiCall($args);
 
 		$downloads = [];
-		foreach ($res->data->tasks as $task)
-		{
+		foreach ($res->data->tasks as $task) {
 			$state = Download::STATE_DOWNLOADING_NOT_STARTED;
-			switch ($task->status)
-			{
+			switch ($task->status) {
 				case 'downloading':
 				case 'paused':
 				case 'finishing':
@@ -62,8 +59,7 @@ class SynologyDownloadRepository implements DownloadRepository
 					break;
 			}
 
-			if ($states !== null && ! in_array($state, $states))
-			{
+			if ($states !== null && ! in_array($state, $states)) {
 				continue;
 			}
 
@@ -79,15 +75,13 @@ class SynologyDownloadRepository implements DownloadRepository
 		return $downloads;
 	}
 
-	public function findDownloadsByDestination ($destination)
+	public function findDownloadsByDestination($destination)
 	{
 		$destination = rtrim($destination, DIRECTORY_SEPARATOR);
 
 		$downloads = [];
-		foreach ($this->findDownloads() as $download)
-		{
-			if (strpos($download->getDestination(), $destination) !== false)
-			{
+		foreach ($this->findDownloads() as $download) {
+			if (strpos($download->getDestination(), $destination) !== false) {
 				$downloads[] = $download;
 			}
 		}

@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Event\Listener;
+
 use League\Flysystem\Adapter\Local;
 use Tartana\Domain\Command\SaveDownloads;
 use Tartana\Domain\DownloadRepository;
@@ -12,7 +13,7 @@ use SimpleBus\Message\Bus\MessageBus;
 class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 {
 
-	public function testOnExtractProgress ()
+	public function testOnExtractProgress()
 	{
 		$download1 = new Download();
 		$download1->setDestination(__DIR__);
@@ -32,19 +33,21 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with(
 				$this->callback(
-						function  (SaveDownloads $command) {
+					function (SaveDownloads $command) {
 							return $command->getDownloads()[0]->getProgress() == 20 && empty($command->getDownloads()[0]->getMessage());
-						}));
+					}
+				)
+			);
 
-		$event = new ProcessingProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
-		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-		$listener->onExtractProgress($event);
+				$event = new ProcessingProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
+				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+				$listener->onExtractProgress($event);
 
-		$this->assertEmpty($download2->getProgress());
-		$this->assertEmpty($download2->getMessage());
+				$this->assertEmpty($download2->getProgress());
+				$this->assertEmpty($download2->getMessage());
 	}
 
-	public function testonProcessingCompletedSuccess ()
+	public function testonProcessingCompletedSuccess()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__);
@@ -58,17 +61,19 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with(
 				$this->callback(
-						function  (SaveDownloads $command) {
+					function (SaveDownloads $command) {
 							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED &&
 									 empty($command->getDownloads()[0]->getMessage());
-						}));
+					}
+				)
+			);
 
-		$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
-		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-		$listener->onProcessingCompleted($event);
+				$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
+				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+				$listener->onProcessingCompleted($event);
 	}
 
-	public function testonProcessingCompletedError ()
+	public function testonProcessingCompletedError()
 	{
 		$download = new Download();
 		$download->setDestination(__DIR__);
@@ -82,13 +87,15 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->with(
 				$this->callback(
-						function  (SaveDownloads $command) {
+					function (SaveDownloads $command) {
 							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_ERROR &&
 									 ! empty($command->getDownloads()[0]->getMessage());
-						}));
+					}
+				)
+			);
 
-		$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
-		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-		$listener->onProcessingCompleted($event);
+				$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
+				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+				$listener->onProcessingCompleted($event);
 	}
 }

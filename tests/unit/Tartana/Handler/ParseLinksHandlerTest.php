@@ -1,5 +1,6 @@
 <?php
 namespace Test\Unit\Tartana\Handler;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Adapter\NullAdapter;
@@ -14,109 +15,132 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 class ParseLinksHandlerTest extends TartanaBaseTestCase
 {
 
-	public function testParseLinksFile ()
+	public function testParseLinksFile()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
+			[
 						$this->callback(
-								function  ($command) {
+							function ($command) {
 									return $command->getLinks()[0] == 'http://foo.bar/kjashd' && $command->getLinks()[1] == 'http://bar.foo/uzwhka';
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock, new Registry());
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
-	public function testParseLinksFileHttps ()
+	public function testParseLinksFileHttps()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
+			[
 						$this->callback(
-								function  ($command) {
+							function ($command) {
 									return $command->getLinks()[0] == 'https://foo.bar/kjashd' && $command->getLinks()[1] == 'https://bar.foo/uzwhka';
-								})
-				]);
+							}
+						)
+			]
+		);
 
-		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
-				new Registry([
+		$handler = new ParseLinksHandler(
+			$this->getDecrypterFactory(),
+			$messageBusMock,
+			new Registry([
 						'links' => [
 								'convertToHttps' => true
 						]
-				]));
+			])
+		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
-	public function testParseLinksFilterHosts ()
+	public function testParseLinksFilterHosts()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
+			[
 						$this->callback(
-								function  ($command) {
+							function ($command) {
 									return count($command->getLinks()) == 1 && $command->getLinks()[0] == 'http://foo.bar/kjashd';
-								})
-				]);
+							}
+						)
+			]
+		);
 
-		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
-				new Registry([
+		$handler = new ParseLinksHandler(
+			$this->getDecrypterFactory(),
+			$messageBusMock,
+			new Registry([
 						'links' => [
 								'hostFilter' => 'foo.bar'
 						]
-				]));
+			])
+		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
-	public function testParseLinksFilterHostsRegexExclude ()
+	public function testParseLinksFilterHostsRegexExclude()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
+			[
 						$this->callback(
-								function  ($command) {
+							function ($command) {
 									return count($command->getLinks()) == 1 && $command->getLinks()[0] != 'http://foo.bar/kjashd';
-								})
-				]);
+							}
+						)
+			]
+		);
 
-		$handler = new ParseLinksHandler($this->getDecrypterFactory(), $messageBusMock,
-				new Registry([
+		$handler = new ParseLinksHandler(
+			$this->getDecrypterFactory(),
+			$messageBusMock,
+			new Registry([
 						'links' => [
 								'hostFilter' => '^((?!kjashd).)*$'
 						]
-				]));
+			])
+		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
-	public function testParseLinksFilterHostsRegexMultiple ()
+	public function testParseLinksFilterHostsRegexMultiple()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
+			[
 						$this->callback(
-								function  ($command) {
+							function ($command) {
 									return count($command->getLinks()) == 2 && in_array('http://foo.bar/kjashd', $command->getLinks()) &&
 											 in_array('http://bar.foo/kjashd', $command->getLinks());
-								})
-				]);
+							}
+						)
+			]
+		);
 
 		$handler = new ParseLinksHandler(
-				$this->getDecrypterFactory([
+			$this->getDecrypterFactory([
 						'http://foo.bar/kjashd',
 						'http://bar.foo/kjashd',
 						'http://invalid.not/kjashd'
-				]), $messageBusMock, new Registry([
+				]),
+			$messageBusMock,
+			new Registry([
 						'links' => [
 								'hostFilter' => '(foo.bar|bar.foo)'
 						]
-				]));
-		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
+			])
+		);
+				$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
-	public function testParseLinksFileWithEmptyLines ()
+	public function testParseLinksFileWithEmptyLines()
 	{
 		$messageBusMock = $this->getMockCommandBus(
-				[
-						$this->callback(function  (ProcessLinks $command) {
+			[
+						$this->callback(function (ProcessLinks $command) {
 							return $command->getLinks()[0] == 'http://foo.bar/kjashd';
 						})
-				]);
+			]
+		);
 
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('simple.txt', 'http://foo.bar/kjashd' . PHP_EOL . '' . PHP_EOL, new Config());
@@ -125,7 +149,7 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		$handler->handle(new ParseLinks($fs, 'simple.txt'));
 	}
 
-	public function testParseLinksFileThrowException ()
+	public function testParseLinksFileThrowException()
 	{
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('simple.txt', '' . PHP_EOL . '' . PHP_EOL, new Config());
@@ -139,34 +163,31 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 		$handler->handle(new ParseLinks($fs, 'simple.txt'));
 	}
 
-	public function testNoValidFile ()
+	public function testNoValidFile()
 	{
 		$handler = new ParseLinksHandler($this->getMockBuilder(DecrypterFactory::class)->getMock(), $this->getMockCommandBus(), new Registry());
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.file'));
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has('test'))
-		{
+		if ($fs->has('test')) {
 			$fs->deleteDir('test');
 		}
 	}
 
-	private function getDecrypterFactory ($links = null)
+	private function getDecrypterFactory($links = null)
 	{
-		if ($links == null)
-		{
+		if ($links == null) {
 			$links = [
 					'http://foo.bar/kjashd',
 					'http://bar.foo/uzwhka'

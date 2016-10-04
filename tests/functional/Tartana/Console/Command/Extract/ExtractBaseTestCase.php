@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Functional\Tartana\Console\Command\Extract;
+
 use Joomla\Registry\Registry;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
@@ -14,10 +15,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	protected $archivesPath = null;
 
-	public function testExecute ()
+	public function testExecute()
 	{
-		if (! $this->copyArchives())
-		{
+		if (! $this->copyArchives()) {
 			return;
 		}
 
@@ -29,20 +29,20 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertFalse($fs->has('test'));
 	}
 
-	public function testExecuteMultipart ()
+	public function testExecuteMultipart()
 	{
-		if (! $this->copyArchives('multipart'))
-		{
+		if (! $this->copyArchives('multipart')) {
 			return;
 		}
 
@@ -54,20 +54,20 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				array(
+			array(
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1'
-				));
+			)
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertFalse($fs->has('test'));
 	}
 
-	public function testExecuteWithPasswordFile ()
+	public function testExecuteWithPasswordFile()
 	{
-		if (! $this->copyArchives('password'))
-		{
+		if (! $this->copyArchives('password')) {
 			return;
 		}
 
@@ -80,21 +80,21 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$fs->delete('test/pw.txt');
 		$commandTester->execute(
-				array(
+			array(
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1',
 						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
-				));
+			)
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertFalse($fs->has('test'));
 	}
 
-	public function testExecuteNotEmpty ()
+	public function testExecuteNotEmpty()
 	{
-		if (! $this->copyArchives())
-		{
+		if (! $this->copyArchives()) {
 			return;
 		}
 
@@ -107,12 +107,13 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$fs->write('test/test.txt', 'Hello unit test', new Config());
 		$commandTester->execute(
-				array(
+			array(
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1',
 						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
-				));
+			)
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test/test.txt'));
@@ -120,42 +121,44 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$this->assertEquals('Hello unit test', $fs->read('test/test.txt')['contents']);
 	}
 
-	public function testExecuteNotDelete ()
+	public function testExecuteNotDelete()
 	{
-		if (! $this->copyArchives('password'))
-		{
+		if (! $this->copyArchives('password')) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'),
-				new Registry([
+		$command = $this->createCommand(
+			$this->getMockDispatcher(),
+			new Runner('test'),
+			new Registry([
 						'extract' => [
 								'delete' => false
 						]
-				]));
+			])
+		);
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1',
 						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
-				]);
+			]
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test'));
 		$this->assertFalse($fs->has('test/extract.out'));
 	}
 
-	public function testExtractWithOtherFiles ()
+	public function testExtractWithOtherFiles()
 	{
-		if (! $this->copyArchives())
-		{
+		if (! $this->copyArchives()) {
 			return;
 		}
 
@@ -172,11 +175,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				array(
+			array(
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1'
-				));
+			)
+		);
 
 		$this->assertTrue($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test/test.txt'));
@@ -185,10 +189,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$this->assertEquals('Hello unit test 2', $fs->read('test1/test.txt')['contents']);
 	}
 
-	public function testExtractCorrupt ()
+	public function testExtractCorrupt()
 	{
-		if (! $this->copyArchives('corrupt'))
-		{
+		if (! $this->copyArchives('corrupt')) {
 			return;
 		}
 
@@ -201,21 +204,21 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				array(
+			array(
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->getPathPrefix() . 'test1'
-				));
+			)
+		);
 
 		$this->assertFalse($fs->has('test1/Downloads/symfony.png'));
 		$this->assertTrue($fs->has('test'));
 		$this->assertTrue($fs->has('test/extract.out'));
 	}
 
-	public function testExecuteWithDispatcher ()
+	public function testExecuteWithDispatcher()
 	{
-		if (! $this->copyArchives())
-		{
+		if (! $this->copyArchives()) {
 			return;
 		}
 
@@ -231,14 +234,15 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 	}
 
-	public function testExecuteErrorWithDispatcher ()
+	public function testExecuteErrorWithDispatcher()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
@@ -258,43 +262,41 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
-				[
+			[
 						'command' => $command->getName(),
 						'source' => $fs->applyPathPrefix('test'),
 						'destination' => $fs->applyPathPrefix('test1')
-				]);
+			]
+		);
 	}
 
-	abstract protected function createCommand (EventDispatcherInterface $dispatcher, Runner $runner, Registry $config = null);
+	abstract protected function createCommand(EventDispatcherInterface $dispatcher, Runner $runner, Registry $config = null);
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test1');
 		$fs->deleteDir('test');
 	}
 
-	protected function getMockDispatcher ($callbacks = [])
+	protected function getMockDispatcher($callbacks = [])
 	{
 		return $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
 	}
 
-	protected function copyArchives ($folder = 'simple')
+	protected function copyArchives($folder = 'simple')
 	{
 		$fs = new Local(__DIR__);
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
 
-		if (! $fs->has($this->archivesPath . '/' . $folder))
-		{
+		if (! $fs->has($this->archivesPath . '/' . $folder)) {
 			$this->markTestSkipped('Not supported by extractor');
 			return false;
 		}
 
-		foreach ($fs->listContents($this->archivesPath . '/' . $folder, false) as $rar)
-		{
-			if ($rar['type'] != 'file')
-			{
+		foreach ($fs->listContents($this->archivesPath . '/' . $folder, false) as $rar) {
+			if ($rar['type'] != 'file') {
 				continue;
 			}
 			$fs->copy($rar['path'], str_replace($this->archivesPath . '/' . $folder, 'test/', $rar['path']));

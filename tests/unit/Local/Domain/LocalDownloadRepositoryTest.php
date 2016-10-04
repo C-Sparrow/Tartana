@@ -27,7 +27,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('findBy')
 			->will($this->returnValue([
 				$download
-		]));
+			]));
 
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)
 			->disableOriginalConstructor()
@@ -36,12 +36,14 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('getRepository')
 			->will($this->returnValue($repository));
 
-		$repository = new LocalDownloadRepository($entityManager,
-				new Registry([
+		$repository = new LocalDownloadRepository(
+			$entityManager,
+			new Registry([
 						'local' => [
 								'downloads' => __DIR__ . '/not-esisting'
 						]
-				]));
+			])
+		);
 
 		$downloads = $repository->findDownloads();
 
@@ -66,7 +68,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('findBy')
 			->will($this->returnValue([
 				$download
-		]));
+			]));
 
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)
 			->disableOriginalConstructor()
@@ -75,12 +77,14 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('getRepository')
 			->will($this->returnValue($repository));
 
-		$repository = new LocalDownloadRepository($entityManager,
-				new Registry([
+		$repository = new LocalDownloadRepository(
+			$entityManager,
+			new Registry([
 						'local' => [
 								'downloads' => __DIR__ . '/not-esisting'
 						]
-				]));
+			])
+		);
 
 		$downloads = $repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED);
 
@@ -106,7 +110,7 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('getResult')
 			->willReturn([
 				$download
-		]);
+			]);
 		$builder = $this->getMockBuilder(QueryBuilder::class)
 			->disableOriginalConstructor()
 			->getMock();
@@ -130,12 +134,14 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 			->method('getRepository')
 			->will($this->returnValue($repository));
 
-		$repository = new LocalDownloadRepository($entityManager,
-				new Registry([
+		$repository = new LocalDownloadRepository(
+			$entityManager,
+			new Registry([
 						'local' => [
 								'downloads' => __DIR__ . '/not-existing'
 						]
-				]));
+			])
+		);
 
 		$downloads = $repository->findDownloadsByDestination(__DIR__);
 

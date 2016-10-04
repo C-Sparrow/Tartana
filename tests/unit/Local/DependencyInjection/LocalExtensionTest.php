@@ -1,12 +1,13 @@
 <?php
 namespace Tests\Unit\Local\DependencyInjection;
+
 use Local\DependencyInjection\LocalExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 class LocalExtensionTest extends AbstractExtensionTestCase
 {
 
-	public function testLoadEnabled ()
+	public function testLoadEnabled()
 	{
 		$this->load([
 				'enabled' => true,
@@ -27,7 +28,7 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderHasService('ChangeDownloadStateListener.Command');
 	}
 
-	public function testLoadDisabled ()
+	public function testLoadDisabled()
 	{
 		$this->load([
 				'enabled' => false,
@@ -47,7 +48,7 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 		$this->assertContainerBuilderNotHasService('LocalStartDownloadsHandler');
 	}
 
-	protected function getContainerExtensions ()
+	protected function getContainerExtensions()
 	{
 		return [
 				new LocalExtension()

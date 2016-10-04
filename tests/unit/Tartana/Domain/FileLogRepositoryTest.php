@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Unit\Tartana\Domain\Command;
+
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
 use Tartana\Entity\Log;
@@ -12,7 +13,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 
 	const LOG_FILE_NAME = 'log.txt';
 
-	public function testFindLogs ()
+	public function testFindLogs()
 	{
 		$fs = new Local(__DIR__);
 
@@ -44,7 +45,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($logs[1]->getExtra());
 	}
 
-	public function testFindMany ()
+	public function testFindMany()
 	{
 		$fs = new Local(__DIR__);
 
@@ -70,7 +71,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertCount(10, $logs);
 	}
 
-	public function testFindWithCount ()
+	public function testFindWithCount()
 	{
 		$fs = new Local(__DIR__);
 
@@ -96,7 +97,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertCount(12, $logs);
 	}
 
-	public function testFindLogsEmptyFile ()
+	public function testFindLogsEmptyFile()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write(self::LOG_FILE_NAME, '', new Config());
@@ -107,7 +108,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($logs);
 	}
 
-	public function testFindLogsFileNotExists ()
+	public function testFindLogsFileNotExists()
 	{
 		$repository = new FileLogRepository(__DIR__ . '/invalid.txt');
 		$logs = $repository->findLogs();
@@ -116,7 +117,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertFileNotExists(__DIR__ . '/invalid.txt');
 	}
 
-	public function testFindLogsIncorrectData ()
+	public function testFindLogsIncorrectData()
 	{
 		$fs = new Local(__DIR__);
 		$fs->write(self::LOG_FILE_NAME, 'unit test', new Config());
@@ -127,20 +128,18 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($logs);
 	}
 
-	protected function setUp ()
+	protected function setUp()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has(self::LOG_FILE_NAME))
-		{
+		if ($fs->has(self::LOG_FILE_NAME)) {
 			$fs->delete(self::LOG_FILE_NAME);
 		}
 	}
 
-	protected function tearDown ()
+	protected function tearDown()
 	{
 		$fs = new Local(__DIR__);
-		if ($fs->has(self::LOG_FILE_NAME))
-		{
+		if ($fs->has(self::LOG_FILE_NAME)) {
 			$fs->delete(self::LOG_FILE_NAME);
 		}
 	}
