@@ -19,7 +19,7 @@ class ApiFileController extends Controller
 		$folder = $this->container->getParameter('tartana.config')['links']['folder'];
 		$folder = Util::realPath($folder);
 
-		if (! empty($folder)) {
+		if (!empty($folder)) {
 			$fs = new Local($folder);
 
 			// Moving the uploaded file to the location of the links repository
@@ -29,8 +29,8 @@ class ApiFileController extends Controller
 		}
 
 		$data = array(
-				'success' => true,
-				'message' => $this->get('Translator')->trans('TARTANA_TEXT_FILE_ADDED_TO_QUEUE')
+			'success' => true,
+			'message' => $this->get('Translator')->trans('TARTANA_TEXT_FILE_ADDED_TO_QUEUE')
 		);
 
 		return new JsonResponse($data);

@@ -1,13 +1,13 @@
 # Tartana Information
 
-Tartana is a command line app which has a web frontend to browse the downloads. It works with four simple steps:
+Tartana is a fast and robust command line app to manage your downloads with a nice and clean responsive front end. It works with four simple steps:
 
 1. It scans a directory for files which do contain links to download.
 2. Adds the links to the download repository (local or Synology).
 3. Downloads the links.
 4. Post processing (eg. auto extract) the downloaded files.
 
-This is a quick overview of the process of Tartana. More details about every step can be found in the chapters below.
+This is a quick overview of the process of Tartana. More details about every step can be found in the chapters below. You should also read the [download](download.md) chapter to make yourself familiar how to add links to download to Tartana.
 
 ### Directory scanning
 

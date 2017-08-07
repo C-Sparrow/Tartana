@@ -58,6 +58,10 @@ menu:
                     itemId: commandline
                     text: Command line
                     relativeUrl: doc/main/commandline.html
+                download:
+                    itemId: download
+                    text: Download
+                    relativeUrl: doc/main/download.html
                 users:
                     itemId: users
                     text: Users

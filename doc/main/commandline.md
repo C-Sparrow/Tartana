@@ -2,7 +2,7 @@
 
 Tartana is made to run on command line without any interaction trough the web interface. Trough the [configuration](configuration.md) you can fully configure Tartana.
 
-Tartana is designed to be controlled trough an external daeomon preferably a cron job. The command `php cli/app.php` is running all the neccessary tasks to full run Tartana.
+Tartana is designed to be controlled trough an external daemon preferably a cron job. The command `php cli/app.php` is running all the necessary tasks to full run Tartana.
 
 1. It scans the folder for link files (txt or dlc).
 2. It starts downloads in the queue, if run in local mode.
@@ -20,7 +20,7 @@ The *cli/app.php* PHP script accepts the two following main commands:
 
 - **server**
 
-  Starts the built in web server as described (here)[running.md]. You can add the following arguments *start* or *stop* and options *--port [-p]*, *--backgound [-b]*.
+  Starts the built in web server as described (here)[running.md]. You can add the following arguments *start* or *stop* and options *--port [-p]*, *--background [-b]*.
   
   Example: `php cli/app.php server start --port=9009`
 
