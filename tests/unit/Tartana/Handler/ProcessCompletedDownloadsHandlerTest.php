@@ -20,32 +20,32 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->withConsecutive(
 				[
-						$this->callback(
-							function (SaveDownloads $command) {
-									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
-							}
-						)
+					$this->callback(
+						function (SaveDownloads $command) {
+							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
+						}
+					)
 				],
 				[
-						$this->callback(
-							function (SaveDownloads $command) {
-									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
-							}
-						)
+					$this->callback(
+						function (SaveDownloads $command) {
+							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED;
+						}
+					)
 				]
 			);
 
-				$dispatcherMock = $this->getMockDispatcher();
-				$dispatcherMock->expects($this->once())
-				->method('dispatch')
-				->with($this->equalTo('downloads.completed'));
+		$dispatcherMock = $this->getMockDispatcher();
+		$dispatcherMock->expects($this->once())
+			->method('dispatch')
+			->with($this->equalTo('downloads.completed'));
 
-				$downloads = [
-				new Download()
-				];
-				$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
-				$handler = new ProcessCompletedDownloadsHandler($dispatcherMock, $commandBus);
-				$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
+		$downloads = [
+			new Download()
+		];
+		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
+		$handler = new ProcessCompletedDownloadsHandler($dispatcherMock, $commandBus);
+		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));
 	}
 
 	public function testWithDownloadsChangedState()
@@ -55,35 +55,33 @@ class ProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->method('handle')
 			->withConsecutive(
 				[
-						$this->callback(
-							function (SaveDownloads $command) {
-									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
-							}
-						)
+					$this->callback(
+						function (SaveDownloads $command) {
+							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_NOT_STARTED;
+						}
+					)
 				],
 				[
-						$this->callback(
-							function (SaveDownloads $command) {
-									return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_STARTED;
-							}
-						)
+					$this->callback(
+						function (SaveDownloads $command) {
+							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_STARTED;
+						}
+					)
 				]
 			);
-				$dispatcherMock = $this->getMockDispatcher();
-				$dispatcherMock->expects($this->once())
-				->method('dispatch')
-				->with($this->equalTo('downloads.completed'))
-				->willReturnCallback(
-					function ($eventName, DownloadsCompletedEvent $event) {
-						foreach ($event->getDownloads() as $download) {
-							$download->setState(Download::STATE_PROCESSING_STARTED);
-						}
-				    }
-				);
+		$dispatcherMock = $this->getMockDispatcher();
+		$dispatcherMock->expects($this->once())
+			->method('dispatch')
+			->with($this->equalTo('downloads.completed'))
+			->willReturnCallback(
+				function ($eventName, DownloadsCompletedEvent $event) {
+					foreach ($event->getDownloads() as $download) {
+						$download->setState(Download::STATE_PROCESSING_STARTED);
+					}
+				}
+			);
 
-		$downloads = [
-				new Download()
-		];
+		$downloads = [new Download()];
 		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
 		$handler = new ProcessCompletedDownloadsHandler($dispatcherMock, $commandBus);
 		$handler->handle(new ProcessCompletedDownloads($this->getMockRepository(), $downloads));

@@ -24,50 +24,50 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(function (Command $command) {
-							return strpos($command, 'which ffmpeg') !== false;
-						}),
-						[
-								$this->callback(
-									function (Command $command) {
-											return strpos($command, 'ffmpeg') !== false && ! $command->isAsync();
-									}
-								),
-								$this->callback(
-									function ($callback) {
-											$callback('unit test');
-											return $callback != null;
-									}
-								)
-						]
-				],
+				$this->callback(function (Command $command) {
+					return strpos($command, 'which ffmpeg') !== false;
+				}),
+				[
+					$this->callback(
+						function (Command $command) {
+							return strpos($command, 'ffmpeg') !== false && !$command->isAsync();
+						}
+					),
+					$this->callback(
+						function ($callback) {
+							$callback('unit test');
+							return $callback != null;
+						}
+					)
+				]
+			],
 			[
-						'yes'
+				'yes'
 			]
 		);
 
-				$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
-				$dispatcher->expects($this->once())
-				->method('dispatch')
-				->with(
-					$this->equalTo('processing.completed'),
-					$this->callback(function (ProcessingCompletedEvent $event) {
-						return $event->isSuccess();
-				    })
-				);
+		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+		$dispatcher->expects($this->once())
+			->method('dispatch')
+			->with(
+				$this->equalTo('processing.completed'),
+				$this->callback(function (ProcessingCompletedEvent $event) {
+					return $event->isSuccess();
+				})
+			);
 
-				$application = new Application();
-				$application->add(new ConvertSoundCommand($runner, $dispatcher));
-				$command = $application->find('convert:sound');
+		$application = new Application();
+		$application->add(new ConvertSoundCommand($runner, $dispatcher));
+		$command = $application->find('convert:sound');
 
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(
-					[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
-					]
-				);
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertContains('unit test', trim($commandTester->getDisplay()));
 	}
@@ -79,11 +79,11 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$fs->createDir('test1', new Config());
 
 		$runner = $this->getMockRunner([
-				$this->anything(),
-				$this->anything()
+			$this->anything(),
+			$this->anything()
 		], [
-				'ffmpeg',
-				'Wrong: Invalid data found when processing input'
+			'ffmpeg',
+			'Wrong: Invalid data found when processing input'
 		]);
 
 		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
@@ -92,22 +92,22 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 			->with(
 				$this->equalTo('processing.completed'),
 				$this->callback(function (ProcessingCompletedEvent $event) {
-					return ! $event->isSuccess();
+					return !$event->isSuccess();
 				})
 			);
 
-				$application = new Application();
-				$application->add(new ConvertSoundCommand($runner, $dispatcher));
-				$command = $application->find('convert:sound');
+		$application = new Application();
+		$application->add(new ConvertSoundCommand($runner, $dispatcher));
+		$command = $application->find('convert:sound');
 
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(
-					[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
-					]
-				);
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 	}
 
 	public function testConvertFileInvalidSource()
@@ -122,9 +122,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => __DIR__ . '/invalid',
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => __DIR__ . '/invalid',
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}
@@ -136,16 +136,16 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 		$application = new Application();
 		$application->add(new ConvertSoundCommand($this->getMockRunner([], [
-				'ffmpeg'
+			'ffmpeg'
 		])));
 		$command = $application->find('convert:sound');
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}
@@ -161,10 +161,10 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 			new ConvertSoundCommand(
 				$this->getMockRunner(
 					[
-										$this->callback(function (Command $command) {
-											return true;
-										})
-							]
+						$this->callback(function (Command $command) {
+							return true;
+						})
+					]
 				)
 			)
 		);
@@ -173,9 +173,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}

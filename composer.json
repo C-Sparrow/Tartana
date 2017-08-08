@@ -2,9 +2,14 @@
     "name": "Tartana",
     "license": "proprietary",
     "type": "project",
+    "config": {
+        "platform": {
+            "php": "5.5.9"
+        }
+    },
 	"require" : {
-	    "php": ">=5.5.9",
-        "symfony/symfony": "3.0.*",
+	    "php": "^5.5.9|^7",
+        "symfony/symfony": "3.1.*",
         "doctrine/orm": "^2.5",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
@@ -27,7 +32,8 @@
         "matthiasnoback/symfony-dependency-injection-test": "*",
         "liip/functional-test-bundle": "*",
         "doctrine/doctrine-fixtures-bundle": "*",
-        "squizlabs/php_codesniffer": "2.*"
+        "squizlabs/php_codesniffer": "2.*",
+        "couscous/couscous": "^1.6"
     },
 	"autoload": {
         "psr-4": {
@@ -39,7 +45,7 @@
         ]
     },
     "autoload-dev": {
-        "psr-4": { 
+        "psr-4": {
             "Tests\\Unit\\": "tests/unit",
             "Tests\\Functional\\": "tests/functional",
             "Tests\\Connection\\": "tests/connection"

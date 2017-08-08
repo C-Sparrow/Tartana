@@ -20,19 +20,16 @@ class UnzipCommandTest extends TartanaBaseTestCase
 		$fs->write('test/test.txt', 'unit', new Config());
 
 		$command = new UnzipCommand(
-			$this->getMockDispatcher([
-				'processing.completed',
-				$this->anything()
-			]),
+			$this->getMockDispatcher(['processing.completed', $this->anything()]),
 			$this->getMockRunner(
 				[
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == 'which';
-								}),
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == 'unzip';
-								})
-					]
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == 'which';
+					}),
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == 'unzip';
+					})
+				]
 			),
 			new Registry()
 		);
@@ -44,9 +41,9 @@ class UnzipCommandTest extends TartanaBaseTestCase
 
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 
@@ -61,39 +58,36 @@ class UnzipCommandTest extends TartanaBaseTestCase
 		$fs->write('test/test.txt', 'unit', new Config());
 
 		$command = new UnzipCommand(
-			$this->getMockDispatcher([
-				'processing.completed',
-				$this->anything()
-			]),
+			$this->getMockDispatcher(['processing.completed', $this->anything()]),
 			$this->getMockRunner(
 				[
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == 'which';
-								}),
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == '7z';
-								})
-						],
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == 'which';
+					}),
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == '7z';
+					})
+				],
 				[
-								'7z',
-								'Everything is Ok'
-					]
+					'7z',
+					'Everything is Ok'
+				]
 			),
 			new Registry()
 		);
 
-						$application = new Application();
-						$application->add($command);
+		$application = new Application();
+		$application->add($command);
 
-						$commandTester = new CommandTester($command);
+		$commandTester = new CommandTester($command);
 
-						$commandTester->execute(
-							[
-							'command' => $command->getName(),
-							'source' => $fs->applyPathPrefix('test'),
-							'destination' => $fs->applyPathPrefix('test1')
-							]
-						);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertFalse($fs->has('test/test.zip'));
 		$this->assertTrue($fs->has('test/test.txt'));
@@ -102,33 +96,31 @@ class UnzipCommandTest extends TartanaBaseTestCase
 	public function itest7z()
 	{
 		$application = new Application();
-		$command = new UnzipCommand(
+		$command     = new UnzipCommand(
 			$this->getMockDispatcher(),
 			parent::getMockRunner(
 				[
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == 'which';
-								}),
-								$this->anything()
-						],
-				[
-								'found'
-					]
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == 'which';
+					}),
+					$this->anything()
+				],
+				['found']
 			),
 			new Registry()
 		);
-						$application->add($command);
+		$application->add($command);
 
-						$commandTester = new CommandTester($command);
+		$commandTester = new CommandTester($command);
 
-						$fs = new Local(__DIR__);
-						$commandTester->execute(
-							[
-							'command' => $command->getName(),
-							'source' => $fs->applyPathPrefix('test'),
-							'destination' => $fs->applyPathPrefix('test1')
-							]
-						);
+		$fs = new Local(__DIR__);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 	}
 
 	protected function tearDown()

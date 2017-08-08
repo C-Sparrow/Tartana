@@ -1,6 +1,7 @@
 <?php
 namespace Tartana\Console\Command\Extract;
 
+use Joomla\Registry\Format\Php;
 use League\Flysystem\Adapter\AbstractAdapter;
 use Tartana\Component\Command\Command;
 use Tartana\Component\Command\Runner;
@@ -36,11 +37,13 @@ class UnzipCommand extends SevenzCommand
 			// Overwrite existing files
 			$command->addArgument('-o');
 			// Password
-			$command->addArgument('-p' . $password);
+			$command->addArgument('-P ', false);
+			$command->addArgument($password ?: "''");
 			// Input files
 			$command->addArgument($source->applyPathPrefix('*.zip'));
 			// Output
-			$command->addArgument('-d ' . $destination->getPathPrefix());
+			$command->addArgument('-d ', false);
+			$command->addArgument($destination->getPathPrefix());
 
 			return $command;
 		}
@@ -50,7 +53,7 @@ class UnzipCommand extends SevenzCommand
 	{
 		$filesToDelete = [];
 		foreach ($source->listContents() as $file) {
-			if (! Util::endsWith($file['path'], '.zip')) {
+			if (!Util::endsWith($file['path'], '.zip')) {
 				continue;
 			}
 
@@ -67,7 +70,7 @@ class UnzipCommand extends SevenzCommand
 	private function is7zAvailable()
 	{
 		if ($this->executable === null) {
-		// On the DSM 6 7z is available only
+			// On the DSM 6 7z is available only
 			$cmd = new Command('which');
 			$cmd->addArgument('7z');
 			$cmd->setAsync(false);

@@ -12,17 +12,16 @@ use Tests\Unit\Tartana\TartanaBaseTestCase;
 
 abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 {
-
 	protected $archivesPath = null;
 
 	public function testExecute()
 	{
-		if (! $this->copyArchives()) {
+		if (!$this->copyArchives()) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -30,9 +29,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 
@@ -42,12 +41,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExecuteMultipart()
 	{
-		if (! $this->copyArchives('multipart')) {
+		if (!$this->copyArchives('multipart')) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -55,9 +54,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1'
 			)
 		);
 
@@ -67,12 +66,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExecuteWithPasswordFile()
 	{
-		if (! $this->copyArchives('password')) {
+		if (!$this->copyArchives('password')) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -81,10 +80,10 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->delete('test/pw.txt');
 		$commandTester->execute(
 			array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1',
-						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1',
+				'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
 			)
 		);
 
@@ -94,12 +93,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExecuteNotEmpty()
 	{
-		if (! $this->copyArchives()) {
+		if (!$this->copyArchives()) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -108,10 +107,10 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->write('test/test.txt', 'Hello unit test', new Config());
 		$commandTester->execute(
 			array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1',
-						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1',
+				'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
 			)
 		);
 
@@ -123,18 +122,18 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExecuteNotDelete()
 	{
-		if (! $this->copyArchives('password')) {
+		if (!$this->copyArchives('password')) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand(
+		$command     = $this->createCommand(
 			$this->getMockDispatcher(),
 			new Runner('test'),
 			new Registry([
-						'extract' => [
-								'delete' => false
-						]
+				'extract' => [
+					'delete' => false
+				]
 			])
 		);
 		$application->add($command);
@@ -144,10 +143,10 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1',
-						'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1',
+				'pwfile' => __DIR__ . '/' . $this->archivesPath . '/password/pw.txt'
 			]
 		);
 
@@ -158,7 +157,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExtractWithOtherFiles()
 	{
-		if (! $this->copyArchives()) {
+		if (!$this->copyArchives()) {
 			return;
 		}
 
@@ -167,8 +166,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->write('test1/test.txt', 'Hello unit test 2', new Config());
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
-		;
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -176,9 +174,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1'
 			)
 		);
 
@@ -191,13 +189,12 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExtractCorrupt()
 	{
-		if (! $this->copyArchives('corrupt')) {
+		if (!$this->copyArchives('corrupt')) {
 			return;
 		}
 
 		$application = new Application();
-		$command = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
-		;
+		$command     = $this->createCommand($this->getMockDispatcher(), new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -205,9 +202,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			array(
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->getPathPrefix() . 'test1'
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->getPathPrefix() . 'test1'
 			)
 		);
 
@@ -218,7 +215,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 
 	public function testExecuteWithDispatcher()
 	{
-		if (! $this->copyArchives()) {
+		if (!$this->copyArchives()) {
 			return;
 		}
 
@@ -228,16 +225,16 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 			->method('dispatch');
 
 		$application = new Application();
-		$command = $this->createCommand($dispatcherMock, new Runner('test'));
+		$command     = $this->createCommand($dispatcherMock, new Runner('test'));
 		$application->add($command);
 		$commandTester = new CommandTester($command);
 
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}
@@ -255,7 +252,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 			->with($this->equalTo('processing.completed'));
 
 		$application = new Application();
-		$command = $this->createCommand($dispatcherMock, new Runner('test'));
+		$command     = $this->createCommand($dispatcherMock, new Runner('test'));
 		$application->add($command);
 
 		$commandTester = new CommandTester($command);
@@ -263,9 +260,9 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs = new Local(__DIR__);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}
@@ -290,7 +287,7 @@ abstract class ExtractBaseTestCase extends TartanaBaseTestCase
 		$fs->deleteDir('test');
 		$fs->deleteDir('test1');
 
-		if (! $fs->has($this->archivesPath . '/' . $folder)) {
+		if (!$fs->has($this->archivesPath . '/' . $folder)) {
 			$this->markTestSkipped('Not supported by extractor');
 			return false;
 		}

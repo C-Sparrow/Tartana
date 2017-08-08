@@ -29,8 +29,8 @@ abstract class ExtractCommand extends Command
 		// Setting the command name based on the class
 		parent::__construct(str_replace('command', '', strtolower((new \ReflectionClass($this))->getShortName())));
 
-		$this->dispatcher = $dispatcher;
-		$this->runner = $runner;
+		$this->dispatcher    = $dispatcher;
+		$this->runner        = $runner;
 		$this->configuration = $configuration;
 	}
 
@@ -85,24 +85,22 @@ abstract class ExtractCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
-		$source = $input->getArgument('source');
+		$source      = $input->getArgument('source');
 		$destination = $input->getArgument('destination');
-		$pwFile = $input->getArgument('pwfile');
-		$delete = $this->configuration->get('extract.deleteFiles', true);
+		$pwFile      = $input->getArgument('pwfile');
+		$delete      = $this->configuration->get('extract.deleteFiles', true);
 
 		// Compiling passwords
-		$passwords = [
-				''
-		];
+		$passwords = [''];
 		if ($pwFile && @file_exists($pwFile)) {
-			$pwFile = realpath($pwFile);
-			$fs = new Local(dirname($pwFile));
-			$pws = $fs->read(str_replace($fs->getPathPrefix(), '', $pwFile))['contents'];
+			$pwFile    = realpath($pwFile);
+			$fs        = new Local(dirname($pwFile));
+			$pws       = $fs->read(str_replace($fs->getPathPrefix(), '', $pwFile))['contents'];
 			$passwords = array_merge($passwords, explode(PHP_EOL, $pws));
 		}
 
 		$destination = new Local($destination);
-		$source = new Local($source);
+		$source      = new Local($source);
 
 		$output->writeln('Starting to extract folder: ' . $source->getPathPrefix() . '!');
 
@@ -110,14 +108,14 @@ abstract class ExtractCommand extends Command
 
 		// Extract with passwords check
 		foreach ($passwords as $pw) {
-			$me = $this;
+			$me      = $this;
 			$command = $this->getExtractCommand($pw, $source, $destination);
 			$this->log('Running pure command to extract the files: ' . $command);
 
 			$buffer = $this->runner->execute(
 				$command,
 				function ($line) use ($output, &$buffer, $me, $source, $destination) {
-						$line = trim($line);
+					$line = trim($line);
 					if ($line) {
 						$output->writeln($line);
 

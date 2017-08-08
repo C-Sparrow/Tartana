@@ -41,8 +41,8 @@ class SevenzCommand extends ExtractCommand
 	{
 		$filesToDelete = [];
 		foreach ($source->listContents() as $file) {
-		// Multipart archives do have the naming pattern test.7z.001
-			if (! Util::endsWith($file['path'], '.' . $this->getFileExtension()) && strpos($file['path'], '.7z.') === false) {
+			// Multipart archives do have the naming pattern test.7z.001
+			if (!Util::endsWith($file['path'], '.' . $this->getFileExtension()) && strpos($file['path'], '.7z.') === false) {
 				continue;
 			}
 

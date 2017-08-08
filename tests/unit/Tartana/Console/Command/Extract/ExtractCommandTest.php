@@ -22,28 +22,28 @@ class ExtractCommandTest extends TartanaBaseTestCase
 		$command = $this->getMockForAbstractClass(
 			ExtractCommand::class,
 			[
-						$this->getMockDispatcher(),
-						$this->getMockRunner(
-							[
-										[
-												$this->callback(
-													function (Command $command) {
-															return $command->getCommand() == 'extract';
-													}
-												),
-												$this->callback(
-													function ($callback) {
+				$this->getMockDispatcher(),
+				$this->getMockRunner(
+					[
+						[
+							$this->callback(
+								function (Command $command) {
+									return $command->getCommand() == 'extract';
+								}
+							),
+							$this->callback(
+								function ($callback) {
 
-														if ($callback) {
-															$callback('unit test');
-														}
-															return $callback != null;
-													}
-												)
-										]
-							]
-						),
-						new Registry()
+									if ($callback) {
+										$callback('unit test');
+									}
+									return $callback != null;
+								}
+							)
+						]
+					]
+				),
+				new Registry()
 			]
 		);
 		$command->expects($this->once())
@@ -52,41 +52,39 @@ class ExtractCommandTest extends TartanaBaseTestCase
 			->with(
 				$this->callback(function ($pw) {
 					return $pw == '';
-			    }),
+				}),
 				$this->callback(
 					function (AbstractAdapter $source) use ($fs) {
-							return $source->getPathPrefix() == $fs->applyPathPrefix('test/');
+						return $source->getPathPrefix() == $fs->applyPathPrefix('test/');
 					}
 				),
 				$this->callback(
 					function (AbstractAdapter $destination) use ($fs) {
-							return $destination->getPathPrefix() == $fs->applyPathPrefix('test1/');
+						return $destination->getPathPrefix() == $fs->applyPathPrefix('test1/');
 					}
 				)
 			);
-				$command->expects($this->once())
-				->method('isSuccessfullFinished')
-				->willReturn(true);
+		$command->expects($this->once())
+			->method('isSuccessfullFinished')
+			->willReturn(true);
 
-				$fs->write('test/test.txt', 'unit', new Config());
-				$command->expects($this->once())
-				->method('getFilesToDelete')
-				->willReturn([
-				'test.txt'
-				]);
+		$fs->write('test/test.txt', 'unit', new Config());
+		$command->expects($this->once())
+			->method('getFilesToDelete')
+			->willReturn(['test.txt']);
 
-				$application = new Application();
-				$application->add($command);
+		$application = new Application();
+		$application->add($command);
 
-				$commandTester = new CommandTester($command);
+		$commandTester = new CommandTester($command);
 
-				$commandTester->execute(
-					[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
-					]
-				);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertContains($fs->applyPathPrefix('test'), trim($commandTester->getDisplay()));
 		$this->assertContains('unit test', trim($commandTester->getDisplay()));
@@ -100,13 +98,9 @@ class ExtractCommandTest extends TartanaBaseTestCase
 		$command = $this->getMockForAbstractClass(
 			ExtractCommand::class,
 			[
-						$this->getMockDispatcher(),
-						$this->getMockRunner([
-								$this->anything()
-						], [
-								'unit test'
-						]),
-						new Registry()
+				$this->getMockDispatcher(),
+				$this->getMockRunner([$this->anything()], ['unit test']),
+				new Registry()
 			]
 		);
 		$command->expects($this->once())
@@ -126,9 +120,9 @@ class ExtractCommandTest extends TartanaBaseTestCase
 
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 
@@ -144,30 +138,27 @@ class ExtractCommandTest extends TartanaBaseTestCase
 		$command = $this->getMockForAbstractClass(
 			ExtractCommand::class,
 			[
-						$this->getMockDispatcher(),
-						$this->getMockRunner([
-								$this->anything(),
-								$this->anything()
-						]),
-						new Registry()
+				$this->getMockDispatcher(),
+				$this->getMockRunner([$this->anything(), $this->anything()]),
+				new Registry()
 			]
 		);
-		$method = $command->expects($this->exactly(2))
+		$method  = $command->expects($this->exactly(2))
 			->method('getExtractCommand');
 		$method->willReturn(new Command('extract'));
 		$this->callWithConsecutive(
 			$method,
 			[
-						[
-								$this->callback(function ($pw) {
-									return $pw == '';
-								})
-						],
-						[
-								$this->callback(function ($pw) {
-									return $pw == 'unitpasswordtest';
-								})
-						]
+				[
+					$this->callback(function ($pw) {
+						return $pw == '';
+					})
+				],
+				[
+					$this->callback(function ($pw) {
+						return $pw == 'unitpasswordtest';
+					})
+				]
 			]
 		);
 		$command->expects($this->exactly(2))
@@ -181,10 +172,10 @@ class ExtractCommandTest extends TartanaBaseTestCase
 
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1'),
-						'pwfile' => $fs->applyPathPrefix('test/pw.txt')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1'),
+				'pwfile' => $fs->applyPathPrefix('test/pw.txt')
 			]
 		);
 
@@ -193,24 +184,24 @@ class ExtractCommandTest extends TartanaBaseTestCase
 
 	public function testExecuteDispatcher()
 	{
-		$fs = new Local(__DIR__);
+		$fs      = new Local(__DIR__);
 		$command = $this->getMockForAbstractClass(
 			ExtractCommand::class,
 			[
-						$this->getMockDispatcher(
-							[
-										'processing.completed',
-										$this->callback(
-											function (ProcessingCompletedEvent $event) {
-													return $event->isSuccess();
-											}
-										)
-							]
-						),
-						$this->getMockRunner([
-								$this->anything()
-						]),
-						new Registry()
+				$this->getMockDispatcher(
+					[
+						'processing.completed',
+						$this->callback(
+							function (ProcessingCompletedEvent $event) {
+								return $event->isSuccess();
+							}
+						)
+					]
+				),
+				$this->getMockRunner([
+					$this->anything()
+				]),
+				new Registry()
 			]
 		);
 		$command->expects($this->once())
@@ -227,9 +218,9 @@ class ExtractCommandTest extends TartanaBaseTestCase
 
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}
@@ -238,8 +229,8 @@ class ExtractCommandTest extends TartanaBaseTestCase
 	{
 		if (empty($callbacks)) {
 			$callbacks = [
-					'processing.completed',
-					$this->anything()
+				'processing.completed',
+				$this->anything()
 			];
 		}
 
