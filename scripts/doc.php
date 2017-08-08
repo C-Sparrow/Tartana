@@ -12,7 +12,7 @@ if ($argc > 1) {
 	$host = $argv[1];
 }
 
-exec($rootDirectory . '/vendor/bin/couscous preview ' . $host . ':8000 --livereload  &> /dev/null &');
+exec($rootDirectory . '/vendor/bin/couscous preview ' . $host . ':8000 --livereload > /dev/null &');
 
 $docDir = dirname($rootDirectory) . '/Tartanaapp';
 if (file_exists($docDir)) {
