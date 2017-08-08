@@ -14,11 +14,11 @@ class TartanaExtension extends Extension
 		$config = $this->processConfiguration($this->getExtensionConfiguration(), $configs);
 		$container->setParameter($this->getAlias() . '.config', $config);
 
-		if (! isset($config['enabled']) || $config['enabled']) {
-		// If we are extending, we need the directory of the main class
+		if (!isset($config['enabled']) || $config['enabled']) {
+			// If we are extending, we need the directory of the main class
 			$reflection = new \ReflectionClass($this);
-			$directory = dirname($reflection->getFileName());
-			$loader = new YamlFileLoader($container, new FileLocator($directory . '/../Resources/config'));
+			$directory  = dirname($reflection->getFileName());
+			$loader     = new YamlFileLoader($container, new FileLocator($directory . '/../Resources/config'));
 			$loader->load('services.yml');
 		}
 	}

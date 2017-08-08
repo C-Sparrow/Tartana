@@ -25,7 +25,7 @@ class ChangeDownloadStateListener
 
 	public function onChangeDownloadStateAfter(CommandEvent $event)
 	{
-		if (! $event->getCommand() instanceof ChangeDownloadState) {
+		if (!$event->getCommand() instanceof ChangeDownloadState) {
 			return;
 		}
 
@@ -55,7 +55,7 @@ class ChangeDownloadStateListener
 			$toSave[] = $download;
 		}
 
-		if (! empty($toSave)) {
+		if (!empty($toSave)) {
 			$this->handleCommand(new SaveDownloads($toSave));
 		}
 	}

@@ -16,7 +16,7 @@ class TartanaContainerTest extends KernelTestCase
 	public function testHasClientInterface()
 	{
 		$container = static::$kernel->getContainer();
-		$client = $container->get('ClientInterface');
+		$client    = $container->get('ClientInterface');
 
 		$this->assertInstanceOf(ClientInterface::class, $client);
 	}
@@ -24,14 +24,14 @@ class TartanaContainerTest extends KernelTestCase
 	public function testHasLogger()
 	{
 		$container = static::$kernel->getContainer();
-		$logger = $container->get('Logger');
+		$logger    = $container->get('Logger');
 
 		$this->assertInstanceOf(Logger::class, $logger);
 	}
 
 	public function testHasLogRepository()
 	{
-		$container = static::$kernel->getContainer();
+		$container  = static::$kernel->getContainer();
 		$repository = $container->get('LogRepository');
 
 		$this->assertInstanceOf(LogRepository::class, $repository);
@@ -40,7 +40,7 @@ class TartanaContainerTest extends KernelTestCase
 	public function testHasHostFactory()
 	{
 		$container = static::$kernel->getContainer();
-		$factory = $container->get('HostFactory');
+		$factory   = $container->get('HostFactory');
 
 		$this->assertInstanceOf(HostFactory::class, $factory);
 		$this->assertNotNull($factory->getCommandBus());
@@ -50,7 +50,7 @@ class TartanaContainerTest extends KernelTestCase
 	public function testHasProcessCompletedDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('ProcessCompletedDownloadsHandler');
+		$handler   = $container->get('ProcessCompletedDownloadsHandler');
 
 		$this->assertInstanceOf(ProcessCompletedDownloadsHandler::class, $handler);
 	}
@@ -58,14 +58,14 @@ class TartanaContainerTest extends KernelTestCase
 	public function testHasChangeDownloadStateHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('ChangeDownloadStateHandler');
+		$handler   = $container->get('ChangeDownloadStateHandler');
 
 		$this->assertInstanceOf(ChangeDownloadStateHandler::class, $handler);
 	}
 
 	public function testRunCommandNoHandler()
 	{
-		$container = static::$kernel->getContainer();
+		$container  = static::$kernel->getContainer();
 		$commandBus = $container->get('CommandBus');
 		$commandBus->handle(new Download());
 	}

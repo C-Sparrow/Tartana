@@ -63,9 +63,9 @@ class LocalProcessLinksHandler extends EntityManagerHandler
 			$download->setState(Download::STATE_DOWNLOADING_NOT_STARTED);
 
 			$downloader = $this->getDownloader($link);
-			if (! empty($downloader)) {
+			if (!empty($downloader)) {
 				$downloader->fetchDownloadInfo([
-						$download
+					$download
 				]);
 			}
 
@@ -83,8 +83,8 @@ class LocalProcessLinksHandler extends EntityManagerHandler
 		}
 
 		$jobName = 'job-' . date('YmdHis');
-		$fs = new Local($root);
-		for ($i = 1; $i < 100; $i ++) {
+		$fs      = new Local($root);
+		for ($i = 1; $i < 100; $i++) {
 			if ($fs->has($jobName . '-' . $i)) {
 				continue;
 			}

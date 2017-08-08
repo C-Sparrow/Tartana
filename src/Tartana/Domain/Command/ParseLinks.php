@@ -12,7 +12,7 @@ class ParseLinks
 
 	public function __construct(AbstractAdapter $fs, $path)
 	{
-		$this->fs = $fs;
+		$this->fs   = $fs;
 		$this->path = $path;
 	}
 

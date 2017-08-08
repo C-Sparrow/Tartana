@@ -9,7 +9,7 @@ class CommandEventTest extends \PHPUnit_Framework_TestCase
 	public function testGetCommandEvent()
 	{
 		$command = new \stdClass();
-		$event = new CommandEvent($command);
+		$event   = new CommandEvent($command);
 
 		$this->assertEquals($command, $event->getCommand());
 	}
@@ -17,9 +17,9 @@ class CommandEventTest extends \PHPUnit_Framework_TestCase
 	public function testSetCommandEvent()
 	{
 		$command = new \stdClass();
-		$event = new CommandEvent($command);
+		$event   = new CommandEvent($command);
 
-		$command1 = new \stdClass();
+		$command1       = new \stdClass();
 		$command1->test = 'test';
 		$event->setCommand($command1);
 

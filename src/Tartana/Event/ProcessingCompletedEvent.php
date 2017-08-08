@@ -15,9 +15,9 @@ class ProcessingCompletedEvent extends Event
 
 	public function __construct(AbstractAdapter $source, AbstractAdapter $destination, $sucess)
 	{
-		$this->source = $source;
+		$this->source      = $source;
 		$this->destination = $destination;
-		$this->sucess = $sucess;
+		$this->sucess      = $sucess;
 	}
 
 	public function getSource()

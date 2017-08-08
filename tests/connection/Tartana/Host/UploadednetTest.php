@@ -12,7 +12,7 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 
 	public function testFetchDownloadInfo()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -28,7 +28,7 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -40,7 +40,7 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownloadLinks()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -56,7 +56,7 @@ class UploadednetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 

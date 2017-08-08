@@ -25,8 +25,8 @@ class ApiUserController extends Controller
 		$data = $this->getData($request);
 
 		if ($data['success']) {
-			$user = $data['data'][0];
-			$data['data'] = [];
+			$user                 = $data['data'][0];
+			$data['data']         = [];
 			$data['data']['salt'] = $user->getSalt();
 		}
 
@@ -36,14 +36,14 @@ class ApiUserController extends Controller
 	private function getData(Request $request)
 	{
 		$data = [
-				'success' => true,
-				'message' => ''
+			'success' => true,
+			'message' => ''
 		];
 
 		$userManager = $this->container->get('fos_user.user_manager');
 
 		$user = $userManager->findUserByUsername($request->get('username'));
-		if (! $user) {
+		if (!$user) {
 			$data['success'] = false;
 			$data['message'] = $this->container->get('Translator')->trans('TARTANA_EXTRACT_MESSAGE_USER_NOT_FOUND');
 		} else {

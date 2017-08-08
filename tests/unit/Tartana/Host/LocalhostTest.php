@@ -17,7 +17,7 @@ class LocalhostTest extends TartanaBaseTestCase
 	public function testFetchLinkList()
 	{
 		$downloader = new Localhost(new Registry());
-		$links = $downloader->fetchLinkList('file://localhost/' . __DIR__);
+		$links      = $downloader->fetchLinkList('file://localhost/' . __DIR__);
 
 		$this->assertEquals([
 			'file://localhost/' . __DIR__
@@ -26,7 +26,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testFetchDownloadInfo()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -90,7 +90,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadLinks()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -122,7 +122,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadLinkInvalidHash()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -145,7 +145,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadLinksNewFileName()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -177,7 +177,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadRelativeLinks()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -197,8 +197,8 @@ class LocalhostTest extends TartanaBaseTestCase
 		$this->assertCount(count($downloads), $dest->listContents());
 		foreach ($dest->listContents() as $file) {
 			$contains = false;
-			$path = str_replace(TARTANA_PATH_ROOT, '', $dest->applyPathPrefix($file['path']));
-			$path = str_replace('/test1/', '/test/', $path);
+			$path     = str_replace(TARTANA_PATH_ROOT, '', $dest->applyPathPrefix($file['path']));
+			$path     = str_replace('/test1/', '/test/', $path);
 			foreach ($downloads as $d) {
 				if ('file://localhost' . $path == $d->getLink()) {
 					$contains = true;
@@ -210,7 +210,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadInvalidLinks()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -246,7 +246,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadInvalidDestination()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
@@ -269,7 +269,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testDownloadNoPermission()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1', LOCK_EX, Local::DISALLOW_LINKS, [
 			'dir' => [
 				'private' => 0400
@@ -301,7 +301,7 @@ class LocalhostTest extends TartanaBaseTestCase
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('file://localhost');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -318,7 +318,7 @@ class LocalhostTest extends TartanaBaseTestCase
 
 	public function testMountManager()
 	{
-		$src = new Local(__DIR__ . '/test');
+		$src  = new Local(__DIR__ . '/test');
 		$dest = new Local(__DIR__ . '/test1');
 
 		$downloads = [];

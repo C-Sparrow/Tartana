@@ -12,7 +12,7 @@ class SynologyContainerTest extends KernelTestCase
 
 	public function testHasDownloadRepository()
 	{
-		$container = static::$kernel->getContainer();
+		$container  = static::$kernel->getContainer();
 		$repository = $container->get('DownloadRepository');
 
 		$this->assertInstanceOf(SynologyDownloadRepository::class, $repository);
@@ -21,7 +21,7 @@ class SynologyContainerTest extends KernelTestCase
 	public function testHasSynologyProcessLinksHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('SynologyProcessLinksHandler');
+		$handler   = $container->get('SynologyProcessLinksHandler');
 
 		$this->assertInstanceOf(SynologyProcessLinksHandler::class, $handler);
 	}
@@ -29,7 +29,7 @@ class SynologyContainerTest extends KernelTestCase
 	public function testHasSynologyProcessCompletedDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('SynologyProcessCompletedDownloadsHandler');
+		$handler   = $container->get('SynologyProcessCompletedDownloadsHandler');
 
 		$this->assertInstanceOf(SynologyProcessCompletedDownloadsHandler::class, $handler);
 	}
@@ -37,7 +37,7 @@ class SynologyContainerTest extends KernelTestCase
 	protected function setUp()
 	{
 		self::bootKernel([
-				'environment' => 'test_synology'
+			'environment' => 'test_synology'
 		]);
 	}
 }

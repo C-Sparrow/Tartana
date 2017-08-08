@@ -73,18 +73,18 @@ trait SynologyApiTrait
 	{
 		$this->log('Calling synology server: ' . trim($this->url, '/') . $path, Logger::INFO);
 
-		if (! $this->client) {
+		if (!$this->client) {
 			$this->setClient(new Client([
-					'verify' => false
+				'verify' => false
 			]));
 		}
 
 		$args['version'] = 2;
 
-		if (! key_exists('api', $args)) {
+		if (!key_exists('api', $args)) {
 			$args['api'] = 'SYNO.DownloadStation.Task';
 		}
-		if (! key_exists('_sid', $args) && (! key_exists('method', $args) || $args['method'] != 'login')) {
+		if (!key_exists('_sid', $args) && (!key_exists('method', $args) || $args['method'] != 'login')) {
 			$args['_sid'] = $this->synologyApiLogin();
 		}
 
@@ -94,12 +94,12 @@ trait SynologyApiTrait
 		}
 		$this->log('Arguments are: ' . print_r($reducedArgs, true));
 
-		$res = $this->client->request('post', trim($this->url, '/') . $path, [
-				'body' => http_build_query($args)
+		$res    = $this->client->request('post', trim($this->url, '/') . $path, [
+			'body' => http_build_query($args)
 		]);
 		$decRes = json_decode(method_exists($res, 'getContents') ? $res->getBody()->getContents() : $res->getBody());
 		$this->log('Response was:' . print_r($decRes, true));
-		if (! isset($decRes->success) || ! $decRes->success) {
+		if (!isset($decRes->success) || !$decRes->success) {
 			throw new \RuntimeException("Got error response from Syno-Api:\n" . "REQUEST-INFO:\n" . print_r($decRes, true));
 		}
 
@@ -118,13 +118,13 @@ trait SynologyApiTrait
 	public function synologyApiLogin()
 	{
 		if ($this->sid === null) {
-			$args = array(
-					'format' => 'cookie',
-					'session' => 'DownloadStation',
-					'api' => 'SYNO.API.Auth',
-					'method' => 'login',
-					'account' => $this->username,
-					'passwd' => $this->password
+			$args   = array(
+				'format' => 'cookie',
+				'session' => 'DownloadStation',
+				'api' => 'SYNO.API.Auth',
+				'method' => 'login',
+				'account' => $this->username,
+				'passwd' => $this->password
 			);
 			$decRes = $this->synologyApiCall($args, '/auth.cgi');
 

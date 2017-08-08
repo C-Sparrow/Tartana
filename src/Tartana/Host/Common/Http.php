@@ -35,21 +35,21 @@ class Http implements HostInterface
 	public function fetchLinkList($link)
 	{
 		return [
-				$link
+			$link
 		];
 	}
 
 	public function fetchDownloadInfo(array $downloads)
 	{
 		foreach ($downloads as $download) {
-		// Connection check
+			// Connection check
 			try {
 				$originalName = $this->parseFileName($this->getClient()
 					->head($download->getLink()));
 				if (empty($originalName)) {
 					$originalName = basename($download->getLink());
 				}
-				if (! empty($originalName) && empty($download->getFileName())) {
+				if (!empty($originalName) && empty($download->getFileName())) {
 					$download->setFileName($originalName);
 				}
 			} catch (\Exception $e) {
@@ -67,7 +67,7 @@ class Http implements HostInterface
 		}
 
 		try {
-			if (! $this->login()) {
+			if (!$this->login()) {
 				foreach ($downloads as $download) {
 					$download->setState(Download::STATE_DOWNLOADING_ERROR);
 					$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_LOGIN');
@@ -94,7 +94,7 @@ class Http implements HostInterface
 				$download->setMessage($e->getMessage());
 				$download->setFinishedAt(new \DateTime());
 				$this->handleCommand(new SaveDownloads([
-						$download
+					$download
 				]));
 				continue;
 			}
@@ -110,14 +110,14 @@ class Http implements HostInterface
 	 */
 	public function getClient()
 	{
-		if (! $this->client) {
-			$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
+		if (!$this->client) {
+			$fs   = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
 			$name = strtolower((new \ReflectionClass($this))->getShortName()) . '.cookie';
-			if (! $fs->has($name) || $this->getConfiguration()->get('clearSession', false)) {
+			if (!$fs->has($name) || $this->getConfiguration()->get('clearSession', false)) {
 				$fs->write($name, '', new Config());
 			}
 			$this->client = new Client([
-					'cookies' => new FileCookieJar($fs->applyPathPrefix($name), true)
+				'cookies' => new FileCookieJar($fs->applyPathPrefix($name), true)
 			]);
 		}
 		return $this->client;
@@ -174,16 +174,16 @@ class Http implements HostInterface
 	{
 		$cookies = $this->getClient()->getConfig('cookies');
 
-		if (! $cookies instanceof \Traversable) {
+		if (!$cookies instanceof \Traversable) {
 			return null;
 		}
 
 		foreach ($cookies as $cookie) {
-		/** @var \GuzzleHttp\Cookie\SetCookie $cookie */
+			/** @var \GuzzleHttp\Cookie\SetCookie $cookie */
 			if ($cookie->getName() != $name) {
 				continue;
 			}
-			if (! $cookie->getExpires() || $cookie->getExpires() > time()) {
+			if (!$cookie->getExpires() || $cookie->getExpires() > time()) {
 				return $cookie;
 			}
 		}
@@ -222,8 +222,8 @@ class Http implements HostInterface
 	private function createPremise(Download $download)
 	{
 		$url = $this->getUrlToDownload($download);
-		if (! $url) {
-			if (! $download->getMessage()) {
+		if (!$url) {
+			if (!$download->getMessage()) {
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_FAILED_REAL_URL');
 			}
 			throw new \Exception($download->getMessage());
@@ -238,32 +238,32 @@ class Http implements HostInterface
 
 		// @codeCoverageIgnoreStart
 		$options = [
-				RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
-				RequestOptions::PROGRESS => function ($totalSize, $downloadedSize) use ($download, $me) {
-					if (! $downloadedSize || ! $totalSize) {
-						return;
-					}
-					$progress = (100 / $totalSize) * $downloadedSize;
-
-					if ($progress < $download->getProgress() + (rand(100, 700) / 1000)) {
-					// Reducing write transactions on the
-						// repository
-						return;
-					}
-
-					$download->setProgress($progress);
-					$download->setSize($totalSize);
-					$me->handleCommand(new SaveDownloads([
-							$download
-					]));
+			RequestOptions::SINK => $fs->applyPathPrefix($tmpFileName),
+			RequestOptions::PROGRESS => function ($totalSize, $downloadedSize) use ($download, $me) {
+				if (!$downloadedSize || !$totalSize) {
+					return;
 				}
+				$progress = (100 / $totalSize) * $downloadedSize;
+
+				if ($progress < $download->getProgress() + (rand(100, 700) / 1000)) {
+					// Reducing write transactions on the
+					// repository
+					return;
+				}
+
+				$download->setProgress($progress);
+				$download->setSize($totalSize);
+				$me->handleCommand(new SaveDownloads([
+					$download
+				]));
+			}
 		];
 		if (defined('CURLOPT_TCP_KEEPALIVE')) {
-		// Needed to keep the session alive on slow downloads
+			// Needed to keep the session alive on slow downloads
 			$options['curl'] = [
-					CURLOPT_TCP_KEEPALIVE => 1,
-					CURLOPT_TCP_KEEPIDLE => 30,
-					CURLOPT_TCP_KEEPINTVL => 15
+				CURLOPT_TCP_KEEPALIVE => 1,
+				CURLOPT_TCP_KEEPIDLE => 30,
+				CURLOPT_TCP_KEEPINTVL => 15
 			];
 		}
 		// @codeCoverageIgnoreEnd
@@ -279,19 +279,19 @@ class Http implements HostInterface
 
 		$promise->then(
 			function (Response $resp) use ($fs, $tmpFileName, $download, $me) {
-					$originalFileName = $this->parseFileName($resp);
-				if (empty($download->getFileName()) && ! empty($originalFileName)) {
+				$originalFileName = $this->parseFileName($resp);
+				if (empty($download->getFileName()) && !empty($originalFileName)) {
 					$download->setFileName($originalFileName);
 				}
 
-				if (! empty($download->getFileName())) {
+				if (!empty($download->getFileName())) {
 					$fs->rename($tmpFileName, $download->getFileName());
 				} else {
 					$download->setFileName($tmpFileName);
 				}
 
-					// Hash check
-				if (! empty($download->getHash())) {
+				// Hash check
+				if (!empty($download->getHash())) {
 					$hash = md5_file($fs->applyPathPrefix($download->getFileName()));
 					if ($download->getHash() != $hash) {
 						$fs->delete($download->getFileName());
@@ -299,26 +299,26 @@ class Http implements HostInterface
 						$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_HASH');
 						$download->setFinishedAt(new \DateTime());
 						$me->handleCommand(new SaveDownloads([
-								$download
+							$download
 						]));
 						return;
 					}
 				}
 
-					$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
-					$download->setProgress(100);
-					$download->setFinishedAt(new \DateTime());
-					$me->handleCommand(new SaveDownloads([
-							$download
-					]));
+				$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
+				$download->setProgress(100);
+				$download->setFinishedAt(new \DateTime());
+				$me->handleCommand(new SaveDownloads([
+					$download
+				]));
 			},
 			function (RequestException $e) use ($download, $me) {
-					$download->setState(Download::STATE_DOWNLOADING_ERROR);
-					$download->setMessage($e->getMessage());
-					$download->setFinishedAt(new \DateTime());
-					$me->handleCommand(new SaveDownloads([
-							$download
-					]));
+				$download->setState(Download::STATE_DOWNLOADING_ERROR);
+				$download->setMessage($e->getMessage());
+				$download->setFinishedAt(new \DateTime());
+				$me->handleCommand(new SaveDownloads([
+					$download
+				]));
 			}
 		);
 		return $promise;

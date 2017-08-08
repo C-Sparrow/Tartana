@@ -58,7 +58,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue($user));
 		$provider = new WsseProvider($userProvider);
 
-		$token = WsseUserToken::generateToken('admin', 'admin');
+		$token          = WsseUserToken::generateToken('admin', 'admin');
 		$token->created = date('c', time() - 1000);
 		$provider->authenticate($token);
 	}
@@ -76,7 +76,7 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue($user));
 		$provider = new WsseProvider($userProvider);
 
-		$token = WsseUserToken::generateToken('admin', 'admin');
+		$token          = WsseUserToken::generateToken('admin', 'admin');
 		$token->created = date('c', time() + 1000);
 		$provider->authenticate($token);
 	}
@@ -86,21 +86,21 @@ class WsseProviderTest extends \PHPUnit_Framework_TestCase
 		$this->setExpectedException(AuthenticationException::class);
 
 		$userProvider = $this->getMockBuilder(UserProviderInterface::class)->getMock();
-		$provider = new WsseProvider($userProvider);
+		$provider     = new WsseProvider($userProvider);
 		$provider->authenticate(WsseUserToken::generateToken('admin', 'admin'));
 	}
 
 	public function testSupports()
 	{
 		$userProvider = $this->getMockBuilder(UserProviderInterface::class)->getMock();
-		$provider = new WsseProvider($userProvider);
+		$provider     = new WsseProvider($userProvider);
 		$this->assertTrue($provider->supports(WsseUserToken::generateToken('admin', 'admin')));
 	}
 
 	public function testNotSupports()
 	{
 		$userProvider = $this->getMockBuilder(UserProviderInterface::class)->getMock();
-		$provider = new WsseProvider($userProvider);
+		$provider     = new WsseProvider($userProvider);
 		$this->assertFalse($provider->supports($this->getMockBuilder(TokenInterface::class)
 			->getMock()));
 	}

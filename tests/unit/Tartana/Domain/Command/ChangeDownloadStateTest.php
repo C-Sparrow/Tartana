@@ -12,7 +12,7 @@ class ChangeDownloadStateTest extends \PHPUnit_Framework_TestCase
 		$download = new Download();
 		$download->setId(2);
 		$command = new ChangeDownloadState([
-				$download
+			$download
 		], Download::STATE_DOWNLOADING_ERROR, Download::STATE_DOWNLOADING_STARTED);
 
 		$this->assertEquals($download->getId(), $command->getDownloads()[0]->getId());

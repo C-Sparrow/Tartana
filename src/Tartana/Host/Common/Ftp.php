@@ -20,23 +20,23 @@ class Ftp extends Localhost
 			$uri['port'] = 21;
 		}
 		if (empty($uri['pass'])) {
-			$hostName = Util::cleanHostName($uri['host']);
+			$hostName    = Util::cleanHostName($uri['host']);
 			$uri['user'] = $this->getConfiguration()->get('ftp.' . $hostName . '.username');
 			$uri['pass'] = $this->getConfiguration()->get('ftp.' . $hostName . '.password');
 			if (empty($uri['pass'])) {
-				$hostName = Util::cleanHostName($uri['registerableDomain']);
+				$hostName    = Util::cleanHostName($uri['registerableDomain']);
 				$uri['user'] = $this->getConfiguration()->get('ftp.' . $hostName . '.username');
 				$uri['pass'] = $this->getConfiguration()->get('ftp.' . $hostName . '.password');
 			}
 		}
 		$ftp = new FtpClient(
 			[
-						'host' => $uri['host'],
-						'username' => $uri['user'],
-						'password' => $uri['pass'],
-						'port' => $uri['port'],
-						'root' => dirname($uri['path']),
-						'ssl' => $uri['scheme'] != 'ftp'
+				'host' => $uri['host'],
+				'username' => $uri['user'],
+				'password' => $uri['pass'],
+				'port' => $uri['port'],
+				'root' => dirname($uri['path']),
+				'ssl' => $uri['scheme'] != 'ftp'
 			]
 		);
 		return $ftp;

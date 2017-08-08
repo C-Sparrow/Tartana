@@ -9,8 +9,8 @@ class ProcessingCompletedEventTest extends \PHPUnit_Framework_TestCase
 
 	public function testProcessingCompletedEventTestSuccess()
 	{
-		$src = new NullAdapter();
-		$dst = new NullAdapter();
+		$src   = new NullAdapter();
+		$dst   = new NullAdapter();
 		$event = new ProcessingCompletedEvent($src, $dst, true);
 
 		$this->assertEquals($src, $event->getSource());
@@ -20,8 +20,8 @@ class ProcessingCompletedEventTest extends \PHPUnit_Framework_TestCase
 
 	public function testProcessingCompletedEventTestFailed()
 	{
-		$src = new NullAdapter();
-		$dst = new NullAdapter();
+		$src   = new NullAdapter();
+		$dst   = new NullAdapter();
 		$event = new ProcessingCompletedEvent($src, $dst, false);
 
 		$this->assertEquals($src, $event->getSource());

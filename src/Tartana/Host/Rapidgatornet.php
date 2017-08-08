@@ -10,7 +10,7 @@ class Rapidgatornet extends Http
 
 	public function fetchDownloadInfo(array $downloads)
 	{
-		if (! $this->login()) {
+		if (!$this->login()) {
 			foreach ($downloads as $download) {
 				$download->setState(Download::STATE_DOWNLOADING_ERROR);
 				$download->setMessage('TARTANA_DOWNLOAD_MESSAGE_INVALID_LOGIN');
@@ -22,7 +22,7 @@ class Rapidgatornet extends Http
 		foreach ($downloads as $download) {
 			try {
 				// Getting the link information
-				$res = $this->getClient()->request('get', 'https://rapidgator.net/api/file/info?sid=' . $sid . '&url=' . $download->getLink());
+				$res  = $this->getClient()->request('get', 'https://rapidgator.net/api/file/info?sid=' . $sid . '&url=' . $download->getLink());
 				$info = json_decode($res->getBody()->getContents());
 				if (isset($info->response_status) && $info->response_status == 200) {
 					$download->setFileName($info->response->filename);
@@ -44,7 +44,7 @@ class Rapidgatornet extends Http
 	{
 		$sid = $this->getCookie('PHPSESSID') ? $this->getCookie('PHPSESSID')->getValue() : '';
 
-		$res = $this->getClient()->request('get', 'https://rapidgator.net/api/file/download?sid=' . $sid . '&url=' . $download->getLink());
+		$res  = $this->getClient()->request('get', 'https://rapidgator.net/api/file/download?sid=' . $sid . '&url=' . $download->getLink());
 		$info = json_decode($res->getBody()->getContents());
 		if (isset($info->response_status) && $info->response_status == 200) {
 			$this->log('Rapidgator net real url: ' . $info->response->url);
@@ -61,19 +61,19 @@ class Rapidgatornet extends Http
 		}
 
 		$args = [
-				'username' => trim($this->getConfiguration()->get('rapidgatornet.username')),
-				'password' => trim($this->getConfiguration()->get('rapidgatornet.password'))
+			'username' => trim($this->getConfiguration()->get('rapidgatornet.username')),
+			'password' => trim($this->getConfiguration()->get('rapidgatornet.password'))
 		];
 
-		if (! $args['username']) {
+		if (!$args['username']) {
 			return false;
 		}
 
-		$res = $this->getClient()->request(
+		$res      = $this->getClient()->request(
 			'get',
 			'https://rapidgator.net/api/user/login?username=' . $args['username'] . '&password=' . $args['password']
 		);
-		$html = $res->getBody()->getContents();
+		$html     = $res->getBody()->getContents();
 		$response = json_decode($html);
 		return isset($response->response_status) && $response->response_status == 200;
 	}

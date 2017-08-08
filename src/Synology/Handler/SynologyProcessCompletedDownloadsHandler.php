@@ -26,7 +26,7 @@ class SynologyProcessCompletedDownloadsHandler
 	 */
 	public function handle(ProcessCompletedDownloads $command)
 	{
-		if (! $command->getDownloads()) {
+		if (!$command->getDownloads()) {
 			return;
 		}
 

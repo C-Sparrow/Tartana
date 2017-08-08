@@ -26,7 +26,7 @@ class LocalDeleteDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->method('flush');
 
 		$downloads = [
-				new Download()
+			new Download()
 		];
 		$downloads[0]->setId(1);
 

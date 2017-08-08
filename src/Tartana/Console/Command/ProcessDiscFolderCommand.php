@@ -47,7 +47,7 @@ class ProcessDiscFolderCommand extends SymfonyCommand
 
 			$dirName = basename($directory['path']);
 			if ($dirName != 'CD' && $dirName != 'Cover') {
-			// Not meant to be processed
+				// Not meant to be processed
 				continue;
 			}
 

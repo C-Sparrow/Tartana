@@ -10,13 +10,13 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 	public function testLoadEnabled()
 	{
 		$this->load([
-				'enabled' => true,
-				'downloads' => '/path/to/folder'
+			'enabled' => true,
+			'downloads' => '/path/to/folder'
 		]);
 
 		$this->assertContainerBuilderHasParameter('local.config', [
-				'enabled' => true,
-				'downloads' => '/path/to/folder'
+			'enabled' => true,
+			'downloads' => '/path/to/folder'
 		]);
 
 		$this->assertContainerBuilderHasService('DownloadRepository');
@@ -31,13 +31,13 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 	public function testLoadDisabled()
 	{
 		$this->load([
-				'enabled' => false,
-				'downloads' => '/path/to/folder'
+			'enabled' => false,
+			'downloads' => '/path/to/folder'
 		]);
 
 		$this->assertContainerBuilderHasParameter('local.config', [
-				'enabled' => false,
-				'downloads' => '/path/to/folder'
+			'enabled' => false,
+			'downloads' => '/path/to/folder'
 		]);
 
 		$this->assertContainerBuilderNotHasService('DownloadRepository');
@@ -51,7 +51,7 @@ class LocalExtensionTest extends AbstractExtensionTestCase
 	protected function getContainerExtensions()
 	{
 		return [
-				new LocalExtension()
+			new LocalExtension()
 		];
 	}
 }

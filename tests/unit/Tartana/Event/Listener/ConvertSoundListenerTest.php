@@ -22,31 +22,25 @@ class ConvertSoundListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
-											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
-											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
+							strpos($command, $fs->applyPathPrefix('test')) !== false &&
+							strpos($command, $fs->applyPathPrefix('test1')) !== false;
+					}
+				)
 			]
 		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
-		]);
+		$event = new DownloadsCompletedEvent($this->getMockRepository(), [$download]);
 
 		$fs = new Local(__DIR__);
 
 		$listener = new ConvertSoundListener(
 			$runner,
-			new Registry([
-						'sound' => [
-								'destination' => $fs->applyPathPrefix('test1')
-						]
-			])
+			new Registry(['sound' => ['destination' => $fs->applyPathPrefix('test1')]])
 		);
 		$listener->onProcessCompletedDownloads($event);
 

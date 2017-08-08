@@ -32,7 +32,7 @@ abstract class AbstractProcessingListener
 
 	public function __construct(Runner $runner, Registry $configuration)
 	{
-		$this->runner = $runner;
+		$this->runner        = $runner;
 		$this->configuration = $configuration;
 	}
 
@@ -78,16 +78,16 @@ abstract class AbstractProcessingListener
 		$dirName = basename($path);
 		$this->log('Checking directory: ' . $destination->getPathPrefix() . ' if it has a folder ' . $dirName);
 
-		$hasSource = file_exists($path);
+		$hasSource      = file_exists($path);
 		$hasDestination = $destination->has($dirName);
-		$processed = false;
+		$processed      = false;
 		if (!$hasDestination && $hasSource) {
 			$this->log('No directory found, starting to process files on: ' . $destination->applyPathPrefix($dirName));
 
 			// Out file doesn't exist, we can start processing it
 			$destination->createDir($dirName, new Config());
 
-			$fs = new Local(dirname($path));
+			$fs    = new Local(dirname($path));
 			$files = $fs->listContents('', true);
 
 			foreach ($this->getFileExtensionsForCommand() as $fileExtension => $command) {
@@ -164,7 +164,7 @@ abstract class AbstractProcessingListener
 		}
 
 		if ($event->getCommand()->getToState() != Download::STATE_DOWNLOADING_COMPLETED &&
-				 $event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED) {
+			$event->getCommand()->getToState() != Download::STATE_DOWNLOADING_NOT_STARTED) {
 			return;
 		}
 
@@ -178,7 +178,7 @@ abstract class AbstractProcessingListener
 		$this->log('Cleaning up the destination ' . $destination->getPathPrefix() . ' for downloads', Logger::INFO);
 
 		foreach ($event->getCommand()->getDownloads() as $download) {
-		// If we do not process,tart ignore
+			// If we do not process,tart ignore
 			if ($download->getState() != $event->getCommand()->getToState()) {
 				continue;
 			}

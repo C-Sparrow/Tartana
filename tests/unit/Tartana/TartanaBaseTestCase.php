@@ -15,7 +15,7 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 	{
 		foreach ($callbacks as $key => $callback) {
 			$callbacks[$key] = [
-					$callback
+				$callback
 			];
 		}
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
@@ -35,7 +35,7 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 			}
 
 			$callbacks[$key] = [
-					$callback
+				$callback
 			];
 		}
 		$runner = $this->getMockBuilder(Runner::class)->getMock();
@@ -50,9 +50,9 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 
 	protected function getMockHostFactory($hosts = [])
 	{
-		if (! is_array($hosts)) {
+		if (!is_array($hosts)) {
 			$hosts = [
-					$hosts
+				$hosts
 			];
 		}
 		$factory = $this->getMockBuilder(HostFactory::class)->getMock();
@@ -70,9 +70,9 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 			$download->setLink('http://devnull.org/klad');
 			$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
 			$downloads = [
-					[
-							$download
-					]
+				[
+					$download
+				]
 			];
 		}
 
@@ -87,10 +87,10 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 	{
 		if (count($callbacks) == 2 && is_string($callbacks[0])) {
 			$callbacks = [
-					[
-							$this->equalTo($callbacks[0]),
-							$callbacks[1]
-					]
+				[
+					$this->equalTo($callbacks[0]),
+					$callbacks[1]
+				]
 			];
 		}
 		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
@@ -104,16 +104,16 @@ class TartanaBaseTestCase extends \PHPUnit_Framework_TestCase
 	protected function callOnConsecutiveCalls(array $data)
 	{
 		return call_user_func_array(array(
-				$this,
-				'onConsecutiveCalls'
+			$this,
+			'onConsecutiveCalls'
 		), $data);
 	}
 
 	protected function callWithConsecutive(\PHPUnit_Framework_MockObject_Builder_MethodNameMatch $method, array $data)
 	{
 		call_user_func_array(array(
-				$method,
-				'withConsecutive'
+			$method,
+			'withConsecutive'
 		), $data);
 	}
 }

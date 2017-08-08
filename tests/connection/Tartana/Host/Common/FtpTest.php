@@ -17,7 +17,7 @@ class FtpTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('ftp://mirrors.kernel.org/debian-cd/ls-lR.gz');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;

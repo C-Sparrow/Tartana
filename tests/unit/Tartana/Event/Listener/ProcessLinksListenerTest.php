@@ -27,14 +27,14 @@ class ProcessLinksListenerTest extends TartanaBaseTestCase
 		$listener->setHostFactory($this->getMockHostFactory($host));
 
 		$command = new CommandEvent(new ProcessLinks([
-				'http://foo.bar'
+			'http://foo.bar'
 		]));
 		$listener->onProcessLinksBefore($command);
 
 		$links = $command->getCommand()->getLinks();
 		$this->assertCount(1, $links);
 		$this->assertEquals([
-				'http://bar.foo'
+			'http://bar.foo'
 		], $links);
 	}
 
@@ -44,14 +44,14 @@ class ProcessLinksListenerTest extends TartanaBaseTestCase
 		$listener->setHostFactory($this->getMockHostFactory(null));
 
 		$command = new CommandEvent(new ProcessLinks([
-				'http://foo.bar'
+			'http://foo.bar'
 		]));
 		$listener->onProcessLinksBefore($command);
 
 		$links = $command->getCommand()->getLinks();
 		$this->assertCount(1, $links);
 		$this->assertEquals([
-				'http://foo.bar'
+			'http://foo.bar'
 		], $links);
 	}
 

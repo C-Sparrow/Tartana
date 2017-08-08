@@ -13,7 +13,7 @@ class Uploadednet extends Http
 		foreach ($downloads as $download) {
 			try {
 				if (preg_match("/file\/(.*?)\//", $download->getLink(), $matches)) {
-				// Getting the link information
+					// Getting the link information
 					$res = $this->getClient()->request(
 						'get',
 						'https://uploaded.net/api/filemultiple?apikey=lhF2IeeprweDfu9ccWlxXVVypA5nA3EL&id_0=' . $matches[1]
@@ -30,12 +30,12 @@ class Uploadednet extends Http
 						}
 					} else {
 						parent::fetchDownloadInfo([
-								$download
+							$download
 						]);
 					}
 				} else {
 					parent::fetchDownloadInfo([
-							$download
+						$download
 					]);
 				}
 			} catch (\Exception $e) {
@@ -48,10 +48,10 @@ class Uploadednet extends Http
 
 	protected function getUrlToDownload(Download $download)
 	{
-		$res = $this->getClient()->request('get', $download->getLink());
+		$res  = $this->getClient()->request('get', $download->getLink());
 		$html = $res->getBody()->getContents();
 
-		if (! preg_match("#https?://[0-9a-z\-]*stor\d+.uploaded.net/dl/([0-9a-z\-]+)#mi", $html, $matches)) {
+		if (!preg_match("#https?://[0-9a-z\-]*stor\d+.uploaded.net/dl/([0-9a-z\-]+)#mi", $html, $matches)) {
 			return null;
 		}
 
@@ -67,18 +67,18 @@ class Uploadednet extends Http
 		}
 
 		$args = [
-				'id' => trim($this->getConfiguration()->get('uploadednet.username')),
-				'pw' => trim($this->getConfiguration()->get('uploadednet.password'))
+			'id' => trim($this->getConfiguration()->get('uploadednet.username')),
+			'pw' => trim($this->getConfiguration()->get('uploadednet.password'))
 		];
 
-		if (! $args['id']) {
+		if (!$args['id']) {
 			return false;
 		}
 
-		$res = $this->getClient()->request('post', 'https://uploaded.net/io/login', [
-				'form_params' => $args
+		$res  = $this->getClient()->request('post', 'https://uploaded.net/io/login', [
+			'form_params' => $args
 		]);
 		$html = $res->getBody()->getContents();
-		return ! preg_match('#.' . preg_quote('{"err":') . '#si', $html);
+		return !preg_match('#.' . preg_quote('{"err":') . '#si', $html);
 	}
 }

@@ -111,7 +111,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://www.share-online.biz/dl/invalid');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -134,7 +134,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$config->loadFile(TARTANA_PATH_ROOT . '/app/config/hosters.yml', 'yaml');
 		$downloader = new Shareonlinebiz($config);
 
-		$dest = new Local(__DIR__ . '/test');
+		$dest     = new Local(__DIR__ . '/test');
 		$promises = $downloader->download([]);
 
 		$this->assertEmpty($promises);
@@ -157,7 +157,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://www.share-online.biz/dl/O43A391OMJ');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -184,24 +184,24 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://www.share-online.biz/dl/EG5BWT3OO27');
 		$download->setDestination($dest->getPathPrefix());
 		$download->setFileName('test1.png');
 		$downloads[] = $download;
-		$download = clone $download;
+		$download    = clone $download;
 		$download->setFileName('test2.png');
 		$downloads[] = $download;
-		$download = clone $download;
+		$download    = clone $download;
 		$download->setFileName('test3.png');
 		$downloads[] = $download;
-		$download = clone $download;
+		$download    = clone $download;
 		$download->setFileName('test4.png');
 		$downloads[] = $download;
-		$download = clone $download;
+		$download    = clone $download;
 		$download->setFileName('test5.png');
 		$downloads[] = $download;
-		$download = clone $download;
+		$download    = clone $download;
 		$download->setFileName('test6.png');
 		$downloads[] = $download;
 

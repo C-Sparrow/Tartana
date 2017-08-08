@@ -17,11 +17,11 @@ class ProcessingProgressEvent extends Event
 
 	public function __construct(AbstractAdapter $source, AbstractAdapter $destination, $file, $progress)
 	{
-		$this->source = $source;
+		$this->source      = $source;
 		$this->destination = $destination;
-		$this->file = $file;
+		$this->file        = $file;
 
-		$progress = (int) $progress;
+		$progress = (int)$progress;
 		if ($progress < 0) {
 			$progress = 0;
 		}

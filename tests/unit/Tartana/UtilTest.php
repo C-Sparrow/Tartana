@@ -17,8 +17,8 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('1 kB', Util::readableSize(1024));
 		$this->assertEquals('1 MB', Util::readableSize(1024 * 1024));
 		$this->assertEquals('1 units kbytes', Util::readableSize(1024, [
-				'units bytes',
-				'units kbytes'
+			'units bytes',
+			'units kbytes'
 		]));
 		$this->assertEquals('1', Util::readableSize(1024, []));
 	}
@@ -43,11 +43,11 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 
 	public function testClone()
 	{
-		$obj = new \stdClass();
+		$obj       = new \stdClass();
 		$obj->test = 'unit';
 
-		$clone = Util::cloneObjects([
-				$obj
+		$clone     = Util::cloneObjects([
+			$obj
 		]);
 		$obj->test = 'unit edited';
 

@@ -74,7 +74,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 	{
 		$download = new Download();
 		$this->assertEquals($download, $download->setProgress(0));
-		$this->assertEquals($download, $download->setProgress(- 2));
+		$this->assertEquals($download, $download->setProgress(-2));
 		$this->assertEquals(0.00, $download->getProgress());
 
 		$this->assertEquals($download, $download->setProgress(10, true));
@@ -125,7 +125,7 @@ class DownloadTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetGetHash()
 	{
-		$hash = md5(345);
+		$hash     = md5(345);
 		$download = new Download();
 		$this->assertEquals($download, $download->setHash($hash));
 		$this->assertEquals($hash, $download->getHash());

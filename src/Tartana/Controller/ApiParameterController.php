@@ -19,26 +19,26 @@ class ApiParameterController extends Controller
 	{
 		$data = [];
 
-		$root = new Local($this->container->getParameter('kernel.root_dir') . '/config');
+		$root       = new Local($this->container->getParameter('kernel.root_dir') . '/config');
 		$parameters = Yaml::parse($root->read('parameters.yml')['contents']);
 		if (is_array($parameters)) {
 			foreach ($parameters['parameters'] as $key => $parameter) {
-				$p = [
-						'value' => $parameter,
-						'key' => $key
+				$p          = [
+					'value' => $parameter,
+					'key' => $key
 				];
-				$label = str_replace('tartana.', '', $key);
-				$label = str_replace('.', ' ', $label);
-				$label = ucfirst($label);
+				$label      = str_replace('tartana.', '', $key);
+				$label      = str_replace('.', ' ', $label);
+				$label      = ucfirst($label);
 				$p['label'] = $label;
 
 				$data[] = $p;
 			}
 		}
 		$data = [
-				'success' => true,
-				'message' => '',
-				'data' => $data
+			'success' => true,
+			'message' => '',
+			'data' => $data
 		];
 
 		return new JsonResponse($data);
@@ -50,9 +50,9 @@ class ApiParameterController extends Controller
 	public function setAction(Request $request)
 	{
 		$parameters = $request->request->all();
-		$labels = [];
+		$labels     = [];
 		foreach ($parameters as $key => $p) {
-		// http://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays
+			// http://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays
 			$newKey = str_replace('_', '.', $key);
 			unset($parameters[$key]);
 			$parameters[$newKey] = $p;
@@ -63,11 +63,11 @@ class ApiParameterController extends Controller
 		$commandBus->handle(new SaveParameters($parameters));
 
 		$data = [
-				'success' => true,
-				'message' => sprintf(
-					$this->container->get('Translator')->trans('TARTANA_VIEW_PARAMETERS_SET_PARAMETER_SUCCESS'),
-					implode(',', $labels)
-				)
+			'success' => true,
+			'message' => sprintf(
+				$this->container->get('Translator')->trans('TARTANA_VIEW_PARAMETERS_SET_PARAMETER_SUCCESS'),
+				implode(',', $labels)
+			)
 		];
 
 		return new JsonResponse($data);

@@ -20,7 +20,7 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://c-sparrow.github.io/Tartana/doc/images/downloads-list.png');
 		$download->setFileName('downloads-list.png');
 		$download->setDestination($dest->getPathPrefix());
@@ -43,23 +43,23 @@ class HttpTest extends \PHPUnit_Framework_TestCase
 		$this->markTestSkipped('Uncomment to test large downloads!');
 
 		$downloader = new Http(new Registry([
-				'speedlimit' => 10
+			'speedlimit' => 10
 		]));
-		$logger = new Logger('test');
+		$logger     = new Logger('test');
 		$logger->setHandlers([
-				new EchoHandler()
+			new EchoHandler()
 		]);
 		$downloader->setLogger($logger);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://releases.ubuntu.com/14.04.4/ubuntu-14.04.3-desktop-amd64.iso');
 		$download->setFileName('desktop.iso');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
-		$download = new Download();
+		$download    = new Download();
 		$download->setLink('http://releases.ubuntu.com/14.04.4/ubuntu-14.04.3-server-i386.iso');
 		$download->setFileName('server.iso');
 		$download->setDestination($dest->getPathPrefix());

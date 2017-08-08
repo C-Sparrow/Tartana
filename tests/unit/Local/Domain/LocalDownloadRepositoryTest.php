@@ -39,9 +39,9 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 		$repository = new LocalDownloadRepository(
 			$entityManager,
 			new Registry([
-						'local' => [
-								'downloads' => __DIR__ . '/not-esisting'
-						]
+				'local' => [
+					'downloads' => __DIR__ . '/not-esisting'
+				]
 			])
 		);
 
@@ -80,9 +80,9 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 		$repository = new LocalDownloadRepository(
 			$entityManager,
 			new Registry([
-						'local' => [
-								'downloads' => __DIR__ . '/not-esisting'
-						]
+				'local' => [
+					'downloads' => __DIR__ . '/not-esisting'
+				]
 			])
 		);
 
@@ -137,9 +137,9 @@ class LocalDownloadRepositoryTest extends TartanaBaseTestCase
 		$repository = new LocalDownloadRepository(
 			$entityManager,
 			new Registry([
-						'local' => [
-								'downloads' => __DIR__ . '/not-existing'
-						]
+				'local' => [
+					'downloads' => __DIR__ . '/not-existing'
+				]
 			])
 		);
 

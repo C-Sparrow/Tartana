@@ -26,10 +26,10 @@ class HttpTest extends TartanaBaseTestCase
 	public function testFetchLinkList()
 	{
 		$downloader = $this->getHttp(new Registry());
-		$links = $downloader->fetchLinkList('http://foo.bar/test');
+		$links      = $downloader->fetchLinkList('http://foo.bar/test');
 
 		$this->assertEquals([
-				'http://foo.bar/test'
+			'http://foo.bar/test'
 		], $links);
 	}
 
@@ -37,16 +37,16 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						])
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				])
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -57,7 +57,7 @@ class HttpTest extends TartanaBaseTestCase
 
 		$downloader = $this->getHttp(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -68,11 +68,11 @@ class HttpTest extends TartanaBaseTestCase
 	public function testFetchDownloadInfoGetLinkFromDownload()
 	{
 		$mock = new MockHandler([
-				new Response(200)
+			new Response(200)
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -83,7 +83,7 @@ class HttpTest extends TartanaBaseTestCase
 
 		$downloader = $this->getHttp(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -96,13 +96,13 @@ class HttpTest extends TartanaBaseTestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://kjguwjkasdlocalhostkasjk/jstwghbkaszhsjk');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry([
-				'clearSession' => true
+			'clearSession' => true
 		]));
 
 		$downloader->fetchDownloadInfo($downloads);
@@ -117,16 +117,16 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -137,8 +137,8 @@ class HttpTest extends TartanaBaseTestCase
 		$download->setHash(md5('hello'));
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download([
-				$download
+		$promises   = $downloader->download([
+			$download
 		]);
 		Promise\unwrap($promises);
 
@@ -158,23 +158,23 @@ class HttpTest extends TartanaBaseTestCase
 	public function testDownloadLinkSpeedLimit()
 	{
 		if (strpos(phpversion(), '-hhvm') !== false) {
-		// https://github.com/facebook/hhvm/issues/6935
+			// https://github.com/facebook/hhvm/issues/6935
 			$this->markTestSkipped('HHVM is not supporting the curl limit speed option!');
 			return;
 		}
 
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -185,15 +185,15 @@ class HttpTest extends TartanaBaseTestCase
 		$download->setHash(md5('hello'));
 
 		$downloader = $this->getHttp(new Registry([
-				'speedlimit' => 10
+			'speedlimit' => 10
 		]), $client);
-		$promises = $downloader->download([
-				$download
+		$promises   = $downloader->download([
+			$download
 		]);
 		Promise\unwrap($promises);
 
-		$this->assertArrayHasKey('curl', (array) $mock->getLastOptions());
-		$this->assertArrayHasKey(CURLOPT_MAX_RECV_SPEED_LARGE, (array) $mock->getLastOptions()['curl']);
+		$this->assertArrayHasKey('curl', (array)$mock->getLastOptions());
+		$this->assertArrayHasKey(CURLOPT_MAX_RECV_SPEED_LARGE, (array)$mock->getLastOptions()['curl']);
 		$this->assertEquals(10 * 1000, $mock->getLastOptions()['curl'][CURLOPT_MAX_RECV_SPEED_LARGE]);
 	}
 
@@ -201,29 +201,29 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$download->setHash(md5('hello123'));
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 		Promise\unwrap($promises);
 
 		$this->assertNotEmpty($promises);
@@ -236,24 +236,24 @@ class HttpTest extends TartanaBaseTestCase
 	public function testDownloadLinkTmpFileName()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'hello')
+			new Response(200, [], 'hello')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setId(2);
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 		Promise\unwrap($promises);
 
 		$this->assertNotEmpty($promises);
@@ -271,29 +271,29 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$download->setFileName('unit-test.txt');
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 		Promise\unwrap($promises);
 
 		$this->assertNotEmpty($promises);
@@ -311,22 +311,22 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -335,12 +335,12 @@ class HttpTest extends TartanaBaseTestCase
 		$downloader->setCommandBus(
 			$this->getMockCommandBus(
 				[
-								$this->callback(
-									function (SaveDownloads $download) {
-											return $download->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_COMPLETED;
-									}
-								)
-					]
+					$this->callback(
+						function (SaveDownloads $download) {
+							return $download->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_COMPLETED;
+						}
+					)
+				]
 			)
 		);
 		$promises = $downloader->download($downloads);
@@ -351,27 +351,27 @@ class HttpTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 
 		$this->assertEmpty($promises);
 		$this->assertNotEmpty($downloads[0]->getMessage());
@@ -383,17 +383,17 @@ class HttpTest extends TartanaBaseTestCase
 	public function testDownloadFailed()
 	{
 		$mock = new MockHandler([
-				new RequestException('Failed on unit test', new Request('GET', 'test'))
+			new RequestException('Failed on unit test', new Request('GET', 'test'))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -402,19 +402,19 @@ class HttpTest extends TartanaBaseTestCase
 		$downloader->setCommandBus(
 			$this->getMockCommandBus(
 				[
-								$this->callback(
-									function (SaveDownloads $download) {
-											return $download->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_ERROR;
-									}
-								)
-					]
+					$this->callback(
+						function (SaveDownloads $download) {
+							return $download->getDownloads()[0]->getState() == Download::STATE_DOWNLOADING_ERROR;
+						}
+					)
+				]
 			)
 		);
 		$promises = $downloader->download($downloads);
 		try {
 			Promise\unwrap($promises);
 		} catch (RequestException $e) {
-				// Expected
+			// Expected
 		}
 
 		$this->assertNotEmpty($promises);
@@ -428,13 +428,13 @@ class HttpTest extends TartanaBaseTestCase
 	public function testInvalidDestination()
 	{
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://foo.bar/ldlsls');
 		$download->setDestination('/invalid');
 		$downloads[] = $download;
 
 		$downloader = $this->getHttp(new Registry([
-				'clearSession' => true
+			'clearSession' => true
 		]));
 
 		$promises = $downloader->download($downloads);
@@ -450,11 +450,11 @@ class HttpTest extends TartanaBaseTestCase
 	public function testEmptyDownloads()
 	{
 		$client = new Client([
-				'handler' => HandlerStack::create(new MockHandler([]))
+			'handler' => HandlerStack::create(new MockHandler([]))
 		]);
 
 		$downloader = $this->getHttp(new Registry(), $client);
-		$promises = $downloader->download([]);
+		$promises   = $downloader->download([]);
 
 		$this->assertEmpty($promises);
 
@@ -467,13 +467,13 @@ class HttpTest extends TartanaBaseTestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://httptestinvalidlogin.org/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Httptestinvalidlogin(false);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 
 		$this->assertEmpty($promises);
 		$this->assertNotEmpty($downloads[0]->getMessage());
@@ -485,19 +485,19 @@ class HttpTest extends TartanaBaseTestCase
 	public function testExceptionOnLogin()
 	{
 		$client = new Client([
-				'handler' => HandlerStack::create(new MockHandler([]))
+			'handler' => HandlerStack::create(new MockHandler([]))
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink($this->scheme . '://httptestinvalidlogin.org/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Httptestinvalidlogin(true);
-		$promises = $downloader->download($downloads);
+		$promises   = $downloader->download($downloads);
 
 		$this->assertEmpty($promises);
 		$this->assertNotEmpty($downloads[0]->getMessage());
@@ -526,7 +526,7 @@ class HttpTest extends TartanaBaseTestCase
 	 */
 	private function getHttp(Registry $config, ClientInterface $client = null)
 	{
-		$class = '\\Tartana\\Host\\Common\\' . ucfirst($this->scheme);
+		$class      = '\\Tartana\\Host\\Common\\' . ucfirst($this->scheme);
 		$downloader = new $class($config, $client);
 		return $downloader;
 	}
@@ -540,7 +540,7 @@ class Httptestinvalidlogin extends Http
 	public function __construct($throwException)
 	{
 		parent::__construct(new Registry(), new Client([
-				'handler' => HandlerStack::create(new MockHandler([]))
+			'handler' => HandlerStack::create(new MockHandler([]))
 		]));
 
 		$this->throwException = $throwException;

@@ -11,13 +11,13 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloads()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloads();
+		$downloads  = $repository->findDownloads();
 
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download) {
@@ -29,13 +29,13 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsWithState()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED);
+		$downloads  = $repository->findDownloads(Download::STATE_DOWNLOADING_COMPLETED);
 
 		$this->assertNotEmpty($downloads);
 		$this->assertCount(1, $downloads);
@@ -49,21 +49,21 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsWithMultipleState()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloads([
-				Download::STATE_DOWNLOADING_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED
+		$downloads  = $repository->findDownloads([
+			Download::STATE_DOWNLOADING_STARTED,
+			Download::STATE_DOWNLOADING_COMPLETED
 		]);
 
 		$this->assertNotEmpty($downloads);
 		$this->assertCount(2, $downloads);
 
-		$hasStarted = false;
+		$hasStarted   = false;
 		$hasCompleted = false;
 		foreach ($downloads as $download) {
 			$this->assertGreaterThan(0, $download->getId());
@@ -82,13 +82,13 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsByDestination()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloadsByDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
+		$downloads  = $repository->findDownloadsByDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
 
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download) {
@@ -99,29 +99,30 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsByDestinationSeparator()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloadsByDestination(TARTANA_PATH_ROOT . '/var/tmp/test/');
+		$downloads  = $repository->findDownloadsByDestination(TARTANA_PATH_ROOT . '/var/tmp/test/');
 
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download) {
 			$this->assertContains(TARTANA_PATH_ROOT . '/var/tmp/test', $download->getDestination());
 		}
 	}
+
 	public function testFindDownloadsByDestinationPart()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloadsByDestination('tmp/test');
+		$downloads  = $repository->findDownloadsByDestination('tmp/test');
 
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download) {
@@ -132,13 +133,13 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsByInvalidDestination()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloadsByDestination('/invalid/');
+		$downloads  = $repository->findDownloadsByDestination('/invalid/');
 
 		$this->assertEmpty($downloads);
 	}
@@ -146,13 +147,13 @@ class LocalDownloadRepositoryTest extends WebTestCase
 	public function testFindDownloadsByInvalidOnlyOneDownload()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$download = $repository->findDownloads()[0];
+		$download   = $repository->findDownloads()[0];
 		$download->setDestination(__DIR__);
 		$client->getContainer()
 			->get('CommandBus')

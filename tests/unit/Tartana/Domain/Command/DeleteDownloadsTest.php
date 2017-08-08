@@ -10,9 +10,9 @@ class DeleteDownloadsTest extends \PHPUnit_Framework_TestCase
 	public function testDeleteDownloadsCommand()
 	{
 		$downloads = [
-				new Download()
+			new Download()
 		];
-		$command = new DeleteDownloads($downloads);
+		$command   = new DeleteDownloads($downloads);
 
 		$this->assertEquals($downloads, $command->getDownloads());
 	}

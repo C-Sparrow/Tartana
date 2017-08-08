@@ -14,7 +14,7 @@ class DownloadCommandTest extends WebTestCase
 	public function testExecute()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -30,8 +30,8 @@ class DownloadCommandTest extends WebTestCase
 		$output = new BufferedOutput();
 
 		$exitCode = $app->run(new ArrayInput([
-				'command' => 'download',
-				'-vvv'
+			'command' => 'download',
+			'-vvv'
 		]), $output);
 
 		$outputString = $output->fetch();

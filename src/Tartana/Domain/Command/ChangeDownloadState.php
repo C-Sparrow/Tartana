@@ -14,7 +14,7 @@ class ChangeDownloadState
 	{
 		$this->downloads = $downloads;
 		$this->fromState = $fromState;
-		$this->toState = $toState;
+		$this->toState   = $toState;
 	}
 
 	/**

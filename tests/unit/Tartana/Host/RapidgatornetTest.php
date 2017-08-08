@@ -21,26 +21,26 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(
-							200,
-							[],
-							json_encode(
-								[
-												'response' => [
-														'filename' => 'hello.txt',
-														'size' => 123,
-														'hash' => 1234
-												],
-												'response_status' => 200
-									]
-							)
-						)
+				new Response(
+					200,
+					[],
+					json_encode(
+						[
+							'response' => [
+								'filename' => 'hello.txt',
+								'size' => 123,
+								'hash' => 1234
+							],
+							'response_status' => 200
+						]
+					)
+				)
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => $this->getCookie()
+			'handler' => HandlerStack::create($mock),
+			'cookies' => $this->getCookie()
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -51,7 +51,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Rapidgatornet(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -64,15 +64,15 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoInvalidResponseStatus()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], json_encode([
-						'response' => [],
-						'response_status' => 404
-				]))
+			new Response(200, [], json_encode([
+				'response' => [],
+				'response_status' => 404
+			]))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => $this->getCookie()
+			'handler' => HandlerStack::create($mock),
+			'cookies' => $this->getCookie()
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -83,7 +83,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Rapidgatornet(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
@@ -93,12 +93,12 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoException()
 	{
 		$mock = new MockHandler([
-				new RequestException('Failed on unit test', new Request('GET', 'test'))
+			new RequestException('Failed on unit test', new Request('GET', 'test'))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => $this->getCookie()
+			'handler' => HandlerStack::create($mock),
+			'cookies' => $this->getCookie()
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -109,7 +109,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Rapidgatornet(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
@@ -119,14 +119,14 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoWrongLogin()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], json_encode([
-						'response' => [],
-						'response_status' => 404
-				]))
+			new Response(200, [], json_encode([
+				'response' => [],
+				'response_status' => 404
+			]))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -137,7 +137,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Rapidgatornet(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
@@ -148,31 +148,31 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], json_encode([
-								'response_status' => 200
-						])),
-						new Response(
-							200,
-							[],
-							json_encode(
-								[
-												'response' => [
-														'url' => 'foo.bar/hdhdhdh'
-												],
-												'response_status' => 200
-									]
-							)
-						),
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [], json_encode([
+					'response_status' => 200
+				])),
+				new Response(
+					200,
+					[],
+					json_encode(
+						[
+							'response' => [
+								'url' => 'foo.bar/hdhdhdh'
+							],
+							'response_status' => 200
+						]
+					)
+				),
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -182,13 +182,13 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader = new Rapidgatornet(new Registry([
-				'rapidgatornet' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'rapidgatornet' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());
@@ -204,14 +204,14 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 	public function testDownloadInvalidDownloadUrl()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], json_encode([
-						'response_status' => 404
-				]))
+			new Response(200, [], json_encode([
+				'response_status' => 404
+			]))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => $this->getCookie()
+			'handler' => HandlerStack::create($mock),
+			'cookies' => $this->getCookie()
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -221,13 +221,13 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader = new Rapidgatornet(new Registry([
-				'rapidgatornet' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'rapidgatornet' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertNotEmpty($download->getMessage());
@@ -251,12 +251,12 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		return new CookieJar(
 			true,
 			[
-						[
-								'Name' => 'PHPSESSID',
-								'Expires' => 0,
-								'Value' => '123',
-								'Domain' => '.rapidgator.net'
-						]
+				[
+					'Name' => 'PHPSESSID',
+					'Expires' => 0,
+					'Value' => '123',
+					'Domain' => '.rapidgator.net'
+				]
 			]
 		);
 	}

@@ -11,29 +11,29 @@ class LocalConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testEnabledValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
-				[]
+			[]
 		], 'enabled');
 	}
 
 	public function testDownloadsValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
-				[
-						'enabled' => true
-				]
+			[
+				'enabled' => true
+			]
 		], 'downloads');
 	}
 
 	public function testProcessedValueContainsRequiredValue()
 	{
 		$this->assertProcessedConfigurationEquals([
-				[
-						'enabled' => true,
-						'downloads' => '/path/to/dir'
-				]
-		], [
+			[
 				'enabled' => true,
 				'downloads' => '/path/to/dir'
+			]
+		], [
+			'enabled' => true,
+			'downloads' => '/path/to/dir'
 		]);
 	}
 

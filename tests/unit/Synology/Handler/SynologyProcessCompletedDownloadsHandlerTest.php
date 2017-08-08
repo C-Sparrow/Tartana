@@ -18,7 +18,7 @@ class SynologyProcessCompletedDownloadsHandlerTest extends \PHPUnit_Framework_Te
 			->with($this->equalTo('downloads.completed'));
 
 		$downloads = [
-				new Download()
+			new Download()
 		];
 		$downloads[0]->setState(Download::STATE_DOWNLOADING_COMPLETED);
 		$handler = new SynologyProcessCompletedDownloadsHandler($dispatcherMock);

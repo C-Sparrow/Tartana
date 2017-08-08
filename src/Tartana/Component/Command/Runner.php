@@ -33,7 +33,7 @@ class Runner
 		if ($this->environment !== null) {
 			// Setting the correct environment
 			$isAppCommand = false;
-			$envSet = false;
+			$envSet       = false;
 			foreach ($command->getArguments() as $arg) {
 				if (strpos($arg, '/cli/app.php') !== false) {
 					$isAppCommand = true;

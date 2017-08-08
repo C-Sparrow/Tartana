@@ -30,7 +30,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 	{
 		parent::__construct('update');
 
-		$this->url = $url;
+		$this->url           = $url;
 		$this->commandRunner = $commandRunner;
 
 		$this->factory = $factory;
@@ -93,7 +93,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 				$this->log('Exception fetching Tartana update file: ' . $e->getMessage());
 			}
 
-			$zip = new \ZipArchive();
+			$zip        = new \ZipArchive();
 			$oldVersion = $fs->read('../../app/config/internal/version.txt')['contents'];
 			if (!$fs->has('tartana.zip')) {
 				$this->log("Zip file to extract doesn't exist, can't update!", Logger::ERROR);
@@ -158,7 +158,7 @@ class UpdateCommand extends \Symfony\Component\Console\Command\Command
 		$d->setLink($url);
 
 		$tmp = (array)$downloader->download([
-				$d
+			$d
 		]);
 		Promise\unwrap($tmp);
 	}

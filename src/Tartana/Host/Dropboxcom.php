@@ -25,8 +25,8 @@ class Dropboxcom extends Http
 			return parent::getHeadersForDownload($download);
 		}
 
-		$headers = [];
-		$headers['Authorization'] = 'Bearer ' . $token;
+		$headers                    = [];
+		$headers['Authorization']   = 'Bearer ' . $token;
 		$headers['Dropbox-API-Arg'] = '{"url": "' . $this->fixUrl($download->getLink()) . '"}';
 
 		return $headers;

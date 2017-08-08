@@ -17,8 +17,9 @@ class ConvertSoundListenerTest extends KernelTestCase
 
 	public function testConvertFile()
 	{
-		if (! (new Runner())->execute(new Command('which ffmpeg'))) {
-			$this->markTestSkipped('FFmpeg is not on the path!');
+		if (!(new Runner())->execute(new Command('which ffmpeg'))
+			&& !(new Runner())->execute(new Command('which avconv'))) {
+			$this->markTestSkipped('FFmpeg and avconv is not on the path!');
 			return;
 		}
 
@@ -29,16 +30,16 @@ class ConvertSoundListenerTest extends KernelTestCase
 		$fs->copy('../../Console/Command/files/test.mp4', 'test/test.mp4');
 
 		$configuration = new Registry([
-				'async' => false,
-				'sound' => [
-						'destination' => $fs->applyPathPrefix('test1')
-				]
+			'async' => false,
+			'sound' => [
+				'destination' => $fs->applyPathPrefix('test1')
+			]
 		]);
 
 		$d = new Download();
 		$d->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), [
-				$d
+		$event    = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), [
+			$d
 		]);
 		$listener = new ConvertSoundListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$listener->onProcessCompletedDownloads($event);

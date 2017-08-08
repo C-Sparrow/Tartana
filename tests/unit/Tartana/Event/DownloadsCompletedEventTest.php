@@ -11,8 +11,8 @@ class DownloadsCompletedEventTest extends \PHPUnit_Framework_TestCase
 	public function testDownloadsCompletedEvent()
 	{
 		$repository = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$event = new DownloadsCompletedEvent($repository, [
-				new Download()
+		$event      = new DownloadsCompletedEvent($repository, [
+			new Download()
 		]);
 
 		$this->assertEquals($repository, $event->getRepository());

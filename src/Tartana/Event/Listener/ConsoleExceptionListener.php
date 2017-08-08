@@ -13,7 +13,7 @@ class ConsoleExceptionListener
 
 	public function onConsoleException(ConsoleExceptionEvent $event)
 	{
-		$command = $event->getCommand();
+		$command   = $event->getCommand();
 		$exception = $event->getException();
 
 		$message = sprintf(

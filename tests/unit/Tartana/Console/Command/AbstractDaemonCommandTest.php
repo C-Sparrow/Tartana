@@ -17,7 +17,7 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 	public function testStart()
 	{
-		$command = new SimpleDaemonCommand($this->getMockRunner());
+		$command     = new SimpleDaemonCommand($this->getMockRunner());
 		$application = new Application();
 		$application->add($command);
 
@@ -25,9 +25,9 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'start',
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'action' => 'start',
+			'--env' => 'test'
 		]);
 
 		$this->assertTrue($command->started);
@@ -36,7 +36,7 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 	public function testNoActionSet()
 	{
-		$command = new SimpleDaemonCommand($this->getMockRunner());
+		$command     = new SimpleDaemonCommand($this->getMockRunner());
 		$application = new Application();
 		$application->add($command);
 
@@ -44,8 +44,8 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'--env' => 'test'
 		]);
 
 		$this->assertTrue($command->started);
@@ -54,7 +54,7 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 	public function testStartEmptyFile()
 	{
-		$command = new SimpleDaemonCommand($this->getMockRunner());
+		$command     = new SimpleDaemonCommand($this->getMockRunner());
 		$application = new Application();
 		$application->add($command);
 
@@ -64,9 +64,9 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 		$fs->write(self::PID_FILE_NAME, '', new Config());
 
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'start',
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'action' => 'start',
+			'--env' => 'test'
 		]);
 
 		$this->assertTrue($command->started);
@@ -75,7 +75,7 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 	public function testStartAlreadyStarted()
 	{
-		$command = new SimpleDaemonCommand($this->getMockRunner());
+		$command     = new SimpleDaemonCommand($this->getMockRunner());
 		$application = new Application();
 		$application->add($command);
 
@@ -85,9 +85,9 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 		$fs->write(self::PID_FILE_NAME, getmypid(), new Config());
 
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'start',
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'action' => 'start',
+			'--env' => 'test'
 		]);
 
 		$this->assertFalse($command->started);
@@ -99,13 +99,13 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(function (Command $command) {
-							return strpos($command, 'kill') !== false;
-						})
+				$this->callback(function (Command $command) {
+					return strpos($command, 'kill') !== false;
+				})
 			]
 		);
 
-		$command = new SimpleDaemonCommand($runner);
+		$command     = new SimpleDaemonCommand($runner);
 		$application = new Application();
 		$application->add($command);
 
@@ -115,9 +115,9 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 		$fs->write(self::PID_FILE_NAME, getmypid() . ':128761291727182538765123', new Config());
 
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'start',
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'action' => 'start',
+			'--env' => 'test'
 		]);
 
 		$this->assertTrue($command->started);
@@ -128,15 +128,15 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) {
-									return strpos($command, 'simple') !== false && strpos($command, '--backgound') === false;
-							}
-						)
+				$this->callback(
+					function (Command $command) {
+						return strpos($command, 'simple') !== false && strpos($command, '--backgound') === false;
+					}
+				)
 			]
 		);
 
-		$command = new SimpleDaemonCommand($runner);
+		$command     = new SimpleDaemonCommand($runner);
 		$application = new Application();
 		$application->add($command);
 
@@ -144,10 +144,10 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp');
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'start',
-				'--env' => 'test',
-				'--background' => 1
+			'command' => $command->getName(),
+			'action' => 'start',
+			'--env' => 'test',
+			'--background' => 1
 		]);
 
 		$this->assertFalse($command->started);
@@ -158,15 +158,15 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 	{
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) {
-									return strpos($command, "kill '-9' '" . getmypid() . "'") !== false;
-							}
-						)
+				$this->callback(
+					function (Command $command) {
+						return strpos($command, "kill '-9' '" . getmypid() . "'") !== false;
+					}
+				)
 			]
 		);
 
-		$command = new SimpleDaemonCommand($runner);
+		$command     = new SimpleDaemonCommand($runner);
 		$application = new Application();
 		$application->add($command);
 
@@ -176,9 +176,9 @@ class AbstractDaemonCommandTest extends TartanaBaseTestCase
 		$fs->write(self::PID_FILE_NAME, getmypid() . ':8963986132896123', new Config());
 
 		$commandTester->execute([
-				'command' => $command->getName(),
-				'action' => 'stop',
-				'--env' => 'test'
+			'command' => $command->getName(),
+			'action' => 'stop',
+			'--env' => 'test'
 		]);
 
 		$this->assertFalse($command->started);

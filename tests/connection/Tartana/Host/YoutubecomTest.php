@@ -13,7 +13,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchLinkList()
 	{
 		$downloader = new Youtubecom(new Registry());
-		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=PL5DF954DB82987243');
+		$links      = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=PL5DF954DB82987243');
 
 		$this->assertCount(19, $links);
 		$this->assertStringStartsWith('https://www.youtube.com/watch', $links[0]);
@@ -30,7 +30,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -50,7 +50,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$download->setFileName('test.mp4');
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());
@@ -75,7 +75,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$download->setFileName('test.mp4');
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());
@@ -100,7 +100,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$download->setFileName('test.mp4');
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertNotEmpty($dest->listContents());

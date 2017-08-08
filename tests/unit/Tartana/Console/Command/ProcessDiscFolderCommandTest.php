@@ -24,7 +24,7 @@ class ProcessDiscFolderCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'source' => $fs->applyPathPrefix('test')
+			'source' => $fs->applyPathPrefix('test')
 		]);
 
 		$this->assertTrue($fs->has('test/test/test.mp3'));
@@ -32,6 +32,7 @@ class ProcessDiscFolderCommandTest extends TartanaBaseTestCase
 		$this->assertFalse($fs->has('test/test/CD'));
 		$this->assertFalse($fs->has('test/test/Cover'));
 	}
+
 	public function testProcessDirectoryDeepNested()
 	{
 		$fs = new Local(__DIR__);
@@ -46,7 +47,7 @@ class ProcessDiscFolderCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'source' => $fs->applyPathPrefix('test')
+			'source' => $fs->applyPathPrefix('test')
 		]);
 
 		$this->assertTrue($fs->has('test/test/test.mp3'));
@@ -68,7 +69,7 @@ class ProcessDiscFolderCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'source' => $fs->applyPathPrefix('test')
+			'source' => $fs->applyPathPrefix('test')
 		]);
 
 		$this->assertTrue($fs->has('test/test/test.mp3'));
@@ -86,7 +87,7 @@ class ProcessDiscFolderCommandTest extends TartanaBaseTestCase
 
 		$commandTester = new CommandTester($command);
 		$commandTester->execute([
-				'source' => __DIR__ . '/wrong'
+			'source' => __DIR__ . '/wrong'
 		]);
 	}
 

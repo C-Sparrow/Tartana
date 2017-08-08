@@ -16,11 +16,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
 	public function testBaseWithFields()
 	{
-		$entity = new Base();
+		$entity       = new Base();
 		$entity->test = 'hello';
 
 		$expected = [
-				'test' => 'hello'
+			'test' => 'hello'
 		];
 		$this->assertNotEmpty($entity->jsonSerialize());
 		$this->assertEquals($expected, $entity->jsonSerialize());

@@ -24,20 +24,20 @@ class HostFactory
 		}
 		$uri = Util::parseUrl($link);
 
-		$hostName = Util::cleanHostName($uri);
-		$hostName = ucfirst(strtolower($hostName));
+		$hostName  = Util::cleanHostName($uri);
+		$hostName  = ucfirst(strtolower($hostName));
 		$className = 'Tartana\\Host\\' . $hostName;
 
 		// Check if the class exists for the host to download
-		if (! class_exists($className)) {
+		if (!class_exists($className)) {
 			$className = 'Tartana\\Host\\Common\\' . ucfirst(strtolower($uri['scheme']));
-			if (! class_exists($className)) {
+			if (!class_exists($className)) {
 				return null;
 			}
 		}
 
 		$downloader = new $className($config);
-		if (! $downloader instanceof HostInterface) {
+		if (!$downloader instanceof HostInterface) {
 			return null;
 		}
 

@@ -37,18 +37,18 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 				$repositoryMock,
 				$messageBusMock,
 				new Registry([
-								'links' => [
-										'folder' => $fs->applyPathPrefix('testdlcs')
-								]
-					])
+					'links' => [
+						'folder' => $fs->applyPathPrefix('testdlcs')
+					]
+				])
 			)
 		);
-				$command = $application->find('default');
+		$command = $application->find('default');
 
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(array(
-				'command' => $command->getName()
-				));
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName()
+		));
 	}
 
 	public function testExecuteWithCompletedDownloads()
@@ -69,19 +69,19 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 			->with(
 				$this->callback(
 					function (ProcessCompletedDownloads $command) {
-							return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test';
+						return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test';
 					}
 				)
 			);
 
-				$application = new Application();
-				$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
-				$command = $application->find('default');
+		$application = new Application();
+		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
+		$command = $application->find('default');
 
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(array(
-				'command' => $command->getName()
-				));
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName()
+		));
 	}
 
 	public function testExecuteWithNotCompletedDownloads()
@@ -92,7 +92,7 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$download->setState(Download::STATE_DOWNLOADING_STARTED);
 		$download->setDestination(__DIR__ . '/test');
 		$downloads[] = $download;
-		$download = new Download();
+		$download    = new Download();
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 		$download->setDestination(__DIR__ . '/test');
 		$downloads[] = $download;
@@ -107,10 +107,10 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$application = new Application();
 		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
 
-		$command = $application->find('default');
+		$command       = $application->find('default');
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-				'command' => $command->getName()
+			'command' => $command->getName()
 		));
 	}
 
@@ -122,11 +122,11 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$download->setState(Download::STATE_DOWNLOADING_STARTED);
 		$download->setDestination(__DIR__ . '/test');
 		$downloads[] = $download;
-		$download = new Download();
+		$download    = new Download();
 		$download->setState(Download::STATE_DOWNLOADING_STARTED);
 		$download->setDestination(__DIR__ . '/test');
 		$downloads[] = $download;
-		$download = new Download();
+		$download    = new Download();
 		$download->setState(Download::STATE_DOWNLOADING_COMPLETED);
 		$download->setDestination(__DIR__ . '/test1');
 		$downloads[] = $download;
@@ -140,19 +140,19 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 			->with(
 				$this->callback(
 					function (ProcessCompletedDownloads $command) {
-							return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test1';
+						return $command->getDownloads()[0]->getDestination() == __DIR__ . '/test1';
 					}
 				)
 			);
 
-				$application = new Application();
-				$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
+		$application = new Application();
+		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
 
-				$command = $application->find('default');
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(array(
-				'command' => $command->getName()
-				));
+		$command       = $application->find('default');
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(array(
+			'command' => $command->getName()
+		));
 	}
 
 	public function testExecuteWithNotStartedDownloads()
@@ -177,10 +177,10 @@ class DefaultCommandTest extends \PHPUnit_Framework_TestCase
 		$application = new Application();
 		$application->add(new DefaultCommand($repositoryMock, $messageBusMock, new Registry()));
 
-		$command = $application->find('default');
+		$command       = $application->find('default');
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(array(
-				'command' => $command->getName()
+			'command' => $command->getName()
 		));
 	}
 

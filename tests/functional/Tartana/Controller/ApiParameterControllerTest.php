@@ -28,7 +28,7 @@ class ApiParameterControllerTest extends WebTestCase
 	public function testV1SetParameters()
 	{
 		$crawler = $this->client->request('POST', '/api/v1/parameter/set', [
-				'tartana.dateFormat' => 'Y-m-d H:i:s'
+			'tartana.dateFormat' => 'Y-m-d H:i:s'
 		]);
 
 		$this->assertEquals(200, $this->client->getResponse()
@@ -44,7 +44,7 @@ class ApiParameterControllerTest extends WebTestCase
 	{
 		$this->loadFixtures([]);
 
-		$client = static::createClient();
+		$client       = static::createClient();
 		$this->client = $client;
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config');

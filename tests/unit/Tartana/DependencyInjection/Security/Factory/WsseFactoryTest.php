@@ -12,7 +12,7 @@ class WsseFactoryTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetDefinitions()
 	{
-		$container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
+		$container  = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 		$definition = $this->getMockBuilder(Definition::class)->getMock();
 		$container->method('setDefinition')->willReturn($definition);
 		$factory = new WsseFactory();
@@ -42,7 +42,7 @@ class WsseFactoryTest extends \PHPUnit_Framework_TestCase
 	public function testAddConfiguration()
 	{
 		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root('unit');
+		$rootNode    = $treeBuilder->root('unit');
 
 		$factory = new WsseFactory();
 		$factory->addConfiguration($rootNode);

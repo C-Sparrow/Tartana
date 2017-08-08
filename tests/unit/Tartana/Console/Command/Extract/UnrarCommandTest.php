@@ -28,33 +28,33 @@ class UnrarCommandTest extends TartanaBaseTestCase
 			]),
 			$this->getMockRunner(
 				[
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == 'unrar';
-								}),
-								$this->callback(function (Command $command) {
-									return strpos($command, 'unrar l') !== false;
-								})
-						],
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == 'unrar';
+					}),
+					$this->callback(function (Command $command) {
+						return strpos($command, 'unrar l') !== false;
+					})
+				],
 				[
-								'All OK',
-								'Archive: ' . $fs->applyPathPrefix('test/test.rar')
-					]
+					'All OK',
+					'Archive: ' . $fs->applyPathPrefix('test/test.rar')
+				]
 			),
 			new Registry()
 		);
 
-						$application = new Application();
-						$application->add($command);
+		$application = new Application();
+		$application->add($command);
 
-						$commandTester = new CommandTester($command);
+		$commandTester = new CommandTester($command);
 
-						$commandTester->execute(
-							[
-							'command' => $command->getName(),
-							'source' => $fs->applyPathPrefix('test'),
-							'destination' => $fs->applyPathPrefix('test1')
-							]
-						);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertFalse($fs->has('test/test.rar'));
 		$this->assertTrue($fs->has('test/test.txt'));
@@ -66,25 +66,25 @@ class UnrarCommandTest extends TartanaBaseTestCase
 		$fs->write('test/test.rar', 'unit', new Config());
 		$fs->write('test/test.txt', 'unit', new Config());
 
-		$runner = new UnrarCommandTestRunner();
+		$runner       = new UnrarCommandTestRunner();
 		$runner->file = $fs->applyPathPrefix('test/test.rar');
 
 		$command = new UnrarCommand(
 			$this->getMockDispatcher(
 				[
-								[
-										$this->equalTo('processing.progress'),
-										$this->callback(
-											function (ProcessingProgressEvent $event) {
-													return $event->getFile() == 'test.rar' && $event->getProgress() == 23;
-											}
-										)
-								],
-								[
-										$this->equalTo('processing.completed'),
-										$this->anything()
-								]
+					[
+						$this->equalTo('processing.progress'),
+						$this->callback(
+							function (ProcessingProgressEvent $event) {
+								return $event->getFile() == 'test.rar' && $event->getProgress() == 23;
+							}
+						)
+					],
+					[
+						$this->equalTo('processing.completed'),
+						$this->anything()
 					]
+				]
 			),
 			$runner,
 			new Registry()
@@ -97,9 +97,9 @@ class UnrarCommandTest extends TartanaBaseTestCase
 
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 	}

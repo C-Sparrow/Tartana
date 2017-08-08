@@ -9,10 +9,10 @@ class Txt extends BaseDecrypter
 	public function getLinks($content)
 	{
 		$mustUnset = false;
-		$links = explode(PHP_EOL, $content);
+		$links     = explode(PHP_EOL, $content);
 		foreach ($links as $key => $link) {
 			$uri = Util::parseUrl($link);
-			if (! $uri['scheme']) {
+			if (!$uri['scheme']) {
 				unset($links[$key]);
 				$mustUnset = true;
 			}

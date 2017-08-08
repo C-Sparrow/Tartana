@@ -26,20 +26,20 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
-											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
-											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
+							strpos($command, $fs->applyPathPrefix('test')) !== false &&
+							strpos($command, $fs->applyPathPrefix('test1')) !== false;
+					}
+				)
 			]
 		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), [
+			$download
 		]);
 		$listener = $this->getMockListener($runner);
 		$listener->onProcessCompletedDownloads($event);
@@ -57,20 +57,20 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
-											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
-											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
+							strpos($command, $fs->applyPathPrefix('test')) !== false &&
+							strpos($command, $fs->applyPathPrefix('test1')) !== false;
+					}
+				)
 			]
 		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), [
+			$download
 		]);
 		$listener = $this->getMockListener($runner);
 		$listener->onProcessCompletedDownloads($event);
@@ -88,31 +88,31 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'foo') !== false &&
-											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
-											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
-							}
-						),
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'bar') !== false &&
-											 strpos($command, $fs->applyPathPrefix('test')) !== false &&
-											 strpos($command, $fs->applyPathPrefix('test1')) !== false;
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'foo') !== false &&
+							strpos($command, $fs->applyPathPrefix('test')) !== false &&
+							strpos($command, $fs->applyPathPrefix('test1')) !== false;
+					}
+				),
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'bar') !== false &&
+							strpos($command, $fs->applyPathPrefix('test')) !== false &&
+							strpos($command, $fs->applyPathPrefix('test1')) !== false;
+					}
+				)
 			]
 		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), [
+			$download
 		]);
 		$listener = $this->getMockListener($runner, 1, [
-				'txt' => 'foo',
-				'csv' => 'bar'
+			'txt' => 'foo',
+			'csv' => 'bar'
 		]);
 		$listener->onProcessCompletedDownloads($event);
 
@@ -128,8 +128,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), [
+			$download
 		]);
 		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
 		$listener->onProcessCompletedDownloads($event);
@@ -146,8 +146,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$download = new Download();
 		$download->setDestination(__DIR__ . '/invalid');
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), [
+			$download
 		]);
 		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
 		$listener->onProcessCompletedDownloads($event);
@@ -158,7 +158,7 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 	public function testExtractNoDownloads()
 	{
-		$event = new DownloadsCompletedEvent($this->getMockRepository(), []);
+		$event    = new DownloadsCompletedEvent($this->getMockRepository(), []);
 		$listener = $this->getMockListener($this->getMockRunner(), 1, []);
 		$listener->onProcessCompletedDownloads($event);
 	}
@@ -171,12 +171,12 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
-											 substr_count($command, $fs->getPathPrefix()) == 2;
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, 'unit') !== false &&
+							substr_count($command, $fs->getPathPrefix()) == 2;
+					}
+				)
 			]
 		);
 
@@ -217,15 +217,15 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download
-						],
+						$download
+					],
 					Download::STATE_DOWNLOADING_ERROR,
 					Download::STATE_DOWNLOADING_COMPLETED
 				)
 			)
 		);
 
-						$this->assertFalse($dst->has('test'));
+		$this->assertFalse($dst->has('test'));
 	}
 
 	public function testCleanUpDirectoryNorProcessed()
@@ -243,15 +243,15 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download
-						],
+						$download
+					],
 					Download::STATE_DOWNLOADING_ERROR,
 					Download::STATE_DOWNLOADING_COMPLETED
 				)
 			)
 		);
 
-						$this->assertTrue($dst->has('test'));
+		$this->assertTrue($dst->has('test'));
 	}
 
 	public function testCleanUpDirectoryWrongEvent()
@@ -280,15 +280,15 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download
-						],
+						$download
+					],
 					Download::STATE_DOWNLOADING_ERROR,
 					Download::STATE_PROCESSING_ERROR
 				)
 			)
 		);
 
-						$this->assertTrue($dst->has('test'));
+		$this->assertTrue($dst->has('test'));
 	}
 
 	public function testCleanUpDirectoryWrongDestination()
@@ -303,8 +303,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download
-						],
+						$download
+					],
 					Download::STATE_DOWNLOADING_ERROR,
 					Download::STATE_DOWNLOADING_COMPLETED
 				)
@@ -326,8 +326,8 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download
-						],
+						$download
+					],
 					Download::STATE_DOWNLOADING_ERROR,
 					Download::STATE_DOWNLOADING_COMPLETED
 				)
@@ -356,10 +356,10 @@ class AbstractProcessingListenerTest extends TartanaBaseTestCase
 		$listener = $this->getMockForAbstractClass(
 			AbstractProcessingListener::class,
 			[
-						$runner,
-						new Registry([
-								'unittest' => $fs->applyPathPrefix('test1')
-						])
+				$runner,
+				new Registry([
+					'unittest' => $fs->applyPathPrefix('test1')
+				])
 			]
 		);
 		$listener->expects($this->exactly($keyCount))

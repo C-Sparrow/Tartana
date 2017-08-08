@@ -18,15 +18,15 @@ class SaveParametersHandler
 
 	public function handle(SaveParameters $command)
 	{
-		if (! file_exists($this->parameterFile)) {
+		if (!file_exists($this->parameterFile)) {
 			return;
 		}
 
-		$fs = new Local(dirname($this->parameterFile));
+		$fs                 = new Local(dirname($this->parameterFile));
 		$originalParameters = Yaml::parse($fs->read($fs->removePathPrefix($this->parameterFile))['contents']);
 
-		if (! key_exists('parameters', $originalParameters)) {
-		// Not a valid parameters file
+		if (!key_exists('parameters', $originalParameters)) {
+			// Not a valid parameters file
 			return;
 		}
 
@@ -38,7 +38,7 @@ class SaveParametersHandler
 		}
 
 		$fs->write($fs->removePathPrefix($this->parameterFile), Yaml::dump([
-				'parameters' => $originalParameters
+			'parameters' => $originalParameters
 		]), new Config());
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/var');

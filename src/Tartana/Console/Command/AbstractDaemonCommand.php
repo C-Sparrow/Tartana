@@ -43,12 +43,12 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
-		$action = $input->getArgument('action');
+		$action      = $input->getArgument('action');
 		$environment = $input->getOption('env');
-		$background = (boolean)$input->getOption('background');
+		$background  = (boolean)$input->getOption('background');
 
 		$pidFile = $this->getName() . '_' . $environment . '.pid';
-		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
+		$fs      = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
 		if ($action == 'start') {
 			if ($fs->has($pidFile)) {
 				$pids = array_filter(explode(':', $fs->read($pidFile)['contents']));
@@ -79,12 +79,12 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 			}
 
 			if ($background) {
-			// Stripping out the not needed tokens
+				// Stripping out the not needed tokens
 				$inputString = (string)$input;
 				$inputString = str_replace([
-						'-b ',
-						'--backgound ',
-						$this->getName() . ' '
+					'-b ',
+					'--backgound ',
+					$this->getName() . ' '
 				], '', $inputString);
 
 				$command = Command::getAppCommand($this->getName());
@@ -137,7 +137,7 @@ abstract class AbstractDaemonCommand extends \Symfony\Component\Console\Command\
 		$environment = $input->getOption('env');
 
 		$pidFile = $this->getName() . '_' . $environment . '.pid';
-		$fs = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
+		$fs      = new Local(TARTANA_PATH_ROOT . '/var/tmp/');
 
 		$pids = [];
 		if ($fs->has($pidFile)) {

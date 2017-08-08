@@ -24,7 +24,7 @@ class ServerCommand extends AbstractDaemonCommand
 	protected function doWork(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
-		$port = (int)$input->getOption('port');
+		$port        = (int)$input->getOption('port');
 		$environment = $input->getOption('env');
 
 		$this->log('Starting server on port ' . $port, Logger::INFO);

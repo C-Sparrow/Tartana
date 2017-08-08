@@ -17,9 +17,9 @@ class ApiLogController extends Controller
 		$logs = $this->container->get('LogRepository')->findLogs(1000);
 
 		$data = [
-				'success' => true,
-				'message' => '',
-				'data' => $logs
+			'success' => true,
+			'message' => '',
+			'data' => $logs
 		];
 
 		return new JsonResponse($data);
@@ -34,8 +34,8 @@ class ApiLogController extends Controller
 		$commandBus->handle(new DeleteLogs());
 
 		$data = [
-				'success' => true,
-				'message' => ''
+			'success' => true,
+			'message' => ''
 		];
 
 		return new JsonResponse($data);

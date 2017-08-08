@@ -9,7 +9,7 @@ class ParseLinksTest extends \PHPUnit_Framework_TestCase
 
 	public function testParseLinksCommand()
 	{
-		$fs = new NullAdapter();
+		$fs      = new NullAdapter();
 		$command = new ParseLinks($fs, 'hello.txt');
 
 		$this->assertEquals($fs, $command->getFolder());

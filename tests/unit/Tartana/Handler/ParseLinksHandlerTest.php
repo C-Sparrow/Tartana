@@ -19,11 +19,11 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(
-							function ($command) {
-									return $command->getLinks()[0] == 'http://foo.bar/kjashd' && $command->getLinks()[1] == 'http://bar.foo/uzwhka';
-							}
-						)
+				$this->callback(
+					function ($command) {
+						return $command->getLinks()[0] == 'http://foo.bar/kjashd' && $command->getLinks()[1] == 'http://bar.foo/uzwhka';
+					}
+				)
 			]
 		);
 
@@ -35,11 +35,11 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(
-							function ($command) {
-									return $command->getLinks()[0] == 'https://foo.bar/kjashd' && $command->getLinks()[1] == 'https://bar.foo/uzwhka';
-							}
-						)
+				$this->callback(
+					function ($command) {
+						return $command->getLinks()[0] == 'https://foo.bar/kjashd' && $command->getLinks()[1] == 'https://bar.foo/uzwhka';
+					}
+				)
 			]
 		);
 
@@ -47,9 +47,9 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 			$this->getDecrypterFactory(),
 			$messageBusMock,
 			new Registry([
-						'links' => [
-								'convertToHttps' => true
-						]
+				'links' => [
+					'convertToHttps' => true
+				]
 			])
 		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
@@ -59,11 +59,11 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(
-							function ($command) {
-									return count($command->getLinks()) == 1 && $command->getLinks()[0] == 'http://foo.bar/kjashd';
-							}
-						)
+				$this->callback(
+					function ($command) {
+						return count($command->getLinks()) == 1 && $command->getLinks()[0] == 'http://foo.bar/kjashd';
+					}
+				)
 			]
 		);
 
@@ -71,9 +71,9 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 			$this->getDecrypterFactory(),
 			$messageBusMock,
 			new Registry([
-						'links' => [
-								'hostFilter' => 'foo.bar'
-						]
+				'links' => [
+					'hostFilter' => 'foo.bar'
+				]
 			])
 		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
@@ -83,11 +83,11 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(
-							function ($command) {
-									return count($command->getLinks()) == 1 && $command->getLinks()[0] != 'http://foo.bar/kjashd';
-							}
-						)
+				$this->callback(
+					function ($command) {
+						return count($command->getLinks()) == 1 && $command->getLinks()[0] != 'http://foo.bar/kjashd';
+					}
+				)
 			]
 		);
 
@@ -95,9 +95,9 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 			$this->getDecrypterFactory(),
 			$messageBusMock,
 			new Registry([
-						'links' => [
-								'hostFilter' => '^((?!kjashd).)*$'
-						]
+				'links' => [
+					'hostFilter' => '^((?!kjashd).)*$'
+				]
 			])
 		);
 		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
@@ -107,38 +107,38 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(
-							function ($command) {
-									return count($command->getLinks()) == 2 && in_array('http://foo.bar/kjashd', $command->getLinks()) &&
-											 in_array('http://bar.foo/kjashd', $command->getLinks());
-							}
-						)
+				$this->callback(
+					function ($command) {
+						return count($command->getLinks()) == 2 && in_array('http://foo.bar/kjashd', $command->getLinks()) &&
+							in_array('http://bar.foo/kjashd', $command->getLinks());
+					}
+				)
 			]
 		);
 
 		$handler = new ParseLinksHandler(
 			$this->getDecrypterFactory([
-						'http://foo.bar/kjashd',
-						'http://bar.foo/kjashd',
-						'http://invalid.not/kjashd'
-				]),
+				'http://foo.bar/kjashd',
+				'http://bar.foo/kjashd',
+				'http://invalid.not/kjashd'
+			]),
 			$messageBusMock,
 			new Registry([
-						'links' => [
-								'hostFilter' => '(foo.bar|bar.foo)'
-						]
+				'links' => [
+					'hostFilter' => '(foo.bar|bar.foo)'
+				]
 			])
 		);
-				$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
+		$handler->handle(new ParseLinks(new NullAdapter(), 'simple.txt'));
 	}
 
 	public function testParseLinksFileWithEmptyLines()
 	{
 		$messageBusMock = $this->getMockCommandBus(
 			[
-						$this->callback(function (ProcessLinks $command) {
-							return $command->getLinks()[0] == 'http://foo.bar/kjashd';
-						})
+				$this->callback(function (ProcessLinks $command) {
+					return $command->getLinks()[0] == 'http://foo.bar/kjashd';
+				})
 			]
 		);
 
@@ -189,8 +189,8 @@ class ParseLinksHandlerTest extends TartanaBaseTestCase
 	{
 		if ($links == null) {
 			$links = [
-					'http://foo.bar/kjashd',
-					'http://bar.foo/uzwhka'
+				'http://foo.bar/kjashd',
+				'http://bar.foo/uzwhka'
 			];
 		}
 

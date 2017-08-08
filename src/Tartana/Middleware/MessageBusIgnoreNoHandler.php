@@ -15,7 +15,7 @@ class MessageBusIgnoreNoHandler implements MessageBusMiddleware
 		try {
 			$next($message);
 		} catch (UndefinedCallable $e) {
-		// Ignoring it
+			// Ignoring it
 		}
 	}
 }

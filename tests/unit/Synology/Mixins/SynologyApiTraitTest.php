@@ -10,7 +10,7 @@ class SynologyApiTraitTest extends \PHPUnit_Framework_TestCase
 	public function testGetSetClient()
 	{
 		$client = $this->getMockBuilder(ClientInterface::class)->getMock();
-		$api = $this->getObjectForTrait('Synology\Mixins\SynologyApiTrait');
+		$api    = $this->getObjectForTrait('Synology\Mixins\SynologyApiTrait');
 
 		$this->assertEmpty($api->getClient());
 
@@ -34,7 +34,7 @@ class SynologyApiTraitTest extends \PHPUnit_Framework_TestCase
 	public function testGetSetUsername()
 	{
 		$username = 'unit-test';
-		$api = $this->getObjectForTrait('Synology\Mixins\SynologyApiTrait');
+		$api      = $this->getObjectForTrait('Synology\Mixins\SynologyApiTrait');
 
 		$this->assertEquals('admin', $api->getUsername());
 
@@ -45,7 +45,7 @@ class SynologyApiTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetSetPassword()
 	{
-		$pw = 'unit-test';
+		$pw  = 'unit-test';
 		$api = $this->getObjectForTrait('Synology\Mixins\SynologyApiTrait');
 
 		$this->assertEquals('admin', $api->getPassword());

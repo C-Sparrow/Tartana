@@ -13,12 +13,12 @@ class JsonSerializableTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testFields()
 	{
-		$object = $this->getObjectForTrait('Tartana\Mixins\JsonSerializableTrait');
+		$object       = $this->getObjectForTrait('Tartana\Mixins\JsonSerializableTrait');
 		$object->test = 'hello';
 
 		$this->assertNotEmpty($object->jsonSerialize());
 		$this->assertEquals([
-				'test' => 'hello'
+			'test' => 'hello'
 		], $object->jsonSerialize());
 	}
 }

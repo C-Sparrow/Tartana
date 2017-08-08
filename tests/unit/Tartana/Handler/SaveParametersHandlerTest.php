@@ -17,15 +17,15 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 		$fs = new Local(__DIR__ . '/test');
 
 		$data = [
-				'parameters' => [
-						'unit' => 'test'
-				]
+			'parameters' => [
+				'unit' => 'test'
+			]
 		];
 
 		$fs->write(self::PARAMETER_FILE, Yaml::dump($data), new Config());
 
 		$data['parameters']['unit'] = 'changed';
-		$handler = new SaveParametersHandler($fs->applyPathPrefix(self::PARAMETER_FILE));
+		$handler                    = new SaveParametersHandler($fs->applyPathPrefix(self::PARAMETER_FILE));
 		$handler->handle(new SaveParameters($data['parameters']));
 
 		$this->assertTrue($fs->has(self::PARAMETER_FILE));
@@ -40,16 +40,16 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 		$fs = new Local(__DIR__ . '/test');
 
 		$data = [
-				'unit' => 'test'
+			'unit' => 'test'
 		];
 
 		$fs->write(self::PARAMETER_FILE, Yaml::dump($data), new Config());
 
 		$handler = new SaveParametersHandler($fs->applyPathPrefix(self::PARAMETER_FILE));
 		$handler->handle(new SaveParameters([
-				'parameters' => [
-						'unit' => 'changed'
-				]
+			'parameters' => [
+				'unit' => 'changed'
+			]
 		]));
 
 		$this->assertTrue($fs->has(self::PARAMETER_FILE));
@@ -65,7 +65,7 @@ class SaveParametersHandlerTest extends \PHPUnit_Framework_TestCase
 
 		$handler = new SaveParametersHandler($fs->applyPathPrefix(self::PARAMETER_FILE));
 		$handler->handle(new SaveParameters([
-				'unit' => 'test'
+			'unit' => 'test'
 		]));
 
 		$this->assertFalse($fs->has(self::PARAMETER_FILE));

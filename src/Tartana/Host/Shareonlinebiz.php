@@ -42,7 +42,7 @@ class Shareonlinebiz extends Http
 
 	protected function getUrlToDownload(Download $download)
 	{
-		$res = $this->getClient()->request('get', $download->getLink());
+		$res  = $this->getClient()->request('get', $download->getLink());
 		$html = $res->getBody()->getContents();
 
 		if (!preg_match(';var dl="(.+?)";s', $html, $match)) {
@@ -69,7 +69,7 @@ class Shareonlinebiz extends Http
 			return false;
 		}
 
-		$res = $this->getClient()->request('post', 'https://www.share-online.biz/user/login', [
+		$res  = $this->getClient()->request('post', 'https://www.share-online.biz/user/login', [
 			'form_params' => $args
 		]);
 		$html = $res->getBody()->getContents();

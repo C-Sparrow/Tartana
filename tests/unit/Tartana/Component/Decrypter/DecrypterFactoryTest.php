@@ -12,7 +12,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 
 	public function testLocalHost()
 	{
-		$factory = new DecrypterFactory();
+		$factory   = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('simple.dlc');
 
 		$this->assertInstanceOf(DecrypterInterface::class, $decryptor);
@@ -21,7 +21,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 
 	public function testClassNotExists()
 	{
-		$factory = new DecrypterFactory();
+		$factory   = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('test.notexists');
 
 		$this->assertEmpty($decryptor);
@@ -29,7 +29,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 
 	public function testNotCorrectInterface()
 	{
-		$factory = new DecrypterFactory();
+		$factory   = new DecrypterFactory();
 		$decryptor = $factory->createDecryptor('test.Decrypterfactorytestinvalid');
 
 		$this->assertEmpty($decryptor);
@@ -37,7 +37,7 @@ class DecrypterFactoryTest extends TartanaBaseTestCase
 
 	public function testLoggerSet()
 	{
-		$logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+		$logger  = $this->getMockBuilder(LoggerInterface::class)->getMock();
 		$factory = new DecrypterFactory();
 		$factory->setLogger($logger);
 		$decryptor = $factory->createDecryptor('test.txt');

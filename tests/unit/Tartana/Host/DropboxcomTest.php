@@ -19,24 +19,15 @@ class DropboxcomTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(
-							200,
-							[
-										'dropbox-api-result' => [
-												0 => json_encode([
-														'name' => 'hello.txt'
-												])
-										]
-							],
-							'hello'
-						)
+				new Response(
+					200,
+					['dropbox-api-result' => [0 => json_encode(['name' => 'hello.txt'])]],
+					'hello'
+				)
 			]
 		);
 
-		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
-		]);
+		$client = new Client(['handler' => HandlerStack::create($mock), 'cookies' => []]);
 
 		$dest = new Local(__DIR__ . '/test');
 
@@ -44,21 +35,13 @@ class DropboxcomTest extends TartanaBaseTestCase
 		$download->setLink('http://dropbox.com/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 
-		$downloader = new Dropboxcom(new Registry([
-				'dropboxcom' => [
-						'token' => 'hello'
-				]
-		]), $client);
-		Promise\unwrap($downloader->download([
-				$download
-		]));
+		$downloader = new Dropboxcom(new Registry(['dropboxcom' => ['token' => 'hello']]), $client);
+		Promise\unwrap($downloader->download([$download]));
 
 		$this->assertNotEmpty($mock->getLastRequest()
 			->getHeaders());
-		$this->assertEquals($mock->getLastRequest()
-			->getHeaders()['Authorization'][0], 'Bearer hello');
-		$this->assertEquals($mock->getLastRequest()
-			->getHeaders()['Dropbox-API-Arg'][0], '{"url": "http://dropbox.com/ldlsls?dl=1"}');
+		$this->assertEquals($mock->getLastRequest()->getHeaders()['Authorization'][0], 'Bearer hello');
+		$this->assertEquals($mock->getLastRequest()->getHeaders()['Dropbox-API-Arg'][0], '{"url": "http://dropbox.com/ldlsls?dl=1"}');
 
 		$this->assertEmpty($download->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());
@@ -74,18 +57,11 @@ class DropboxcomTest extends TartanaBaseTestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, ['Content-Disposition' => [0 => 'filename="hello.txt"']], 'hello')
 			]
 		);
 
-		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
-		]);
+		$client = new Client(['handler' => HandlerStack::create($mock), 'cookies' => []]);
 
 		$dest = new Local(__DIR__ . '/test');
 
@@ -94,9 +70,7 @@ class DropboxcomTest extends TartanaBaseTestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader = new Dropboxcom(new Registry([]), $client);
-		Promise\unwrap($downloader->download([
-				$download
-		]));
+		Promise\unwrap($downloader->download([$download]));
 
 		$this->assertEmpty($download->getMessage());
 		$this->assertEquals(Download::STATE_DOWNLOADING_COMPLETED, $download->getState());

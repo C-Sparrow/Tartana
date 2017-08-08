@@ -27,7 +27,7 @@ class CommandBusAwareTraitTest extends \PHPUnit_Framework_TestCase
 
 	public function testHandleCommandWithCommandBus()
 	{
-		$command = new \stdClass();
+		$command    = new \stdClass();
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->once())
 			->method('handle')

@@ -28,14 +28,14 @@ class Download extends Base
 	const STATE_PROCESSING_ERROR = 8;
 
 	public static $STATES_ALL = [
-			self::STATE_DOWNLOADING_NOT_STARTED,
-			self::STATE_DOWNLOADING_STARTED,
-			self::STATE_DOWNLOADING_COMPLETED,
-			self::STATE_DOWNLOADING_ERROR,
-			self::STATE_PROCESSING_NOT_STARTED,
-			self::STATE_PROCESSING_STARTED,
-			self::STATE_PROCESSING_COMPLETED,
-			self::STATE_PROCESSING_ERROR
+		self::STATE_DOWNLOADING_NOT_STARTED,
+		self::STATE_DOWNLOADING_STARTED,
+		self::STATE_DOWNLOADING_COMPLETED,
+		self::STATE_DOWNLOADING_ERROR,
+		self::STATE_PROCESSING_NOT_STARTED,
+		self::STATE_PROCESSING_STARTED,
+		self::STATE_PROCESSING_COMPLETED,
+		self::STATE_PROCESSING_ERROR
 	];
 
 	/**
@@ -157,14 +157,14 @@ class Download extends Base
 	 */
 	public function setProgress($progress, $allowReset = false)
 	{
-		$progress = (float) $progress;
+		$progress = (float)$progress;
 		if ($progress < 0) {
 			$progress = 0;
 		}
 		if ($progress > 100) {
 			$progress = 100;
 		}
-		if ($this->progress > $progress && ! $allowReset) {
+		if ($this->progress > $progress && !$allowReset) {
 			return $this;
 		}
 		$this->progress = number_format($progress, 2);
@@ -191,7 +191,7 @@ class Download extends Base
 	 */
 	public function setSize($size)
 	{
-		$this->size = (int) $size;
+		$this->size = (int)$size;
 
 		return $this;
 	}
@@ -224,17 +224,17 @@ class Download extends Base
 	public function setState($state)
 	{
 		// Check if it is a valid state
-		if (! in_array(
+		if (!in_array(
 			$state,
 			[
-						self::STATE_DOWNLOADING_NOT_STARTED,
-						self::STATE_DOWNLOADING_STARTED,
-						self::STATE_DOWNLOADING_COMPLETED,
-						self::STATE_DOWNLOADING_ERROR,
-						self::STATE_PROCESSING_NOT_STARTED,
-						self::STATE_PROCESSING_STARTED,
-						self::STATE_PROCESSING_COMPLETED,
-						self::STATE_PROCESSING_ERROR
+				self::STATE_DOWNLOADING_NOT_STARTED,
+				self::STATE_DOWNLOADING_STARTED,
+				self::STATE_DOWNLOADING_COMPLETED,
+				self::STATE_DOWNLOADING_ERROR,
+				self::STATE_PROCESSING_NOT_STARTED,
+				self::STATE_PROCESSING_STARTED,
+				self::STATE_PROCESSING_COMPLETED,
+				self::STATE_PROCESSING_ERROR
 			]
 		)) {
 			return $this;

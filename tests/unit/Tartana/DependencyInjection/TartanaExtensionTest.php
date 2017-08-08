@@ -11,40 +11,40 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 	{
 		$this->load(
 			[
-						'links' => [
-								'folder' => '/path/to/folder',
-								'convertToHttps' => true,
-								'hostFilter' => 'foo.com'
-						],
-						'extract' => [
-								'destination' => '/path/to/folder',
-								'passwordFile' => '/path/to/folder/pw.txt',
-								'deleteFiles' => true
-						],
-						'sound' => [
-								'destination' => '/path/to/folder',
-								'hostFilter' => 'foo.com'
-						]
+				'links' => [
+					'folder' => '/path/to/folder',
+					'convertToHttps' => true,
+					'hostFilter' => 'foo.com'
+				],
+				'extract' => [
+					'destination' => '/path/to/folder',
+					'passwordFile' => '/path/to/folder/pw.txt',
+					'deleteFiles' => true
+				],
+				'sound' => [
+					'destination' => '/path/to/folder',
+					'hostFilter' => 'foo.com'
+				]
 			]
 		);
 
 		$this->assertContainerBuilderHasParameter(
 			'tartana.config',
 			[
-						'links' => [
-								'folder' => '/path/to/folder',
-								'convertToHttps' => true,
-								'hostFilter' => 'foo.com'
-						],
-						'extract' => [
-								'destination' => '/path/to/folder',
-								'passwordFile' => '/path/to/folder/pw.txt',
-								'deleteFiles' => true
-						],
-						'sound' => [
-								'destination' => '/path/to/folder',
-								'hostFilter' => 'foo.com'
-						]
+				'links' => [
+					'folder' => '/path/to/folder',
+					'convertToHttps' => true,
+					'hostFilter' => 'foo.com'
+				],
+				'extract' => [
+					'destination' => '/path/to/folder',
+					'passwordFile' => '/path/to/folder/pw.txt',
+					'deleteFiles' => true
+				],
+				'sound' => [
+					'destination' => '/path/to/folder',
+					'hostFilter' => 'foo.com'
+				]
 			]
 		);
 
@@ -99,7 +99,7 @@ class TartanaExtensionTest extends AbstractExtensionTestCase
 	protected function getContainerExtensions()
 	{
 		return [
-				new TartanaExtension()
+			new TartanaExtension()
 		];
 	}
 }

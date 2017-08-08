@@ -16,13 +16,13 @@ class ExtractListenerTest extends KernelTestCase
 	{
 		$this->copyArchives('rars');
 
-		$src = new Local(__DIR__ . '/test');
-		$dst = new Local(__DIR__ . '/test1');
+		$src           = new Local(__DIR__ . '/test');
+		$dst           = new Local(__DIR__ . '/test1');
 		$configuration = new Registry([
-				'async' => false,
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
+			'async' => false,
+			'extract' => [
+				'destination' => $dst->getPathPrefix()
+			]
 		]);
 
 		$downloads = [];
@@ -31,7 +31,7 @@ class ExtractListenerTest extends KernelTestCase
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
 		}
-		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
+		$event    = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$listener->onProcessCompletedDownloads($event);
 
@@ -43,13 +43,13 @@ class ExtractListenerTest extends KernelTestCase
 	{
 		$this->copyArchives('7z', 'multipart');
 
-		$src = new Local(__DIR__ . '/test');
-		$dst = new Local(__DIR__ . '/test1');
+		$src           = new Local(__DIR__ . '/test');
+		$dst           = new Local(__DIR__ . '/test1');
 		$configuration = new Registry([
-				'async' => false,
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
+			'async' => false,
+			'extract' => [
+				'destination' => $dst->getPathPrefix()
+			]
 		]);
 
 		$downloads = [];
@@ -58,7 +58,7 @@ class ExtractListenerTest extends KernelTestCase
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
 		}
-		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
+		$event    = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$listener->onProcessCompletedDownloads($event);
 
@@ -70,13 +70,13 @@ class ExtractListenerTest extends KernelTestCase
 	{
 		$this->copyArchives('rars');
 
-		$src = new Local(__DIR__ . '/test');
-		$dst = new Local(__DIR__ . '/test1');
+		$src           = new Local(__DIR__ . '/test');
+		$dst           = new Local(__DIR__ . '/test1');
 		$configuration = new Registry([
-				'async' => false,
-				'extract' => [
-						'destination' => $dst->getPathPrefix()
-				]
+			'async' => false,
+			'extract' => [
+				'destination' => $dst->getPathPrefix()
+			]
 		]);
 
 		$downloads = [];
@@ -85,12 +85,12 @@ class ExtractListenerTest extends KernelTestCase
 			$d->setDestination($src->getPathPrefix());
 			$downloads[] = $d;
 		}
-		$event = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
+		$event    = new DownloadsCompletedEvent($this->getMockBuilder(DownloadRepository::class)->getMock(), $downloads);
 		$listener = new ExtractListener(self::$kernel->getContainer()->get('CommandRunner'), $configuration);
 		$listener->onProcessCompletedDownloads($event);
 
 		// As we run it async we wait at least 10 seconds
-		for ($i = 0; $i < 3 && ! $dst->has('test/Downloads/symfony.png'); $i ++) {
+		for ($i = 0; $i < 3 && !$dst->has('test/Downloads/symfony.png'); $i++) {
 			sleep(1);
 		}
 

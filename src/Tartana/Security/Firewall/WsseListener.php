@@ -23,7 +23,7 @@ class WsseListener implements ListenerInterface
 
 	public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager)
 	{
-		$this->tokenStorage = $tokenStorage;
+		$this->tokenStorage          = $tokenStorage;
 		$this->authenticationManager = $authenticationManager;
 	}
 
@@ -33,15 +33,15 @@ class WsseListener implements ListenerInterface
 
 		// Check if authentication Token is present
 		if ($request->headers->has('x-wsse')) {
-		// Token parser
+			// Token parser
 			$wsseRegex = '/UsernameToken Username="([^"]+)", PasswordDigest="([^"]+)", Nonce="([^"]+)", Created="([^"]+)"/';
 
 			if (preg_match($wsseRegex, $request->headers->get('x-wsse'), $matches)) {
 				$token = new WsseUserToken();
 				$token->setUser($matches[1]);
 
-				$token->digest = $matches[2];
-				$token->nonce = $matches[3];
+				$token->digest  = $matches[2];
+				$token->nonce   = $matches[3];
 				$token->created = $matches[4];
 
 				try {

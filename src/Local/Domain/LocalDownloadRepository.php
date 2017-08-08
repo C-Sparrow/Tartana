@@ -26,15 +26,15 @@ class LocalDownloadRepository implements DownloadRepository
 		}
 
 		return $repository->findBy($criteria, [
-				'id' => 'asc'
+			'id' => 'asc'
 		]);
 	}
 
 	public function findDownloadsByDestination($destination)
 	{
 		$destination = rtrim($destination, DIRECTORY_SEPARATOR);
-		$repository = $this->entityManager->getRepository('Tartana:Download');
-		$builder = $repository->createQueryBuilder('d');
+		$repository  = $this->entityManager->getRepository('Tartana:Download');
+		$builder     = $repository->createQueryBuilder('d');
 		$builder->where('d.destination LIKE :destination');
 		$builder->setParameter('destination', '%' . $destination . '%');
 		return $builder->getQuery()->getResult();

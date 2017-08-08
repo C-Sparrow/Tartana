@@ -12,7 +12,7 @@ use Tartana\Mixins\JsonSerializableTrait;
 class User extends BaseUser implements \JsonSerializable
 {
 
-	use JsonSerializableTrait{
+	use JsonSerializableTrait {
 		jsonSerialize as traitJsonSerialize;
 	}
 

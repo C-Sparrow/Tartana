@@ -41,9 +41,7 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 					)
 				]
 			],
-			[
-				'yes'
-			]
+			['yes']
 		);
 
 		$dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
@@ -161,6 +159,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 			new ConvertSoundCommand(
 				$this->getMockRunner(
 					[
+						$this->callback(function (Command $command) {
+							return true;
+						}),
 						$this->callback(function (Command $command) {
 							return true;
 						})

@@ -12,7 +12,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 	public function testFileInfo()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -28,7 +28,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -38,7 +38,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownload()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -54,7 +54,7 @@ class RapidgatornetTest extends \PHPUnit_Framework_TestCase
 		$download->setDestination($dest->getPathPrefix());
 
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());

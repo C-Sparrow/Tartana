@@ -16,11 +16,11 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 	public function testProcessLinks()
 	{
 		$handler = new SynologyProcessLinksHandler($this->getMockClient(), new Registry([
-				'downloads' => __DIR__ . '/test'
+			'downloads' => __DIR__ . '/test'
 		]));
 		$handler->handle(new ProcessLinks([
-				'http://foo.bar/kjashd',
-				'http://bar.foo/uzwhka'
+			'http://foo.bar/kjashd',
+			'http://bar.foo/uzwhka'
 		]));
 
 		$fs = new Local(__DIR__ . '/test');
@@ -34,19 +34,19 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 	public function testProcessLinksDirectoryExists()
 	{
 		$handler = new SynologyProcessLinksHandler($this->getMockClient(), new Registry([
-				'downloads' => __DIR__ . '/test'
+			'downloads' => __DIR__ . '/test'
 		]));
 
 		$fs = new Local(__DIR__ . '/test');
-		for ($i = 0; $i < 5; $i ++) {
+		for ($i = 0; $i < 5; $i++) {
 			$fs->createDir('job-' . date('YmdHis', time() + $i) . '-1', new Config());
 		}
 
 		$existingDirectories = $fs->listContents();
 
 		$handler->handle(new ProcessLinks([
-				'http://foo.bar/kjashd',
-				'http://bar.foo/uzwhka'
+			'http://foo.bar/kjashd',
+			'http://bar.foo/uzwhka'
 		]));
 
 		$this->assertNotEmpty($fs->listContents());
@@ -68,11 +68,11 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 		$fs->deleteDir('test');
 
 		$handler = new SynologyProcessLinksHandler($this->getMockClient(), new Registry([
-				'downloads' => __DIR__ . '/invalid-dir'
+			'downloads' => __DIR__ . '/invalid-dir'
 		]));
 		$handler->handle(new ProcessLinks([
-				'http://foo.bar/kjashd',
-				'http://bar.foo/uzwhka'
+			'http://foo.bar/kjashd',
+			'http://bar.foo/uzwhka'
 		]));
 
 		foreach ($fs->listContents() as $file) {
@@ -99,24 +99,24 @@ class SynologyProcessLinksHandlerTest extends \PHPUnit_Framework_TestCase
 		$client->method('request')->will(
 			$this->returnCallback(
 				function ($method, $url, $arguments) {
-							$content = [
-									'success' => true,
-									'data' => []
-							];
+					$content = [
+						'success' => true,
+						'data' => []
+					];
 
-							parse_str($arguments['body'], $arguments);
-							if (key_exists('method', $arguments)) {
-								switch ($arguments['method']) {
-									case 'login':
-										$content['data']['sid'] = 1234;
-								}
-							}
-							return new Response(200, [
-									'Content-Type' => 'application/json'
-							], json_encode($content));
+					parse_str($arguments['body'], $arguments);
+					if (key_exists('method', $arguments)) {
+						switch ($arguments['method']) {
+							case 'login':
+								$content['data']['sid'] = 1234;
+						}
+					}
+					return new Response(200, [
+						'Content-Type' => 'application/json'
+					], json_encode($content));
 				}
 			)
 		);
-				return $client;
+		return $client;
 	}
 }

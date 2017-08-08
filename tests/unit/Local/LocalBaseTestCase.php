@@ -13,7 +13,7 @@ class LocalBaseTestCase extends TartanaBaseTestCase
 	{
 		foreach ($callbacks as $key => $callback) {
 			$callbacks[$key] = [
-					$callback
+				$callback
 			];
 		}
 

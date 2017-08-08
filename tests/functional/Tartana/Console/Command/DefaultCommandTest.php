@@ -12,7 +12,7 @@ class DefaultCommandTest extends WebTestCase
 	public function testExecute()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -22,8 +22,8 @@ class DefaultCommandTest extends WebTestCase
 		$output = new BufferedOutput();
 
 		$exitCode = $app->run(new ArrayInput([
-				'command' => 'default',
-				'-vvv'
+			'command' => 'default',
+			'-vvv'
 		]), $output);
 
 		$outputString = $output->fetch();

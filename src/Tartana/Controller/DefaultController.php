@@ -15,7 +15,7 @@ class DefaultController extends Controller
 		return $this->render(
 			'default/index.html.twig',
 			[
-						'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 			]
 		);
 	}
@@ -28,7 +28,7 @@ class DefaultController extends Controller
 		return $this->render(
 			'default/dashboard.html.twig',
 			[
-						'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 			]
 		);
 	}
@@ -41,7 +41,7 @@ class DefaultController extends Controller
 		return $this->render(
 			'default/login.html.twig',
 			[
-						'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 			]
 		);
 	}
@@ -54,7 +54,7 @@ class DefaultController extends Controller
 		return $this->render(
 			'default/downloads.html.twig',
 			[
-						'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 			]
 		);
 	}
@@ -67,7 +67,7 @@ class DefaultController extends Controller
 		return $this->render(
 			'default/parameters.html.twig',
 			[
-						'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 			]
 		);
 	}
@@ -78,7 +78,7 @@ class DefaultController extends Controller
 	public function logsAction()
 	{
 		return $this->render('default/logs.html.twig', [
-				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
+			'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..')
 		]);
 	}
 }

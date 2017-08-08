@@ -24,7 +24,7 @@ trait LoggerAwareTrait
 		if ($this->logger) {
 			$reflect = new \ReflectionClass($this);
 			$this->logger->log($level, $message, [
-					$reflect->getShortName()
+				$reflect->getShortName()
 			]);
 		}
 	}

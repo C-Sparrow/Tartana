@@ -13,7 +13,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testLocalHost()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('file://localhost/var');
 
 		$this->assertInstanceOf(HostInterface::class, $downloader);
@@ -22,7 +22,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testInvalidHost()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('file:///invalidhost/var');
 
 		$this->assertEmpty($downloader);
@@ -30,7 +30,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testInvalidUrl()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('d://///invalidhost.://jkgasd');
 
 		$this->assertEmpty($downloader);
@@ -38,7 +38,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testHttpHost()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('http://foo.bar/kladwe');
 
 		$this->assertInstanceOf(HostInterface::class, $downloader);
@@ -47,7 +47,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testHttpsHost()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('https://foo.bar/kladwe');
 
 		$this->assertInstanceOf(HostInterface::class, $downloader);
@@ -56,7 +56,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testNoHttpHost()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('webcal://foo.bar/kladwe');
 
 		$this->assertEmpty($downloader);
@@ -64,7 +64,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 
 	public function testNotCorrectInterface()
 	{
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$downloader = $factory->createHostDownloader('http://Hostfactorytestinvalidhost.bar/kladwe');
 
 		$this->assertEmpty($downloader);
@@ -73,7 +73,7 @@ class HostFactoryTest extends TartanaBaseTestCase
 	public function testCommandBusSet()
 	{
 		$commandBus = $this->getMockCommandBus();
-		$factory = new HostFactory();
+		$factory    = new HostFactory();
 		$factory->setCommandBus($commandBus);
 		$downloader = $factory->createHostDownloader('http://foo.bar/kladwe');
 

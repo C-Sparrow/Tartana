@@ -21,11 +21,11 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 
 		$handler = $client->getContainer()->get('LocalSaveDownloadsHandler');
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloads();
+		$downloads  = $repository->findDownloads();
 
 		$this->assertNotEmpty($downloads);
 		$this->assertCount(1, $downloads);
@@ -43,7 +43,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 
 		$handler = $client->getContainer()->get('LocalSaveDownloadsHandler');
 		$handler->handle(new SaveDownloads([
-				new Download()
+			new Download()
 		]));
 	}
 
@@ -60,7 +60,7 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 
 		$handler = $client->getContainer()->get('LocalSaveDownloadsHandler');
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 	}
 
@@ -76,15 +76,15 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 
 		$handler = $client->getContainer()->get('LocalSaveDownloadsHandler');
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$download = $repository->findDownloads()[0];
+		$download   = $repository->findDownloads()[0];
 		$download->setLink('http://foo.bar/new');
 		$download->setProgress(10.33);
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 
 		$downloads = $repository->findDownloads();
@@ -108,15 +108,15 @@ class LocalSaveDownloadsHandlerTest extends WebTestCase
 
 		$handler = $client->getContainer()->get('LocalSaveDownloadsHandler');
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$download = clone $repository->findDownloads()[0];
+		$download   = clone $repository->findDownloads()[0];
 		$download->setLink('http://foo.bar/new');
 		$download->setProgress(10.33);
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 
 		$downloads = $repository->findDownloads();

@@ -23,23 +23,23 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 		$download1->setDestination($fs->applyPathPrefix('unit1'));
 
 		$listener = new ChangeDownloadStateListener(new Registry([
-				'downloads' => $fs->getPathPrefix()
+			'downloads' => $fs->getPathPrefix()
 		]));
 		$listener->onChangeDownloadStateAfter(
 			new CommandEvent(
 				new ChangeDownloadState(
 					[
-								$download,
-								$download1
-						],
+						$download,
+						$download1
+					],
 					Download::$STATES_ALL,
 					Download::STATE_DOWNLOADING_NOT_STARTED
 				)
 			)
 		);
 
-						$this->assertEquals($fs->applyPathPrefix('unit'), $download->getDestination());
-						$this->assertEquals($fs->applyPathPrefix('unit1'), $download1->getDestination());
+		$this->assertEquals($fs->applyPathPrefix('unit'), $download->getDestination());
+		$this->assertEquals($fs->applyPathPrefix('unit1'), $download1->getDestination());
 	}
 
 	public function testCorrectInvalidPathWrongState()
@@ -50,19 +50,19 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 		$download->setDestination(__DIR__ . 'invalid/unit');
 
 		$listener = new ChangeDownloadStateListener(new Registry([
-				'downloads' => $fs->getPathPrefix()
+			'downloads' => $fs->getPathPrefix()
 		]));
 		$listener->onChangeDownloadStateAfter(
 			new CommandEvent(new ChangeDownloadState(
 				[
-						$download
+					$download
 				],
 				Download::$STATES_ALL,
 				Download::STATE_DOWNLOADING_COMPLETED
 			))
 		);
 
-				$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
+		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
 	}
 
 	public function testCorrectInvalidPathWrongCommand()
@@ -73,10 +73,10 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 		$download->setDestination(__DIR__ . 'invalid/unit');
 
 		$listener = new ChangeDownloadStateListener(new Registry([
-				'downloads' => $fs->getPathPrefix()
+			'downloads' => $fs->getPathPrefix()
 		]));
 		$listener->onChangeDownloadStateAfter(new CommandEvent(new DeleteDownloads([
-				$download
+			$download
 		])));
 
 		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
@@ -88,19 +88,19 @@ class ChangeDownloadStateListenerTest extends LocalBaseTestCase
 		$download->setDestination(__DIR__ . 'invalid/unit');
 
 		$listener = new ChangeDownloadStateListener(new Registry([
-				'downloads' => __DIR__ . '/wrong'
+			'downloads' => __DIR__ . '/wrong'
 		]));
 		$listener->onChangeDownloadStateAfter(
 			new CommandEvent(new ChangeDownloadState(
 				[
-						$download
+					$download
 				],
 				Download::$STATES_ALL,
 				Download::STATE_DOWNLOADING_NOT_STARTED
 			))
 		);
 
-				$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
+		$this->assertEquals(__DIR__ . 'invalid/unit', $download->getDestination());
 	}
 
 	protected function tearDown()

@@ -20,10 +20,10 @@ class Log extends Base
 	{
 		$this->channel = $channel;
 		$this->message = $message;
-		$this->date = $date;
-		$this->level = $level;
+		$this->date    = $date;
+		$this->level   = $level;
 		$this->context = $context;
-		$this->extra = $extra;
+		$this->extra   = $extra;
 	}
 
 	public function getChannel()

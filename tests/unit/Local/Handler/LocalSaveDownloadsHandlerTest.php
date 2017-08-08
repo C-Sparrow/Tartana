@@ -27,7 +27,7 @@ class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 			->method('flush');
 
 		$downloads = [
-				new Download()
+			new Download()
 		];
 		$downloads[0]->setId(1);
 
@@ -46,7 +46,7 @@ class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 		$entityManager->expects($this->once())
 			->method('persist')
 			->with($this->callback(function (Download $download) {
-				return ! Util::endsWith($download->getDestination(), '/');
+				return !Util::endsWith($download->getDestination(), '/');
 			}));
 		$entityManager->expects($this->once())
 			->method('flush');
@@ -56,7 +56,7 @@ class LocalSaveDownloadsHandlerTest extends \PHPUnit_Framework_TestCase
 
 		$handler = new LocalSaveDownloadsHandler($entityManager);
 		$handler->handle(new SaveDownloads([
-				$download
+			$download
 		]));
 	}
 

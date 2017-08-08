@@ -141,7 +141,7 @@ final class Util
 	{
 		try {
 			$pslManager = new PublicSuffixListManager();
-			$parser = new Parser($pslManager->getList());
+			$parser     = new Parser($pslManager->getList());
 
 			return $parser->parseUrl($url)->toArray();
 		} catch (\Exception $e) {

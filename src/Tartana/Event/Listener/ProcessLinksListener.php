@@ -12,7 +12,7 @@ class ProcessLinksListener
 
 	public function onProcessLinksBefore(CommandEvent $event)
 	{
-		if (! $event->getCommand() instanceof ProcessLinks) {
+		if (!$event->getCommand() instanceof ProcessLinks) {
 			return;
 		}
 

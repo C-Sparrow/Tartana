@@ -34,8 +34,8 @@ class DownloadCommand extends AbstractDaemonCommand
 		parent::__construct($runner);
 
 		$this->repository = $repository;
-		$this->factory = $factory;
-		$this->config = $config;
+		$this->factory    = $factory;
+		$this->config     = $config;
 	}
 
 	protected function configure()
@@ -66,7 +66,7 @@ class DownloadCommand extends AbstractDaemonCommand
 		$force = (boolean)$input->getOption('force');
 
 		while (true) {
-			$resets = $repository->findDownloads([
+			$resets     = $repository->findDownloads([
 				Download::STATE_DOWNLOADING_STARTED,
 				Download::STATE_DOWNLOADING_ERROR
 			]);
@@ -85,7 +85,7 @@ class DownloadCommand extends AbstractDaemonCommand
 						continue;
 					}
 					$resetDownload = Download::reset($resetDownload);
-					$hasChanged = true;
+					$hasChanged    = true;
 				}
 			}
 			if ($hasChanged) {
@@ -100,7 +100,7 @@ class DownloadCommand extends AbstractDaemonCommand
 			}
 
 			$concurrentDownloads = 5;
-			$counter = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
+			$counter             = count($repository->findDownloads(Download::STATE_DOWNLOADING_STARTED));
 
 			// Set download speed limit
 			if (isset($config->get('parameters')->{'tartana.local.downloads.speedlimit'}) &&
@@ -133,8 +133,8 @@ class DownloadCommand extends AbstractDaemonCommand
 			$this->log('Found ' . $counter . ' started downloads.');
 
 			// Processing the downloads
-			$promises = [];
-			$sharedClients = [];
+			$promises         = [];
+			$sharedClients    = [];
 			$startedDownloads = [];
 			foreach ($notStartedDownloads as $download) {
 				if ($counter >= $concurrentDownloads) {
@@ -165,7 +165,7 @@ class DownloadCommand extends AbstractDaemonCommand
 					}
 				}
 
-				$tmp = $downloader->download([
+				$tmp                = $downloader->download([
 					clone $download
 				]);
 				$startedDownloads[] = $download;

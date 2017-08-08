@@ -14,7 +14,7 @@ class ProcessCompletedDownloads
 	public function __construct(DownloadRepository $repository, array $downloads)
 	{
 		$this->repository = $repository;
-		$this->downloads = Util::cloneObjects($downloads);
+		$this->downloads  = Util::cloneObjects($downloads);
 	}
 
 	public function getRepository()

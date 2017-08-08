@@ -75,7 +75,7 @@ class ChangeDownloadStateHandlerTest extends TartanaBaseTestCase
 					function (SaveDownloads $command) {
 						$download = $command->getDownloads()[0];
 						return empty($download->getPid()) && $download->getProgress() == 0.00 && $download->getFileName() == 'hello.txt' &&
-						$download->getSize() == 123 && $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
+							$download->getSize() == 123 && $download->getState() == Download::STATE_DOWNLOADING_NOT_STARTED;
 					}
 				)
 			]

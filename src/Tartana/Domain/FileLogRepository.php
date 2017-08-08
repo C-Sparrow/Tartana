@@ -15,12 +15,12 @@ class FileLogRepository implements LogRepository
 
 	public function findLogs($count = 10)
 	{
-		if (! file_exists($this->file)) {
+		if (!file_exists($this->file)) {
 			return [];
 		}
 
 		$lines = $this->getLastLines($this->file, $count);
-		$logs = [];
+		$logs  = [];
 		foreach ($lines as $line) {
 			$log = $this->parse($line);
 			if ($log) {
@@ -36,13 +36,13 @@ class FileLogRepository implements LogRepository
 	 */
 	private function parse($log)
 	{
-		if (! is_string($log) || strlen($log) === 0) {
+		if (!is_string($log) || strlen($log) === 0) {
 			return null;
 		}
 
 		preg_match("/\[(?P<date>.*)\] (?P<channel>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/", $log, $data);
 
-		if (! isset($data['date'])) {
+		if (!isset($data['date'])) {
 			return null;
 		}
 
@@ -88,17 +88,17 @@ class FileLogRepository implements LogRepository
 			// go back as many bytes as we can
 			// read them to $data and then move the file pointer
 			// back to where we were.
-			fseek($fh, - $canRead, SEEK_CUR);
+			fseek($fh, -$canRead, SEEK_CUR);
 			$data = @fread($fh, $canRead);
 			$data .= $leftover;
-			fseek($fh, - $canRead, SEEK_CUR);
+			fseek($fh, -$canRead, SEEK_CUR);
 
 			// split lines by \n. Then reverse them,
 			// now the last line is most likely not a complete
 			// line which is why we do not directly add it, but
 			// append it to the data read the next time.
 			$splitData = array_reverse(explode("\n", $data));
-			$newLines = array_slice($splitData, 0, - 1);
+			$newLines  = array_slice($splitData, 0, -1);
 
 			// When empty lines, ignore them
 			foreach ($newLines as $key => $newLine) {
@@ -108,7 +108,7 @@ class FileLogRepository implements LogRepository
 				unset($newLines[$key]);
 			}
 
-			$lines = array_merge($lines, $newLines);
+			$lines    = array_merge($lines, $newLines);
 			$leftover = $splitData[count($splitData) - 1];
 		} while (count($lines) < $lineCount && ftell($fh) != 0);
 		if (ftell($fh) == 0) {

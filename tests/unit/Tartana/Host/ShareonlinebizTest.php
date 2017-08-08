@@ -20,12 +20,12 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfo()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7')
+			new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -36,7 +36,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Shareonlinebiz(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEquals('hello.txt', $download->getFileName());
@@ -48,12 +48,12 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoNoOkStatus()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'AED327AE;DELETED;hello.txt;1448732;hfasdzwgh27hs7')
+			new Response(200, [], 'AED327AE;DELETED;hello.txt;1448732;hfasdzwgh27hs7')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -64,7 +64,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Shareonlinebiz(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEquals('DELETED', $download->getMessage());
@@ -74,13 +74,13 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoWrongInfo()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'no csv content'),
-				new Response(200)
+			new Response(200, [], 'no csv content'),
+			new Response(200)
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -91,7 +91,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Shareonlinebiz(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getMessage());
@@ -101,12 +101,12 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoException()
 	{
 		$mock = new MockHandler([
-				new RequestException('Failed on unit test', new Request('GET', 'test'))
+			new RequestException('Failed on unit test', new Request('GET', 'test'))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -117,7 +117,7 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Shareonlinebiz(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
@@ -128,34 +128,34 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], 'hello'),
-						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [], 'hello'),
+				new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -172,27 +172,27 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testInvalidLogin()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'hell')
+			new Response(200, [], 'hell')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -205,18 +205,18 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	public function testEmptyLogin()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], 'hello')
+			new Response(200, [], 'hello')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -234,30 +234,30 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], 'hello'),
-						new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
-						new Response(200, [], 'wrong body')
+				new Response(200, [], 'hello'),
+				new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
+				new Response(200, [], 'wrong body')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -271,30 +271,30 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], 'hello'),
-						new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
-						new Response(200, [], ';var dl="";s')
+				new Response(200, [], 'hello'),
+				new Response(200, [], 'AED327AE;OK;hello.txt;1448732;hfasdzwgh27hs7'),
+				new Response(200, [], ';var dl="";s')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock),
-				'cookies' => []
+			'handler' => HandlerStack::create($mock),
+			'cookies' => []
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -308,45 +308,45 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client(
 			[
-						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(
-							true,
-							[
-										[
-												'Name' => 'a',
-												'Expires' => time() + 1000,
-												'Value' => '123',
-												'Domain' => '.share-online.biz'
-										]
-							]
-						)
+				'handler' => HandlerStack::create($mock),
+				'cookies' => new CookieJar(
+					true,
+					[
+						[
+							'Name' => 'a',
+							'Expires' => time() + 1000,
+							'Value' => '123',
+							'Domain' => '.share-online.biz'
+						]
+					]
+				)
 			]
 		);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -364,46 +364,46 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], 'hello'),
-						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [], 'hello'),
+				new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client(
 			[
-						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(
-							true,
-							[
-										[
-												'Name' => 'a',
-												'Expires' => time() - 1000,
-												'Value' => '123',
-												'Domain' => '.share-online.biz'
-										]
-							]
-						)
+				'handler' => HandlerStack::create($mock),
+				'cookies' => new CookieJar(
+					true,
+					[
+						[
+							'Name' => 'a',
+							'Expires' => time() - 1000,
+							'Value' => '123',
+							'Domain' => '.share-online.biz'
+						]
+					]
+				)
 			]
 		);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 
@@ -421,46 +421,46 @@ class ShareonlinebizTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(200, [], 'hello'),
-						new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
-						new Response(200, [
-								'Content-Disposition' => [
-										0 => 'filename="hello.txt"'
-								]
-						], 'hello')
+				new Response(200, [], 'hello'),
+				new Response(200, [], ';var dl="' . base64_encode(123) . '";s'),
+				new Response(200, [
+					'Content-Disposition' => [
+						0 => 'filename="hello.txt"'
+					]
+				], 'hello')
 			]
 		);
 
 		$client = new Client(
 			[
-						'handler' => HandlerStack::create($mock),
-						'cookies' => new CookieJar(
-							true,
-							[
-										[
-												'Name' => 'ab',
-												'Expires' => time() + 1000,
-												'Value' => '123',
-												'Domain' => '.share-online.biz'
-										]
-							]
-						)
+				'handler' => HandlerStack::create($mock),
+				'cookies' => new CookieJar(
+					true,
+					[
+						[
+							'Name' => 'ab',
+							'Expires' => time() + 1000,
+							'Value' => '123',
+							'Domain' => '.share-online.biz'
+						]
+					]
+				)
 			]
 		);
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('http://foo.bar/ldlsls');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
 
 		$downloader = new Shareonlinebiz(new Registry([
-				'shareonlinebiz' => [
-						'username' => 'hello',
-						'password' => 'hello'
-				]
+			'shareonlinebiz' => [
+				'username' => 'hello',
+				'password' => 'hello'
+			]
 		]), $client);
 		Promise\unwrap($downloader->download($downloads));
 

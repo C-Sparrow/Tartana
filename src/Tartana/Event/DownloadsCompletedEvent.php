@@ -14,7 +14,7 @@ class DownloadsCompletedEvent extends Event
 	public function __construct(DownloadRepository $repository, array $downloads)
 	{
 		$this->repository = $repository;
-		$this->downloads = $downloads;
+		$this->downloads  = $downloads;
 	}
 
 	public function getRepository()

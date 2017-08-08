@@ -11,24 +11,24 @@ class SynologyExtensionTest extends AbstractExtensionTestCase
 	{
 		$this->load(
 			[
-						'enabled' => true,
-						'address' => 'http://localhost:5001',
-						'username' => 'admin',
-						'password' => 'admin',
-						'downloads' => '/path/to/dir',
-						'downloadShare' => 'to/share'
+				'enabled' => true,
+				'address' => 'http://localhost:5001',
+				'username' => 'admin',
+				'password' => 'admin',
+				'downloads' => '/path/to/dir',
+				'downloadShare' => 'to/share'
 			]
 		);
 
 		$this->assertContainerBuilderHasParameter(
 			'synology.config',
 			[
-						'enabled' => true,
-						'address' => 'http://localhost:5001',
-						'username' => 'admin',
-						'password' => 'admin',
-						'downloads' => '/path/to/dir',
-						'downloadShare' => 'to/share'
+				'enabled' => true,
+				'address' => 'http://localhost:5001',
+				'username' => 'admin',
+				'password' => 'admin',
+				'downloads' => '/path/to/dir',
+				'downloadShare' => 'to/share'
 			]
 		);
 
@@ -41,24 +41,24 @@ class SynologyExtensionTest extends AbstractExtensionTestCase
 	{
 		$this->load(
 			[
-						'enabled' => false,
-						'address' => 'http://localhost:5001',
-						'username' => 'admin',
-						'password' => 'admin',
-						'downloads' => '/path/to/dir',
-						'downloadShare' => 'to/share'
+				'enabled' => false,
+				'address' => 'http://localhost:5001',
+				'username' => 'admin',
+				'password' => 'admin',
+				'downloads' => '/path/to/dir',
+				'downloadShare' => 'to/share'
 			]
 		);
 
 		$this->assertContainerBuilderHasParameter(
 			'synology.config',
 			[
-						'enabled' => false,
-						'address' => 'http://localhost:5001',
-						'username' => 'admin',
-						'password' => 'admin',
-						'downloads' => '/path/to/dir',
-						'downloadShare' => 'to/share'
+				'enabled' => false,
+				'address' => 'http://localhost:5001',
+				'username' => 'admin',
+				'password' => 'admin',
+				'downloads' => '/path/to/dir',
+				'downloadShare' => 'to/share'
 			]
 		);
 
@@ -70,7 +70,7 @@ class SynologyExtensionTest extends AbstractExtensionTestCase
 	protected function getContainerExtensions()
 	{
 		return [
-				new SynologyExtension()
+			new SynologyExtension()
 		];
 	}
 }

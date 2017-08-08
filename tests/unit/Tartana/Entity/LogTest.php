@@ -9,7 +9,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateLog()
 	{
-		$date = new \DateTime();
+		$date   = new \DateTime();
 		$entity = new Log('unit', 'unit test message', $date, Logger::EMERGENCY, 'unit test context', 'extra content');
 
 		$this->assertEquals('unit', $entity->getChannel());

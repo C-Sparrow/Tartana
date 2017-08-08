@@ -12,7 +12,7 @@ class LocalContainerTest extends KernelTestCase
 
 	public function testHasDownloadRepository()
 	{
-		$container = static::$kernel->getContainer();
+		$container  = static::$kernel->getContainer();
 		$repository = $container->get('DownloadRepository');
 
 		$this->assertInstanceOf(LocalDownloadRepository::class, $repository);
@@ -21,7 +21,7 @@ class LocalContainerTest extends KernelTestCase
 	public function testHasLocalProcessLinksHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('LocalProcessLinksHandler');
+		$handler   = $container->get('LocalProcessLinksHandler');
 
 		$this->assertInstanceOf(LocalProcessLinksHandler::class, $handler);
 	}
@@ -29,7 +29,7 @@ class LocalContainerTest extends KernelTestCase
 	public function testHasLocalStartDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('LocalStartDownloadsHandler');
+		$handler   = $container->get('LocalStartDownloadsHandler');
 
 		$this->assertInstanceOf(LocalStartDownloadsHandler::class, $handler);
 	}
@@ -37,7 +37,7 @@ class LocalContainerTest extends KernelTestCase
 	public function testHasLocalDeleteDownloadsHandler()
 	{
 		$container = static::$kernel->getContainer();
-		$handler = $container->get('LocalDeleteDownloadsHandler');
+		$handler   = $container->get('LocalDeleteDownloadsHandler');
 
 		$this->assertInstanceOf(LocalDeleteDownloadsHandler::class, $handler);
 	}

@@ -12,7 +12,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1FindDownloads()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -42,7 +42,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1FindDownloadsWithState()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -63,8 +63,8 @@ class ApiDownloadControllerTest extends WebTestCase
 		$this->assertCount(1, $resp->data);
 		$this->assertEquals(
 			$client->getContainer()
-					->get('Translator')
-			->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_STARTED),
+				->get('Translator')
+				->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_STARTED),
 			$resp->data[0]->state
 		);
 	}
@@ -72,7 +72,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1FindDownloadsWithMultipleState()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -93,14 +93,14 @@ class ApiDownloadControllerTest extends WebTestCase
 		$this->assertCount(2, $resp->data);
 		$this->assertEquals(
 			$client->getContainer()
-					->get('Translator')
-			->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_STARTED),
+				->get('Translator')
+				->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_STARTED),
 			$resp->data[0]->state
 		);
 		$this->assertEquals(
 			$client->getContainer()
-					->get('Translator')
-			->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_ERROR),
+				->get('Translator')
+				->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . Download::STATE_DOWNLOADING_ERROR),
 			$resp->data[1]->state
 		);
 	}
@@ -130,7 +130,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1ClearAll()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -154,7 +154,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1ClearCompleted()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -179,7 +179,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1ResumeFailed()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -204,7 +204,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1ResumeAll()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -229,7 +229,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1Reprocress()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -248,16 +248,16 @@ class ApiDownloadControllerTest extends WebTestCase
 		$this->assertEmpty($resp->message);
 
 		$hasNotStarted = false;
-		$hasStarted = false;
-		$hasError = false;
+		$hasStarted    = false;
+		$hasError      = false;
 		foreach ($repository->findDownloads() as $download) {
 			$this->assertNotContains(
 				$download->getState(),
 				[
-							Download::STATE_PROCESSING_NOT_STARTED,
-							Download::STATE_PROCESSING_STARTED,
-							Download::STATE_PROCESSING_COMPLETED,
-							Download::STATE_PROCESSING_ERROR
+					Download::STATE_PROCESSING_NOT_STARTED,
+					Download::STATE_PROCESSING_STARTED,
+					Download::STATE_PROCESSING_COMPLETED,
+					Download::STATE_PROCESSING_ERROR
 				]
 			);
 
@@ -279,7 +279,7 @@ class ApiDownloadControllerTest extends WebTestCase
 	public function testV1ReprocressWithExistingDirectory()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();

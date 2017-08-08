@@ -44,7 +44,7 @@ class UpdateExtractStateListener
 
 	public function onProcessingCompleted(ProcessingCompletedEvent $event)
 	{
-		$downloads = $this->repository->findDownloadsByDestination($event->getSource()
+		$downloads  = $this->repository->findDownloadsByDestination($event->getSource()
 			->getPathPrefix());
 		$hasChanged = false;
 		foreach ($downloads as $download) {

@@ -26,29 +26,29 @@ class SevenzCommandTest extends TartanaBaseTestCase
 			]),
 			$this->getMockRunner(
 				[
-								$this->callback(function (Command $command) {
-									return $command->getCommand() == '7z';
-								})
-						],
+					$this->callback(function (Command $command) {
+						return $command->getCommand() == '7z';
+					})
+				],
 				[
-								'Everything is Ok'
-					]
+					'Everything is Ok'
+				]
 			),
 			new Registry()
 		);
 
-						$application = new Application();
-						$application->add($command);
+		$application = new Application();
+		$application->add($command);
 
-						$commandTester = new CommandTester($command);
+		$commandTester = new CommandTester($command);
 
-						$commandTester->execute(
-							[
-							'command' => $command->getName(),
-							'source' => $fs->applyPathPrefix('test'),
-							'destination' => $fs->applyPathPrefix('test1')
-							]
-						);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertFalse($fs->has('test/test.7z'));
 		$this->assertTrue($fs->has('test/test.txt'));

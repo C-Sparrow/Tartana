@@ -15,9 +15,9 @@ class ApiFileControllerTest extends WebTestCase
 
 		$fs = new Local(__DIR__ . '/test');
 		$fs->write('test.txt', 'http://github.com', new Config());
-		$file = new UploadedFile($fs->applyPathPrefix('test.txt'), 'test.txt');
+		$file    = new UploadedFile($fs->applyPathPrefix('test.txt'), 'test.txt');
 		$crawler = $client->request('GET', '/api/v1/file/add', [], [
-				$file
+			$file
 		]);
 
 		$this->assertEquals(200, $client->getResponse()

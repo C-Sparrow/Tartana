@@ -15,14 +15,14 @@ abstract class BaseDecrypter implements DecrypterInterface
 		$this->log('Started file decrypting', Logger::INFO);
 
 		if (@file_exists(realpath($dlc))) {
-			$dlc = realpath($dlc);
-			$fs = new Local(dirname($dlc));
+			$dlc     = realpath($dlc);
+			$fs      = new Local(dirname($dlc));
 			$content = $fs->read($fs->removePathPrefix($dlc))['contents'];
 		} else {
 			$content = $dlc;
 		}
 
-		if (! $content) {
+		if (!$content) {
 			throw new \RuntimeException('Empty content.');
 		}
 

@@ -15,17 +15,17 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 
 	public function testUpdate()
 	{
-		$fs = new Local(__DIR__ . '/test');
+		$fs      = new Local(__DIR__ . '/test');
 		$version = $this->createZipForUpdate($fs->applyPathPrefix('tartana.zip'));
 
 		$application = new Application();
 		$application->add(new UpdateCommand(new Runner('test'), 'file://localhost' . $fs->applyPathPrefix('tartana.zip'), new HostFactory()));
 
-		$command = $application->find('update');
+		$command       = $application->find('update');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+			'command' => $command->getName()
 		]);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
@@ -41,16 +41,16 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 		$application = new Application();
 		$application->add(new UpdateCommand(new Runner('test'), 'file://localhost' . $fs->applyPathPrefix('tartana.zip'), new HostFactory()));
 
-		$command = $application->find('update');
+		$command       = $application->find('update');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
-				'command' => $command->getName()
+			'command' => $command->getName()
 		]);
 
 		$version = $this->createZipForUpdate($fs->applyPathPrefix('tartana.zip'));
 		$commandTester->execute([
-				'command' => $command->getName()
+			'command' => $command->getName()
 		]);
 
 		$fs = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
@@ -90,7 +90,7 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 	private function createZipForUpdate($path, $version = null)
 	{
 		if ($version === null) {
-			$fs = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
+			$fs      = new Local(TARTANA_PATH_ROOT . '/app/config/internal');
 			$version = $fs->read('version.txt')['contents'];
 			preg_match_all("/(\d+)\.(\d+)\.(\d+)/", $version, $matches);
 			$version = $matches[1][0] . '.' . $matches[2][0] . '.' . ($matches[3][0] + 1);

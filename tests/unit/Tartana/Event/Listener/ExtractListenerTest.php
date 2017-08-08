@@ -23,29 +23,29 @@ class ExtractListenerTest extends TartanaBaseTestCase
 
 		$runner = $this->getMockRunner(
 			[
-						$this->callback(
-							function (Command $command) use ($fs) {
-									return $command->getCommand() == 'php' && strpos($command, __DIR__ . '/test/pw.txt');
-							}
-						)
+				$this->callback(
+					function (Command $command) use ($fs) {
+						return $command->getCommand() == 'php' && strpos($command, __DIR__ . '/test/pw.txt');
+					}
+				)
 			]
 		);
 
 		$download = new Download();
 		$download->setDestination($fs->applyPathPrefix('test'));
 		$event = new DownloadsCompletedEvent($this->getMockRepository(), [
-				$download
+			$download
 		]);
 
 		$listener = new ExtractListener(
 			$runner,
 			new Registry(
 				[
-								'extract' => [
-										'destination' => $fs->applyPathPrefix('test1'),
-										'passwordFile' => $fs->applyPathPrefix('test/pw.txt')
-								]
+					'extract' => [
+						'destination' => $fs->applyPathPrefix('test1'),
+						'passwordFile' => $fs->applyPathPrefix('test/pw.txt')
 					]
+				]
 			)
 		);
 

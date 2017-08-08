@@ -13,7 +13,7 @@ class Youtubecom extends Http
 
 	public function fetchLinkList($link)
 	{
-		if (! Util::startsWith($link, 'https://www.youtube.com/playlist?')) {
+		if (!Util::startsWith($link, 'https://www.youtube.com/playlist?')) {
 			return parent::fetchLinkList($link);
 		}
 
@@ -23,14 +23,14 @@ class Youtubecom extends Http
 
 		// Extracting the links which belong to the playlist
 		$links = $crawler->filter('a.pl-video-title-link')->extract([
-				'href'
+			'href'
 		]);
 
 		$data = [];
 		foreach ($links as $link) {
 			$uri = parse_url($link);
 
-			if (! key_exists('path', $uri) || $uri['path'] != '/watch') {
+			if (!key_exists('path', $uri) || $uri['path'] != '/watch') {
 				continue;
 			}
 
@@ -46,10 +46,10 @@ class Youtubecom extends Http
 	public function fetchDownloadInfo(array $downloads)
 	{
 		foreach ($downloads as $download) {
-		// Connection check
+			// Connection check
 			try {
 				$data = $this->getStreamData($download);
-				if (! empty($data['title']) && empty($download->getFileName())) {
+				if (!empty($data['title']) && empty($download->getFileName())) {
 					$download->setFileName($this->makeSafe($data['title'] . '.mp4'));
 				}
 
@@ -69,7 +69,7 @@ class Youtubecom extends Http
 	{
 		$data = $this->getStreamData($download);
 
-		if (! key_exists('url_encoded_fmt_stream_map', $data)) {
+		if (!key_exists('url_encoded_fmt_stream_map', $data)) {
 			return null;
 		}
 
@@ -93,22 +93,22 @@ class Youtubecom extends Http
 			$match
 		)) {
 			$headers = [
-					'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20150101 Firefox/44.0 (Chrome)',
-					'Referer' => $download->getLink(),
-					'Accept-Language' => 'en-us,en;q=0.5',
-					'Accept-Encoding' => 'gzip, deflate',
-					'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-					'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-					'Connection' => 'close',
-					'Origin' => 'https://www.youtube.com',
-					'Host' => 'www.youtube.com'
+				'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20150101 Firefox/44.0 (Chrome)',
+				'Referer' => $download->getLink(),
+				'Accept-Language' => 'en-us,en;q=0.5',
+				'Accept-Encoding' => 'gzip, deflate',
+				'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+				'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+				'Connection' => 'close',
+				'Origin' => 'https://www.youtube.com',
+				'Host' => 'www.youtube.com'
 			];
 			// Getting the link information initializing the cookie
 			$this->getClient()->request(
 				'get',
 				$download->getLink() . '&gl=US&hl=en&has_verified=1&bpctr=9999999999',
 				[
-							RequestOptions::HEADERS => $headers
+					RequestOptions::HEADERS => $headers
 				]
 			);
 
@@ -117,7 +117,7 @@ class Youtubecom extends Http
 				'get',
 				'http://www.youtube.com/get_video_info?video_id=' . $match[1] . '&el=info&ps=default&eurl=&gl=US&hl=en',
 				[
-							RequestOptions::HEADERS => $headers
+					RequestOptions::HEADERS => $headers
 				]
 			);
 
@@ -126,8 +126,8 @@ class Youtubecom extends Http
 		}
 
 		return [
-				'title' => '',
-				'url_encoded_fmt_stream_map' => ''
+			'title' => '',
+			'url_encoded_fmt_stream_map' => ''
 		];
 	}
 
@@ -144,9 +144,9 @@ class Youtubecom extends Http
 		$file = rtrim($file, '.');
 
 		$regex = array(
-				'#(\.){2,}#',
-				'#[^A-Za-z0-9\.\_\- ]#',
-				'#^\.#'
+			'#(\.){2,}#',
+			'#[^A-Za-z0-9\.\_\- ]#',
+			'#^\.#'
 		);
 
 		return trim(preg_replace($regex, '', $file));

@@ -9,11 +9,11 @@ class SaveParametersTest extends \PHPUnit_Framework_TestCase
 	public function testGetParameters()
 	{
 		$command = new SaveParameters([
-				'unit' => 'test'
+			'unit' => 'test'
 		]);
 
 		$this->assertEquals([
-				'unit' => 'test'
+			'unit' => 'test'
 		], $command->getParameters());
 	}
 

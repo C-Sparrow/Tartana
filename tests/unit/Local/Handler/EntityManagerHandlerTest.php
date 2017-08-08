@@ -13,7 +13,7 @@ class EntityManagerHandlerTest extends \PHPUnit_Framework_TestCase
 		$entityManager = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
 
 		$handler = $this->getMockForAbstractClass(EntityManagerHandler::class, [
-				$entityManager
+			$entityManager
 		]);
 		$this->assertEquals($entityManager, $this->invokeMethod($handler, 'getEntityManager'));
 	}
@@ -35,10 +35,10 @@ class EntityManagerHandlerTest extends \PHPUnit_Framework_TestCase
 			}));
 
 		$handler = $this->getMockForAbstractClass(EntityManagerHandler::class, [
-				$entityManager
+			$entityManager
 		]);
 		$this->invokeMethod($handler, 'persistEntity', [
-				$entity
+			$entity
 		]);
 	}
 
@@ -59,10 +59,10 @@ class EntityManagerHandlerTest extends \PHPUnit_Framework_TestCase
 			}));
 
 		$handler = $this->getMockForAbstractClass(EntityManagerHandler::class, [
-				$entityManager
+			$entityManager
 		]);
 		$this->invokeMethod($handler, 'removeEntity', [
-				$entity
+			$entity
 		]);
 	}
 
@@ -75,7 +75,7 @@ class EntityManagerHandlerTest extends \PHPUnit_Framework_TestCase
 			->method('flush');
 
 		$handler = $this->getMockForAbstractClass(EntityManagerHandler::class, [
-				$entityManager
+			$entityManager
 		]);
 		$this->invokeMethod($handler, 'flushEntities');
 	}
@@ -87,7 +87,7 @@ class EntityManagerHandlerTest extends \PHPUnit_Framework_TestCase
 	private function invokeMethod(&$object, $methodName, array $parameters = array())
 	{
 		$reflection = new \ReflectionClass(get_class($object));
-		$method = $reflection->getMethod($methodName);
+		$method     = $reflection->getMethod($methodName);
 		$method->setAccessible(true);
 
 		return $method->invokeArgs($object, $parameters);

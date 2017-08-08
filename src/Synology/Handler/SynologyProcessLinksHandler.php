@@ -32,9 +32,9 @@ class SynologyProcessLinksHandler
 		}
 
 		$args = array(
-				'method' => 'create',
-				'destination' => trim($this->configuration->get('synology.downloadShare'), '/') . '/' . $destinationFolder,
-				'uri' => implode(',', $links->getLinks())
+			'method' => 'create',
+			'destination' => trim($this->configuration->get('synology.downloadShare'), '/') . '/' . $destinationFolder,
+			'uri' => implode(',', $links->getLinks())
 		);
 		$this->synologyApiCall($args);
 	}

@@ -20,20 +20,20 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(
-							200,
-							[],
-							'<div><a href="/watch?v=123&b=cde" class="pl-video-title-link"></a><a href="/watch?v=678&b=cde"></a></div>'
-						)
+				new Response(
+					200,
+					[],
+					'<div><a href="/watch?v=123&b=cde" class="pl-video-title-link"></a><a href="/watch?v=678&b=cde"></a></div>'
+				)
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$downloader = new Youtubecom(new Registry(), $client);
-		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
+		$links      = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
 
 		$this->assertCount(1, $links);
 		$this->assertEquals('https://www.youtube.com/watch?v=123', $links[0]);
@@ -44,11 +44,11 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 		$mock = new MockHandler([]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$downloader = new Youtubecom(new Registry(), $client);
-		$links = $downloader->fetchLinkList('https://www.youtube.com/watch?v=123');
+		$links      = $downloader->fetchLinkList('https://www.youtube.com/watch?v=123');
 
 		$this->assertCount(1, $links);
 		$this->assertEquals('https://www.youtube.com/watch?v=123', $links[0]);
@@ -57,15 +57,15 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchLinkListNoPath()
 	{
 		$mock = new MockHandler([
-				new Response(200, [], '<div><a href="/foo?v=123&b=cde" class="pl-video-title-link"></a></div>')
+			new Response(200, [], '<div><a href="/foo?v=123&b=cde" class="pl-video-title-link"></a></div>')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$downloader = new Youtubecom(new Registry(), $client);
-		$links = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
+		$links      = $downloader->fetchLinkList('https://www.youtube.com/playlist?list=abc');
 
 		$this->assertEmpty($links);
 	}
@@ -73,12 +73,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfo()
 	{
 		$mock = new MockHandler([
-				new Response(),
-				new Response(200, [], 'title=hello')
+			new Response(),
+			new Response(200, [], 'title=hello')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -89,7 +89,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEquals('hello.mp4', $download->getFileName());
@@ -100,12 +100,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoWrongUrl()
 	{
 		$mock = new MockHandler([
-				new Response(),
-				new Response(200, [], 'title=hello')
+			new Response(),
+			new Response(200, [], 'title=hello')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$download = new Download();
@@ -114,7 +114,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEmpty($download->getFileName());
@@ -125,12 +125,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoErrorCode()
 	{
 		$mock = new MockHandler([
-				new Response(),
-				new Response(200, [], 'errorcode=150&reason=unit-test')
+			new Response(),
+			new Response(200, [], 'errorcode=150&reason=unit-test')
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$download = new Download();
@@ -139,7 +139,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertEquals('unit-test', $download->getMessage());
@@ -149,12 +149,12 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	public function testFetchDownloadInfoException()
 	{
 		$mock = new MockHandler([
-				new Response(),
-				new RequestException('Failed on unit test', new Request('GET', 'test'))
+			new Response(),
+			new RequestException('Failed on unit test', new Request('GET', 'test'))
 		]);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$download = new Download();
@@ -163,7 +163,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		$downloader->fetchDownloadInfo([
-				$download
+			$download
 		]);
 
 		$this->assertNotEmpty($download->getMessage());
@@ -174,14 +174,14 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(),
-						new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('url=test')),
-						new Response(200, [], 'hello')
+				new Response(),
+				new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('url=test')),
+				new Response(200, [], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -193,7 +193,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertEmpty($download->getMessage());
@@ -210,14 +210,14 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(),
-						new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('wrong=test')),
-						new Response(200, [], 'hello')
+				new Response(),
+				new Response(200, [], 'url_encoded_fmt_stream_map=' . urlencode('wrong=test')),
+				new Response(200, [], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -229,7 +229,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertNotEmpty($download->getMessage());
@@ -242,14 +242,14 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 	{
 		$mock = new MockHandler(
 			[
-						new Response(),
-						new Response(200, [], 'hello=' . urlencode('url=test')),
-						new Response(200, [], 'hello')
+				new Response(),
+				new Response(200, [], 'hello=' . urlencode('url=test')),
+				new Response(200, [], 'hello')
 			]
 		);
 
 		$client = new Client([
-				'handler' => HandlerStack::create($mock)
+			'handler' => HandlerStack::create($mock)
 		]);
 
 		$dest = new Local(__DIR__ . '/test');
@@ -261,7 +261,7 @@ class YoutubecomTest extends \PHPUnit_Framework_TestCase
 
 		$downloader = new Youtubecom(new Registry(), $client);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 
 		$this->assertNotEmpty($download->getMessage());

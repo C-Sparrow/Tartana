@@ -20,7 +20,7 @@ class FtpTest extends TartanaBaseTestCase
 	{
 		// Flysystem can't run FTP properly on HHVM
 		// https://github.com/thephpleague/flysystem/blob/master/tests/FtpTests.php#L329
-		if (! defined('FTP_BINARY')) {
+		if (!defined('FTP_BINARY')) {
 			$this->markTestSkipped('The FTP_BINARY constant is not defined');
 		}
 	}
@@ -38,22 +38,22 @@ class FtpTest extends TartanaBaseTestCase
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
 		$this->callWithConsecutive(
 			$manager->expects($this->exactly(2))
-			->method('mountFilesystem'),
+				->method('mountFilesystem'),
 			[
-						[
-								$this->anything(),
-								$this->callback(
-									function (Filesystem $f) {
-											return $f->getAdapter() instanceof \League\Flysystem\Adapter\Ftp;
-									}
-								)
-						]
+				[
+					$this->anything(),
+					$this->callback(
+						function (Filesystem $f) {
+							return $f->getAdapter() instanceof \League\Flysystem\Adapter\Ftp;
+						}
+					)
+				]
 			]
 		);
 
 		$downloader = $this->getFtp($manager);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 
@@ -70,23 +70,23 @@ class FtpTest extends TartanaBaseTestCase
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
 		$this->callWithConsecutive(
 			$manager->expects($this->exactly(2))
-			->method('mountFilesystem'),
+				->method('mountFilesystem'),
 			[
-						[
-								$this->anything(),
-								$this->callback(
-									function (Filesystem $f) {
-											$a = $f->getAdapter();
-											return $a->getUsername() == 'foo' && $a->getPassword() == 'bar';
-									}
-								)
-						]
+				[
+					$this->anything(),
+					$this->callback(
+						function (Filesystem $f) {
+							$a = $f->getAdapter();
+							return $a->getUsername() == 'foo' && $a->getPassword() == 'bar';
+						}
+					)
+				]
 			]
 		);
 
 		$downloader = $this->getFtp($manager);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 
@@ -103,17 +103,17 @@ class FtpTest extends TartanaBaseTestCase
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
 		$this->callWithConsecutive(
 			$manager->expects($this->exactly(2))
-			->method('mountFilesystem'),
+				->method('mountFilesystem'),
 			[
-						[
-								$this->anything(),
-								$this->callback(
-									function (Filesystem $f) {
-											$a = $f->getAdapter();
-											return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
-									}
-								)
-						]
+				[
+					$this->anything(),
+					$this->callback(
+						function (Filesystem $f) {
+							$a = $f->getAdapter();
+							return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
+						}
+					)
+				]
 			]
 		);
 
@@ -121,25 +121,25 @@ class FtpTest extends TartanaBaseTestCase
 			$manager,
 			new Registry(
 				[
-								'ftp' => [
-										'localhost' => [
-												'username' => 'foo',
-												'password' => 'bar'
-										],
-										'pingpong.com' => [
-												'username' => 'foo1',
-												'password' => 'bar1'
-										],
-										'pingpongcom' => [
-												'username' => 'foo2',
-												'password' => 'bar2'
-										]
-								]
+					'ftp' => [
+						'localhost' => [
+							'username' => 'foo',
+							'password' => 'bar'
+						],
+						'pingpong.com' => [
+							'username' => 'foo1',
+							'password' => 'bar1'
+						],
+						'pingpongcom' => [
+							'username' => 'foo2',
+							'password' => 'bar2'
+						]
 					]
+				]
 			)
 		);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 
@@ -156,17 +156,17 @@ class FtpTest extends TartanaBaseTestCase
 		$manager = $this->getMockBuilder(MountManager::class)->getMock();
 		$this->callWithConsecutive(
 			$manager->expects($this->exactly(2))
-			->method('mountFilesystem'),
+				->method('mountFilesystem'),
 			[
-						[
-								$this->anything(),
-								$this->callback(
-									function (Filesystem $f) {
-											$a = $f->getAdapter();
-											return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
-									}
-								)
-						]
+				[
+					$this->anything(),
+					$this->callback(
+						function (Filesystem $f) {
+							$a = $f->getAdapter();
+							return $a->getUsername() == 'foo2' && $a->getPassword() == 'bar2';
+						}
+					)
+				]
 			]
 		);
 
@@ -174,21 +174,21 @@ class FtpTest extends TartanaBaseTestCase
 			$manager,
 			new Registry(
 				[
-								'ftp' => [
-										'pingpongcom' => [
-												'username' => 'foo',
-												'password' => 'bar'
-										],
-										'subpingpongcom' => [
-												'username' => 'foo2',
-												'password' => 'bar2'
-										]
-								]
+					'ftp' => [
+						'pingpongcom' => [
+							'username' => 'foo',
+							'password' => 'bar'
+						],
+						'subpingpongcom' => [
+							'username' => 'foo2',
+							'password' => 'bar2'
+						]
 					]
+				]
 			)
 		);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 
@@ -208,7 +208,7 @@ class FtpTest extends TartanaBaseTestCase
 
 		$downloader = $this->getFtp($manager);
 		Promise\unwrap($downloader->download([
-				$download
+			$download
 		]));
 	}
 
@@ -218,10 +218,10 @@ class FtpTest extends TartanaBaseTestCase
 	 */
 	private function getFtp(MountManager $manager, Registry $config = null)
 	{
-		if (! $config) {
+		if (!$config) {
 			$config = new Registry();
 		}
-		$class = '\\Tartana\\Host\\Common\\' . ucfirst($this->scheme);
+		$class      = '\\Tartana\\Host\\Common\\' . ucfirst($this->scheme);
 		$downloader = new $class($config, $manager);
 		return $downloader;
 	}

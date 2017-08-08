@@ -11,8 +11,8 @@ class ProcessCompletedDownloadsTest extends \PHPUnit_Framework_TestCase
 	public function testProcessCompletedDownloadsCommand()
 	{
 		$repository = $this->getMockBuilder(DownloadRepository::class)->getMock();
-		$command = new ProcessCompletedDownloads($repository, [
-				new Download()
+		$command    = new ProcessCompletedDownloads($repository, [
+			new Download()
 		]);
 
 		$this->assertEquals($repository, $command->getRepository());

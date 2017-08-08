@@ -16,7 +16,7 @@ class DeleteFileLogsHandler
 
 	public function handle(DeleteLogs $command)
 	{
-		if (! file_exists($this->logFile)) {
+		if (!file_exists($this->logFile)) {
 			return;
 		}
 

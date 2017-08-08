@@ -20,12 +20,12 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$logger = new Logger('unittest');
 		$logger->pushHandler(new StreamHandler($fs->applyPathPrefix(self::LOG_FILE_NAME)));
 		$logger->addAlert('unit test alert', [
-				'unittestcontext'
+			'unittestcontext'
 		]);
 		$logger->log(Logger::WARNING, 'unit test warning');
 
 		$repository = new FileLogRepository($fs->applyPathPrefix(self::LOG_FILE_NAME));
-		$logs = $repository->findLogs();
+		$logs       = $repository->findLogs();
 
 		$this->assertNotEmpty($logs);
 		$this->assertCount(2, $logs);
@@ -65,7 +65,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$logger->log(Logger::WARNING, 'unit test warning');
 
 		$repository = new FileLogRepository($fs->applyPathPrefix(self::LOG_FILE_NAME));
-		$logs = $repository->findLogs();
+		$logs       = $repository->findLogs();
 
 		$this->assertNotEmpty($logs);
 		$this->assertCount(10, $logs);
@@ -91,7 +91,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$logger->log(Logger::WARNING, 'unit test warning');
 
 		$repository = new FileLogRepository($fs->applyPathPrefix(self::LOG_FILE_NAME));
-		$logs = $repository->findLogs(20);
+		$logs       = $repository->findLogs(20);
 
 		$this->assertNotEmpty($logs);
 		$this->assertCount(12, $logs);
@@ -103,7 +103,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$fs->write(self::LOG_FILE_NAME, '', new Config());
 
 		$repository = new FileLogRepository($fs->applyPathPrefix(self::LOG_FILE_NAME));
-		$logs = $repository->findLogs();
+		$logs       = $repository->findLogs();
 
 		$this->assertEmpty($logs);
 	}
@@ -111,7 +111,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 	public function testFindLogsFileNotExists()
 	{
 		$repository = new FileLogRepository(__DIR__ . '/invalid.txt');
-		$logs = $repository->findLogs();
+		$logs       = $repository->findLogs();
 
 		$this->assertEmpty($logs);
 		$this->assertFileNotExists(__DIR__ . '/invalid.txt');
@@ -123,7 +123,7 @@ class FileLogRepositoryTest extends \PHPUnit_Framework_TestCase
 		$fs->write(self::LOG_FILE_NAME, 'unit test', new Config());
 
 		$repository = new FileLogRepository($fs->applyPathPrefix(self::LOG_FILE_NAME));
-		$logs = $repository->findLogs();
+		$logs       = $repository->findLogs();
 
 		$this->assertEmpty($logs);
 	}

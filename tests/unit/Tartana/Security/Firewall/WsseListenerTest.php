@@ -28,11 +28,11 @@ class WsseListenerTest extends \PHPUnit_Framework_TestCase
 		$listener = new WsseListener($storage, $auth);
 
 		$request = new Request([
-				'GET'
+			'GET'
 		], [], [], [], [], [
-				'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
+			'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
 		]);
-		$event = $this->getMockBuilder(GetResponseEvent::class)
+		$event   = $this->getMockBuilder(GetResponseEvent::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$event->method('getRequest')->willReturn($request);
@@ -52,11 +52,11 @@ class WsseListenerTest extends \PHPUnit_Framework_TestCase
 		$listener = new WsseListener($storage, $auth);
 
 		$request = new Request([
-				'GET'
+			'GET'
 		], [], [], [], [], [
-				'HTTP_X-WSSE' => 'invalid'
+			'HTTP_X-WSSE' => 'invalid'
 		]);
-		$event = $this->getMockBuilder(GetResponseEvent::class)
+		$event   = $this->getMockBuilder(GetResponseEvent::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$event->method('getRequest')->willReturn($request);
@@ -80,11 +80,11 @@ class WsseListenerTest extends \PHPUnit_Framework_TestCase
 		$listener = new WsseListener($storage, $auth);
 
 		$request = new Request([
-				'GET'
+			'GET'
 		], [], [], [], [], [
-				'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
+			'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
 		]);
-		$event = $this->getMockBuilder(GetResponseEvent::class)
+		$event   = $this->getMockBuilder(GetResponseEvent::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$event->method('getRequest')->willReturn($request);
@@ -108,11 +108,11 @@ class WsseListenerTest extends \PHPUnit_Framework_TestCase
 		$listener = new WsseListener($storage, $auth);
 
 		$request = new Request([
-				'GET'
+			'GET'
 		], [], [], [], [], [
-				'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
+			'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
 		]);
-		$event = $this->getMockBuilder(GetResponseEvent::class)
+		$event   = $this->getMockBuilder(GetResponseEvent::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$event->method('getRequest')->willReturn($request);
@@ -136,11 +136,11 @@ class WsseListenerTest extends \PHPUnit_Framework_TestCase
 		$listener = new WsseListener($storage, $auth);
 
 		$request = new Request([
-				'GET'
+			'GET'
 		], [], [], [], [], [
-				'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
+			'HTTP_X-WSSE' => $this->makeToken('admin', 'admin')
 		]);
-		$event = $this->getMockBuilder(GetResponseEvent::class)
+		$event   = $this->getMockBuilder(GetResponseEvent::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$event->method('getRequest')->willReturn($request);

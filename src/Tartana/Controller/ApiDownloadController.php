@@ -22,32 +22,32 @@ class ApiDownloadController extends Controller
 			$state = explode(',', $state);
 		}
 
-		/** @var \Tartana\Domain\DownloadRepository $repository **/
+		/** @var \Tartana\Domain\DownloadRepository $repository * */
 		$repository = $this->container->get('DownloadRepository');
-		$downloads = $repository->findDownloads($state);
+		$downloads  = $repository->findDownloads($state);
 
-		$t = $this->container->get('Translator');
-		$data = [];
+		$t     = $this->container->get('Translator');
+		$data  = [];
 		$sizes = [
-				$t->trans('TARTANA_TEXT_SIZE_BYTE'),
-				$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
-				$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
-				$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
-				$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
-				$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
+			$t->trans('TARTANA_TEXT_SIZE_BYTE'),
+			$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
+			$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
+			$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
+			$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
+			$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 		];
 		foreach ($downloads as $download) {
-			$d = $download->toArray();
+			$d            = $download->toArray();
 			$d['message'] = $t->trans($download->getMessage());
-			$d['state'] = $t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState());
-			$d['size'] = Util::readableSize($download->getSize(), $sizes);
-			$data[] = $d;
+			$d['state']   = $t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState());
+			$d['size']    = Util::readableSize($download->getSize(), $sizes);
+			$data[]       = $d;
 		}
 
 		$data = [
-				'success' => true,
-				'message' => '',
-				'data' => $data
+			'success' => true,
+			'message' => '',
+			'data' => $data
 		];
 
 		return new JsonResponse($data);
@@ -70,7 +70,7 @@ class ApiDownloadController extends Controller
 	{
 		return $this->handleCommand(
 			new DeleteDownloads($this->container->get('DownloadRepository')
-			->findDownloads(Download::STATE_PROCESSING_COMPLETED))
+				->findDownloads(Download::STATE_PROCESSING_COMPLETED))
 		);
 	}
 
@@ -81,13 +81,13 @@ class ApiDownloadController extends Controller
 	public function resumefailedAction()
 	{
 		$states = [
-				Download::STATE_DOWNLOADING_ERROR,
-				Download::STATE_PROCESSING_ERROR
+			Download::STATE_DOWNLOADING_ERROR,
+			Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
 			new ChangeDownloadState(
 				$this->container->get('DownloadRepository')
-				->findDownloads($states),
+					->findDownloads($states),
 				$states,
 				Download::STATE_DOWNLOADING_NOT_STARTED
 			)
@@ -101,18 +101,18 @@ class ApiDownloadController extends Controller
 	public function resumeallAction()
 	{
 		$states = [
-				Download::STATE_DOWNLOADING_STARTED,
-				Download::STATE_DOWNLOADING_COMPLETED,
-				Download::STATE_DOWNLOADING_ERROR,
-				Download::STATE_PROCESSING_NOT_STARTED,
-				Download::STATE_PROCESSING_STARTED,
-				Download::STATE_PROCESSING_COMPLETED,
-				Download::STATE_PROCESSING_ERROR
+			Download::STATE_DOWNLOADING_STARTED,
+			Download::STATE_DOWNLOADING_COMPLETED,
+			Download::STATE_DOWNLOADING_ERROR,
+			Download::STATE_PROCESSING_NOT_STARTED,
+			Download::STATE_PROCESSING_STARTED,
+			Download::STATE_PROCESSING_COMPLETED,
+			Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
 			new ChangeDownloadState(
 				$this->container->get('DownloadRepository')
-				->findDownloads($states),
+					->findDownloads($states),
 				$states,
 				Download::STATE_DOWNLOADING_NOT_STARTED
 			)
@@ -126,15 +126,15 @@ class ApiDownloadController extends Controller
 	public function reprocessAction()
 	{
 		$states = [
-				Download::STATE_PROCESSING_NOT_STARTED,
-				Download::STATE_PROCESSING_STARTED,
-				Download::STATE_PROCESSING_COMPLETED,
-				Download::STATE_PROCESSING_ERROR
+			Download::STATE_PROCESSING_NOT_STARTED,
+			Download::STATE_PROCESSING_STARTED,
+			Download::STATE_PROCESSING_COMPLETED,
+			Download::STATE_PROCESSING_ERROR
 		];
 		return $this->handleCommand(
 			new ChangeDownloadState(
 				$this->container->get('DownloadRepository')
-				->findDownloads($states),
+					->findDownloads($states),
 				$states,
 				Download::STATE_DOWNLOADING_COMPLETED
 			)
@@ -147,8 +147,8 @@ class ApiDownloadController extends Controller
 		$commandBus->handle($command);
 
 		$data = [
-				'success' => true,
-				'message' => ''
+			'success' => true,
+			'message' => ''
 		];
 
 		return new JsonResponse($data);

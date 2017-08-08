@@ -11,7 +11,7 @@ class LocalDeleteDownloadsHandlerTest extends WebTestCase
 	public function testDeleteDownloads()
 	{
 		$this->loadFixtures([
-				'Local\DataFixtures\ORM\LoadDownloadData'
+			'Local\DataFixtures\ORM\LoadDownloadData'
 		]);
 
 		$client = static::createClient();
@@ -19,13 +19,13 @@ class LocalDeleteDownloadsHandlerTest extends WebTestCase
 		$commandBus = $client->getContainer()->get('CommandBus');
 
 		$repository = $client->getContainer()->get('DownloadRepository');
-		$downloads = $repository->findDownloads();
+		$downloads  = $repository->findDownloads();
 
 		$this->assertNotEmpty($downloads);
 		foreach ($downloads as $download) {
 			$this->assertGreaterThan(0, $download->getId());
 			$commandBus->handle(new DeleteDownloads([
-					$download
+				$download
 			]));
 		}
 

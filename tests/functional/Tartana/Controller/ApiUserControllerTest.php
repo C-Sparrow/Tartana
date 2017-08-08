@@ -11,7 +11,7 @@ class ApiUserControllerTest extends WebTestCase
 	public function testV1FindUser()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/find', [
-				'username' => 'admin'
+			'username' => 'admin'
 		]);
 
 		$this->assertEquals(200, $this->client->getResponse()
@@ -32,7 +32,7 @@ class ApiUserControllerTest extends WebTestCase
 	public function testV1FindUserNotExist()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/find', [
-				'username' => 'notexisting'
+			'username' => 'notexisting'
 		]);
 
 		$this->assertEquals(200, $this->client->getResponse()
@@ -62,7 +62,7 @@ class ApiUserControllerTest extends WebTestCase
 	public function testV1Salt()
 	{
 		$crawler = $this->client->request('GET', '/api/v1/user/salt', [
-				'username' => 'admin'
+			'username' => 'admin'
 		]);
 
 		$this->assertEquals(200, $this->client->getResponse()
@@ -79,7 +79,7 @@ class ApiUserControllerTest extends WebTestCase
 	protected function setUp()
 	{
 		$this->loadFixtures([
-				'Tartana\DataFixtures\ORM\LoadUserData'
+			'Tartana\DataFixtures\ORM\LoadUserData'
 		]);
 
 		$client = static::createClient();

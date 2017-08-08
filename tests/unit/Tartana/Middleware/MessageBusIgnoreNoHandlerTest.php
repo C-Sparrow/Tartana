@@ -13,7 +13,7 @@ class MessageBusIgnoreNoHandlerTest extends \PHPUnit_Framework_TestCase
 	public function testNoHandlerNoException()
 	{
 		$messageBus = new MessageBusSupportingMiddleware([
-				new MessageBusIgnoreNoHandler()
+			new MessageBusIgnoreNoHandler()
 		]);
 		$messageBus->handle(new ProcessLinks([]));
 	}
@@ -25,8 +25,8 @@ class MessageBusIgnoreNoHandlerTest extends \PHPUnit_Framework_TestCase
 	public function testIgnoreOtherExceptions()
 	{
 		$messageBus = new MessageBusSupportingMiddleware([
-				new MessageBusIgnoreNoHandler(),
-				new MessageBusIgnoreNoHandlerTestMiddleware()
+			new MessageBusIgnoreNoHandler(),
+			new MessageBusIgnoreNoHandlerTestMiddleware()
 		]);
 		$messageBus->handle(new ProcessLinks([]));
 	}

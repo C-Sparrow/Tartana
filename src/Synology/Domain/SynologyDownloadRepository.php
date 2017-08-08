@@ -29,14 +29,14 @@ class SynologyDownloadRepository implements DownloadRepository
 	public function findDownloads($states = null)
 	{
 		if ($states) {
-			$states = (array) $states;
+			$states = (array)$states;
 		}
 
 		$args = array(
-				'method' => 'list',
-				'additional' => 'detail'
+			'method' => 'list',
+			'additional' => 'detail'
 		);
-		$res = $this->synologyApiCall($args);
+		$res  = $this->synologyApiCall($args);
 
 		$downloads = [];
 		foreach ($res->data->tasks as $task) {
@@ -59,7 +59,7 @@ class SynologyDownloadRepository implements DownloadRepository
 					break;
 			}
 
-			if ($states !== null && ! in_array($state, $states)) {
+			if ($states !== null && !in_array($state, $states)) {
 				continue;
 			}
 

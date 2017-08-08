@@ -17,7 +17,7 @@ class WsseUserTokenTest extends \PHPUnit_Framework_TestCase
 	public function testTokenWithRoles()
 	{
 		$token = new WsseUserToken([
-				'unit-test'
+			'unit-test'
 		]);
 
 		$this->assertEmpty($token->getCredentials());

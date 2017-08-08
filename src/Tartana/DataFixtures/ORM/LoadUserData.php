@@ -23,7 +23,7 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 		$user->setPlainPassword('admin');
 		$user->setEnabled(true);
 		$user->setRoles(array(
-				'ROLE_ADMIN'
+			'ROLE_ADMIN'
 		));
 
 		// Update the user

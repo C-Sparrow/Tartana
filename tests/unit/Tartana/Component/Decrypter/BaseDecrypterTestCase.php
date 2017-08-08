@@ -11,8 +11,8 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 
 	public function testDecryptFile()
 	{
-		$file = __DIR__ . '/files/simple.' . $this->getFileExtension();
-		$dec = $this->getDecrypter();
+		$file  = __DIR__ . '/files/simple.' . $this->getFileExtension();
+		$dec   = $this->getDecrypter();
 		$links = $dec->decrypt($file);
 
 		$this->assertTrue(is_array($links));
@@ -26,7 +26,7 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 	public function testDecryptWrongFile()
 	{
 		$file = __DIR__ . '/not-existing.' . $this->getFileExtension();
-		$dec = $this->getDecrypter();
+		$dec  = $this->getDecrypter();
 
 		$this->setExpectedException('RuntimeException');
 		$dec->decrypt($file);
@@ -34,10 +34,10 @@ abstract class BaseDecrypterTestCase extends TartanaBaseTestCase
 
 	public function testDecryptContent()
 	{
-		$fs = new Local(__DIR__);
+		$fs      = new Local(__DIR__);
 		$content = $fs->read('/files/simple.' . $this->getFileExtension())['contents'];
-		$dec = $this->getDecrypter();
-		$links = $dec->decrypt($content);
+		$dec     = $this->getDecrypter();
+		$links   = $dec->decrypt($content);
 
 		$this->assertTrue(is_array($links));
 		$this->assertGreaterThanOrEqual(2, count($links));

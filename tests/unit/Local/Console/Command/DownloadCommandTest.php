@@ -100,7 +100,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -140,7 +140,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -151,7 +151,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 	public function testExecuteForceReset()
 	{
 		$downloadsNotStarted = [];
-		$download = new Download();
+		$download            = new Download();
 		$download->setLink('http://devnull.org/klad');
 		$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
 		$download->setState(Download::STATE_DOWNLOADING_ERROR);
@@ -173,7 +173,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -184,7 +184,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 	public function testExecuteRestartZombies()
 	{
-		$zombies = [];
+		$zombies  = [];
 		$download = new Download();
 		$download->setLink('http://devnull.org/klad');
 		$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
@@ -208,7 +208,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -218,7 +218,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 
 	public function testExecuteIgnoreReset()
 	{
-		$zombies = [];
+		$zombies  = [];
 		$download = new Download();
 		$download->setLink('http://devnull.org/klad');
 		$download->setDestination(TARTANA_PATH_ROOT . '/var/tmp/test');
@@ -232,7 +232,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -256,7 +256,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		$application = new Application();
 		$application->add($command);
 
-		$command = $application->find('download');
+		$command       = $application->find('download');
 		$commandTester = new CommandTester($command);
 
 		$commandTester->execute([
@@ -316,12 +316,12 @@ class DownloadCommandTest extends LocalBaseTestCase
 		);
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setSize(20000);
 		$download->setFinishedAt(new \DateTime());
 		$download->getFinishedAt()->modify('-1 day');
 		$downloads[] = $download;
-		$download = new Download();
+		$download    = new Download();
 		$download->setSize(5000);
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;
@@ -365,7 +365,7 @@ class DownloadCommandTest extends LocalBaseTestCase
 		);
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setSize(20000);
 		$download->setFinishedAt(new \DateTime());
 		$downloads[] = $download;

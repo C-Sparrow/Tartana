@@ -18,7 +18,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('https://www.dropbox.com/s/81x9v3synhamu1o/symfony.png?dl=0');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -37,7 +37,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownloadLinksAuthorized()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -49,7 +49,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('https://www.dropbox.com/s/81x9v3synhamu1o/symfony.png?dl=0');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -68,7 +68,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 
 	public function testDownloadInvalidLinksAuthorized()
 	{
-		if (! file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
+		if (!file_exists(TARTANA_PATH_ROOT . '/app/config/hosters.yml')) {
 			$this->markTestSkipped('No credentials found for host');
 			return;
 		}
@@ -80,7 +80,7 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('https://www.dropbox.com/s/123/invalid.txt?dl=0');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;
@@ -92,15 +92,15 @@ class DropboxcomTest extends \PHPUnit_Framework_TestCase
 	public function testDownloadWrongAccessToken()
 	{
 		$downloader = new Dropboxcom(new Registry([
-				'dropboxcom' => [
-						'token' => '123'
-				]
+			'dropboxcom' => [
+				'token' => '123'
+			]
 		]));
 
 		$dest = new Local(__DIR__ . '/test');
 
 		$downloads = [];
-		$download = new Download();
+		$download  = new Download();
 		$download->setLink('https://www.dropbox.com/s/81x9v3synhamu1o/symfony.png?dl=0');
 		$download->setDestination($dest->getPathPrefix());
 		$downloads[] = $download;

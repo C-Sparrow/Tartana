@@ -12,7 +12,7 @@ class ConvertSoundListener extends AbstractProcessingListener
 	protected function getFileExtensionsForCommand()
 	{
 		return [
-				'mp4' => 'convert:sound'
+			'mp4' => 'convert:sound'
 		];
 	}
 }

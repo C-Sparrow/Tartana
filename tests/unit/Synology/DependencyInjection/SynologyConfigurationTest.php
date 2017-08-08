@@ -11,26 +11,26 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testEnabledValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
-				[]
+			[]
 		], 'enabled');
 	}
 
 	public function testAddressValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
-				[
-						'enabled' => true
-				]
+			[
+				'enabled' => true
+			]
 		], 'address');
 	}
 
 	public function testUsernameValueIsNotProvided()
 	{
 		$this->assertConfigurationIsInvalid([
-				[
-						'enabled' => true,
-						'address' => 'http://localhost:5001'
-				]
+			[
+				'enabled' => true,
+				'address' => 'http://localhost:5001'
+			]
 		], 'username');
 	}
 
@@ -38,11 +38,11 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertConfigurationIsInvalid(
 			[
-						[
-								'enabled' => true,
-								'address' => 'http://localhost:5001',
-								'username' => 'admin'
-						]
+				[
+					'enabled' => true,
+					'address' => 'http://localhost:5001',
+					'username' => 'admin'
+				]
 			],
 			'password'
 		);
@@ -52,12 +52,12 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertConfigurationIsInvalid(
 			[
-						[
-								'enabled' => true,
-								'address' => 'http://localhost:5001',
-								'username' => 'admin',
-								'password' => 'admin'
-						]
+				[
+					'enabled' => true,
+					'address' => 'http://localhost:5001',
+					'username' => 'admin',
+					'password' => 'admin'
+				]
 			],
 			'downloads'
 		);
@@ -67,13 +67,13 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertConfigurationIsInvalid(
 			[
-						[
-								'enabled' => true,
-								'address' => 'http://localhost:5001',
-								'username' => 'admin',
-								'password' => 'admin',
-								'downloads' => '/path/to/dir'
-						]
+				[
+					'enabled' => true,
+					'address' => 'http://localhost:5001',
+					'username' => 'admin',
+					'password' => 'admin',
+					'downloads' => '/path/to/dir'
+				]
 			],
 			'downloadShare'
 		);
@@ -83,22 +83,22 @@ class SynologyConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertProcessedConfigurationEquals(
 			[
-						[
-								'enabled' => true,
-								'address' => 'http://localhost:5001',
-								'username' => 'admin',
-								'password' => 'admin',
-								'downloads' => '/path/to/dir',
-								'downloadShare' => 'to/share'
-						]
-				],
+				[
+					'enabled' => true,
+					'address' => 'http://localhost:5001',
+					'username' => 'admin',
+					'password' => 'admin',
+					'downloads' => '/path/to/dir',
+					'downloadShare' => 'to/share'
+				]
+			],
 			[
-						'enabled' => true,
-						'address' => 'http://localhost:5001',
-						'username' => 'admin',
-						'password' => 'admin',
-						'downloads' => '/path/to/dir',
-						'downloadShare' => 'to/share'
+				'enabled' => true,
+				'address' => 'http://localhost:5001',
+				'username' => 'admin',
+				'password' => 'admin',
+				'downloads' => '/path/to/dir',
+				'downloadShare' => 'to/share'
 			]
 		);
 	}

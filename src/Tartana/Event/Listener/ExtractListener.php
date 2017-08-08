@@ -15,9 +15,9 @@ class ExtractListener extends AbstractProcessingListener
 	protected function getFileExtensionsForCommand()
 	{
 		return [
-				'rar' => 'unrar',
-				'zip' => 'unzip',
-				'7z' => '7z'
+			'rar' => 'unrar',
+			'zip' => 'unzip',
+			'7z' => '7z'
 		];
 	}
 

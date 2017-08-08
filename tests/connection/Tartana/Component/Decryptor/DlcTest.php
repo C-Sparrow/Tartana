@@ -8,8 +8,8 @@ class DlcTest extends \PHPUnit_Framework_TestCase
 
 	public function testRealDecryptFile()
 	{
-		$file = __DIR__ . '/../../../../unit/Tartana/Component/Decrypter/files/simple.dlc';
-		$dec = new Dlc();
+		$file  = __DIR__ . '/../../../../unit/Tartana/Component/Decrypter/files/simple.dlc';
+		$dec   = new Dlc();
 		$links = $dec->decrypt($file);
 
 		$this->assertTrue(is_array($links));

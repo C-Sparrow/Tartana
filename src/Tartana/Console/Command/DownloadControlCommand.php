@@ -57,13 +57,13 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Getting arguments
-		$action = $input->getArgument('action');
+		$action      = $input->getArgument('action');
 		$destination = $input->getOption('destination');
-		$compact = (boolean)$input->getOption('compact');
-		$t = $this->translator;
+		$compact     = (boolean)$input->getOption('compact');
+		$t           = $this->translator;
 
 		$command = null;
-		/** @var Download[] $downloads **/
+		/** @var Download[] $downloads * */
 		$downloads = [];
 		if (!empty($destination)) {
 			$downloads = $this->repository->findDownloadsByDestination($destination);
@@ -78,53 +78,53 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						continue;
 					}
 					$sizes = [
-							$t->trans('TARTANA_TEXT_SIZE_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
+						$t->trans('TARTANA_TEXT_SIZE_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 					];
 
 					$table = new Table($output);
 
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
-							$download->getId()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
+						$download->getId()
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
-							$download->getDestination()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
+						$download->getDestination()
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME'),
-							$download->getFileName()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME'),
+						$download->getFileName()
 					]);
 					$table->addRow(
 						[
-									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
-									$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState())
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
+							$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState())
 						]
 					);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
-							Util::readableSize($download->getSize(), $sizes)
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
+						Util::readableSize($download->getSize(), $sizes)
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
-							$download->getProgress()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
+						$download->getProgress()
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_HASH'),
-							$download->getHash()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_HASH'),
+						$download->getHash()
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_LINK'),
-							$download->getLink()
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_LINK'),
+						$download->getLink()
 					]);
 					$table->addRow([
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE'),
-							$t->trans($download->getMessage())
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE'),
+						$t->trans($download->getMessage())
 					]);
 
 					$table->render();
@@ -135,10 +135,10 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					usort(
 						$downloads,
 						function (Download $d1, Download $d2) {
-								return strcmp(
-									$d1->getDestination() . str_pad($d1->getId(), 10, '0', STR_PAD_LEFT),
-									$d2->getDestination() . str_pad($d2->getId(), 10, '0', STR_PAD_LEFT)
-								);
+							return strcmp(
+								$d1->getDestination() . str_pad($d1->getId(), 10, '0', STR_PAD_LEFT),
+								$d2->getDestination() . str_pad($d2->getId(), 10, '0', STR_PAD_LEFT)
+							);
 						}
 					);
 				}
@@ -148,26 +148,26 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						$destination = $download->getDestination();
 						if (!key_exists($destination, $data)) {
 							$data[$destination] = [
-									'count' => 0,
-									'size' => 0,
-									'downloaded-size' => 0,
-									'state' => [],
-									'name' => ''
+								'count' => 0,
+								'size' => 0,
+								'downloaded-size' => 0,
+								'state' => [],
+								'name' => ''
 							];
 
 							foreach (Download::$STATES_ALL as $state) {
 								$data[$destination]['state'][$state] = 0;
 							}
 						}
-						$data[$destination]['count'] ++;
+						$data[$destination]['count']++;
 						$data[$destination]['size'] += $download->getSize();
 						if ($download->getState() != Download::STATE_DOWNLOADING_NOT_STARTED &&
-								 $download->getState() != Download::STATE_DOWNLOADING_STARTED &&
-								 $download->getState() != Download::STATE_DOWNLOADING_ERROR) {
+							$download->getState() != Download::STATE_DOWNLOADING_STARTED &&
+							$download->getState() != Download::STATE_DOWNLOADING_ERROR) {
 							$data[$destination]['downloaded-size'] += $download->getSize();
 						}
 
-						$data[$destination]['state'][$download->getState()] ++;
+						$data[$destination]['state'][$download->getState()]++;
 
 						// Set the name when no one is set
 						if (empty($data[$destination]['name']) && !empty($download->getFileName())) {
@@ -176,23 +176,23 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 					}
 
 					$headers = [
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
-							$t->trans('TARTANA_TEXT_TOTAL'),
-							$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_TOTAL_SIZE'),
-							$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_DOWNLOADED_SIZE'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME')
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_DESTINATION'),
+						$t->trans('TARTANA_TEXT_TOTAL'),
+						$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_TOTAL_SIZE'),
+						$t->trans('TARTANA_COMMAND_DOWNLOAD_CONTROL_DOWNLOADED_SIZE'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME')
 					];
 					foreach (Download::$STATES_ALL as $state) {
 						$headers[] = $t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $state);
 					}
 
 					$sizes = [
-							$t->trans('TARTANA_TEXT_SIZE_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
+						$t->trans('TARTANA_TEXT_SIZE_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 					];
 					foreach ($data as $destination => $content) {
 						$output->writeln('');
@@ -201,51 +201,51 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						$table = new Table($output);
 
 						$table->addRow([
-								$headers[1],
-								$content['count']
+							$headers[1],
+							$content['count']
 						]);
 						$table->addRow([
-								$headers[2],
-								Util::readableSize($content['size'], $sizes)
+							$headers[2],
+							Util::readableSize($content['size'], $sizes)
 						]);
 						$table->addRow([
-								$headers[3],
-								Util::readableSize($content['downloaded-size'], $sizes)
+							$headers[3],
+							Util::readableSize($content['downloaded-size'], $sizes)
 						]);
 						$table->addRow([
-								$headers[4],
-								Util::shorten($content['name'], 30)
+							$headers[4],
+							Util::shorten($content['name'], 30)
 						]);
 
 						foreach (Download::$STATES_ALL as $key => $state) {
 							$table->addRow([
-									$headers[$key + 5],
-									$content['state'][$state]
+								$headers[$key + 5],
+								$content['state'][$state]
 							]);
 						}
 						$table->render();
 					}
 				} else {
 					$headers = [
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_LINK'),
-							$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE')
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_ID'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_PROGRESS'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_SIZE'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_FILE_NAME'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_LINK'),
+						$t->trans('TARTANA_ENTITY_DOWNLOAD_MESSAGE')
 					];
-					$sizes = [
-							$t->trans('TARTANA_TEXT_SIZE_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
-							$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
+					$sizes   = [
+						$t->trans('TARTANA_TEXT_SIZE_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_KILO_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_MEGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_GIGA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_TERRA_BYTE'),
+						$t->trans('TARTANA_TEXT_SIZE_PETA_BYTE')
 					];
 
 					$lastDestinaton = null;
-					$table = null;
+					$table          = null;
 					foreach ($downloads as $download) {
 						if ($lastDestinaton != $download->getDestination()) {
 							if (!empty($table)) {
@@ -259,13 +259,13 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 						}
 						$table->addRow(
 							[
-										$download->getId(),
-										$download->getProgress(),
-										Util::readableSize($download->getSize(), $sizes),
-										$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState()),
-										Util::shorten($download->getFileName(), 30),
-										Util::shorten($download->getLink(), 30),
-										Util::shorten($t->trans($download->getMessage()), 30)
+								$download->getId(),
+								$download->getProgress(),
+								Util::readableSize($download->getSize(), $sizes),
+								$t->trans('TARTANA_ENTITY_DOWNLOAD_STATE_' . $download->getState()),
+								Util::shorten($download->getFileName(), 30),
+								Util::shorten($download->getLink(), 30),
+								Util::shorten($t->trans($download->getMessage()), 30)
 							]
 						);
 					}
@@ -299,8 +299,8 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				$command = new ChangeDownloadState(
 					$downloads,
 					[
-								Download::STATE_DOWNLOADING_ERROR,
-								Download::STATE_PROCESSING_ERROR
+						Download::STATE_DOWNLOADING_ERROR,
+						Download::STATE_PROCESSING_ERROR
 					],
 					Download::STATE_DOWNLOADING_NOT_STARTED
 				);
@@ -309,13 +309,13 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				$command = new ChangeDownloadState(
 					$downloads,
 					[
-								Download::STATE_DOWNLOADING_STARTED,
-								Download::STATE_DOWNLOADING_COMPLETED,
-								Download::STATE_DOWNLOADING_ERROR,
-								Download::STATE_PROCESSING_NOT_STARTED,
-								Download::STATE_PROCESSING_STARTED,
-								Download::STATE_PROCESSING_COMPLETED,
-								Download::STATE_PROCESSING_ERROR
+						Download::STATE_DOWNLOADING_STARTED,
+						Download::STATE_DOWNLOADING_COMPLETED,
+						Download::STATE_DOWNLOADING_ERROR,
+						Download::STATE_PROCESSING_NOT_STARTED,
+						Download::STATE_PROCESSING_STARTED,
+						Download::STATE_PROCESSING_COMPLETED,
+						Download::STATE_PROCESSING_ERROR
 					],
 					Download::STATE_DOWNLOADING_NOT_STARTED
 				);
@@ -324,10 +324,10 @@ class DownloadControlCommand extends \Symfony\Component\Console\Command\Command
 				$command = new ChangeDownloadState(
 					$downloads,
 					[
-								Download::STATE_PROCESSING_NOT_STARTED,
-								Download::STATE_PROCESSING_STARTED,
-								Download::STATE_PROCESSING_COMPLETED,
-								Download::STATE_PROCESSING_ERROR
+						Download::STATE_PROCESSING_NOT_STARTED,
+						Download::STATE_PROCESSING_STARTED,
+						Download::STATE_PROCESSING_COMPLETED,
+						Download::STATE_PROCESSING_ERROR
 					],
 					Download::STATE_DOWNLOADING_COMPLETED
 				);

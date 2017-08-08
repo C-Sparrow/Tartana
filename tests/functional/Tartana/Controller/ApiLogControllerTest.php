@@ -96,14 +96,14 @@ class ApiLogControllerTest extends WebTestCase
 		$client = static::createClient();
 
 		$logFileName = $client->getContainer()->getParameter('kernel.environment') . '.log';
-		$fs = new Local($client->getContainer()->getParameter('kernel.logs_dir'));
+		$fs          = new Local($client->getContainer()->getParameter('kernel.logs_dir'));
 		$fs->write($logFileName, '', new Config());
 
-		/** @var \Monolog\Logger $logger **/
-		$logger = $client->getContainer()->get('Logger');
+		/** @var \Monolog\Logger $logger * */
+		$logger      = $client->getContainer()->get('Logger');
 		$oldHandlers = $logger->getHandlers();
 		$logger->setHandlers([
-				new StreamHandler($fs->applyPathPrefix($logFileName))
+			new StreamHandler($fs->applyPathPrefix($logFileName))
 		]);
 
 		$this->client = $client;

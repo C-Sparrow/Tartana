@@ -24,8 +24,8 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$repositoryMock->method('findDownloadsByDestination')->willReturn([
-				$download1,
-				$download2
+			$download1,
+			$download2
 		]);
 
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
@@ -34,17 +34,17 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->with(
 				$this->callback(
 					function (SaveDownloads $command) {
-							return $command->getDownloads()[0]->getProgress() == 20 && empty($command->getDownloads()[0]->getMessage());
+						return $command->getDownloads()[0]->getProgress() == 20 && empty($command->getDownloads()[0]->getMessage());
 					}
 				)
 			);
 
-				$event = new ProcessingProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
-				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-				$listener->onExtractProgress($event);
+		$event    = new ProcessingProgressEvent(new Local(__DIR__), new Local(__DIR__), 'test.rar', 20);
+		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+		$listener->onExtractProgress($event);
 
-				$this->assertEmpty($download2->getProgress());
-				$this->assertEmpty($download2->getMessage());
+		$this->assertEmpty($download2->getProgress());
+		$this->assertEmpty($download2->getMessage());
 	}
 
 	public function testonProcessingCompletedSuccess()
@@ -54,7 +54,7 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$repositoryMock->method('findDownloadsByDestination')->willReturn([
-				$download
+			$download
 		]);
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->once())
@@ -62,15 +62,15 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->with(
 				$this->callback(
 					function (SaveDownloads $command) {
-							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED &&
-									 empty($command->getDownloads()[0]->getMessage());
+						return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_COMPLETED &&
+							empty($command->getDownloads()[0]->getMessage());
 					}
 				)
 			);
 
-				$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
-				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-				$listener->onProcessingCompleted($event);
+		$event    = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), true);
+		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+		$listener->onProcessingCompleted($event);
 	}
 
 	public function testonProcessingCompletedError()
@@ -80,7 +80,7 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 
 		$repositoryMock = $this->getMockBuilder(DownloadRepository::class)->getMock();
 		$repositoryMock->method('findDownloadsByDestination')->willReturn([
-				$download
+			$download
 		]);
 		$commandBus = $this->getMockBuilder(MessageBus::class)->getMock();
 		$commandBus->expects($this->once())
@@ -88,14 +88,14 @@ class UpdateExtractStateListenerTest extends \PHPUnit_Framework_TestCase
 			->with(
 				$this->callback(
 					function (SaveDownloads $command) {
-							return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_ERROR &&
-									 ! empty($command->getDownloads()[0]->getMessage());
+						return $command->getDownloads()[0]->getState() == Download::STATE_PROCESSING_ERROR &&
+							!empty($command->getDownloads()[0]->getMessage());
 					}
 				)
 			);
 
-				$event = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
-				$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
-				$listener->onProcessingCompleted($event);
+		$event    = new ProcessingCompletedEvent(new Local(__DIR__), new Local(__DIR__), false);
+		$listener = new UpdateExtractStateListener($repositoryMock, $commandBus);
+		$listener->onProcessingCompleted($event);
 	}
 }

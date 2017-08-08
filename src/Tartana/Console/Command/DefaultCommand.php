@@ -31,8 +31,8 @@ class DefaultCommand extends Command
 	{
 		parent::__construct('default');
 
-		$this->repository = $repository;
-		$this->commandBus = $commandBus;
+		$this->repository    = $repository;
+		$this->commandBus    = $commandBus;
 		$this->configuration = $configuration;
 	}
 
@@ -43,7 +43,7 @@ class DefaultCommand extends Command
 		$this->log('Checking folder for link files');
 		$folder = $this->configuration->get('links.folder');
 		$folder = Util::realPath($folder);
-		if (! empty($folder)) {
+		if (!empty($folder)) {
 			$fs = new Local($folder);
 			$this->log('Searching for files containing links in folder: ' . $fs->getPathPrefix(), Logger::INFO);
 			foreach ($fs->listContents('', true) as $file) {
@@ -55,21 +55,21 @@ class DefaultCommand extends Command
 		$this->log('Getting downloads from repository');
 		$runningDownloads = $this->repository->findDownloads(
 			[
-						Download::STATE_DOWNLOADING_NOT_STARTED,
-						Download::STATE_DOWNLOADING_STARTED,
-						Download::STATE_DOWNLOADING_COMPLETED,
-						Download::STATE_DOWNLOADING_ERROR
+				Download::STATE_DOWNLOADING_NOT_STARTED,
+				Download::STATE_DOWNLOADING_STARTED,
+				Download::STATE_DOWNLOADING_COMPLETED,
+				Download::STATE_DOWNLOADING_ERROR
 			]
 		);
 
 		// Collecting the directories and the download state
 		$downloadDirectories = [];
-		$hasNotStarted = false;
+		$hasNotStarted       = false;
 		foreach ($runningDownloads as $d) {
-			if (! key_exists($d->getDestination(), $downloadDirectories)) {
+			if (!key_exists($d->getDestination(), $downloadDirectories)) {
 				$downloadDirectories[$d->getDestination()] = $d->getState();
 			} elseif ($d->getState() == Download::STATE_DOWNLOADING_NOT_STARTED || $d->getState() == Download::STATE_DOWNLOADING_STARTED ||
-			 $d->getState() == Download::STATE_DOWNLOADING_ERROR) {
+				$d->getState() == Download::STATE_DOWNLOADING_ERROR) {
 				$downloadDirectories[$d->getDestination()] = Download::STATE_DOWNLOADING_NOT_STARTED;
 			}
 
@@ -91,14 +91,14 @@ class DefaultCommand extends Command
 				}
 			}
 
-			if (! empty($completedDownloads)) {
+			if (!empty($completedDownloads)) {
 				$this->log('Sending downloads completed event with folder: ' . $path, Logger::INFO);
 				$this->commandBus->handle(new ProcessCompletedDownloads($this->repository, $completedDownloads));
 			}
 		}
 
 		if ($hasNotStarted) {
-				$this->log('Sending start downloads command', Logger::INFO);
+			$this->log('Sending start downloads command', Logger::INFO);
 			$this->commandBus->handle(new StartDownloads($this->repository));
 		}
 
