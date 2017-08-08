@@ -85,6 +85,11 @@
                                         </a>
                                     </li>
                                                                     <li class="">
+                                        <a href="//c-sparrow.github.io/Tartana/doc/main/download.html">
+                                            Download
+                                        </a>
+                                    </li>
+                                                                    <li class="">
                                         <a href="//c-sparrow.github.io/Tartana/doc/main/users.html">
                                             Users
                                         </a>
@@ -123,7 +128,7 @@
                 <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
                     <h1 id="tartana-command-line">Tartana Command Line</h1>
 <p>Tartana is made to run on command line without any interaction trough the web interface. Trough the <a href="configuration.html">configuration</a> you can fully configure Tartana.</p>
-<p>Tartana is designed to be controlled trough an external daeomon preferably a cron job. The command <code>php cli/app.php</code> is running all the neccessary tasks to full run Tartana.</p>
+<p>Tartana is designed to be controlled trough an external daemon preferably a cron job. The command <code>php cli/app.php</code> is running all the necessary tasks to full run Tartana.</p>
 <ol>
 <li>It scans the folder for link files (txt or dlc).</li>
 <li>It starts downloads in the queue, if run in local mode.</li>
@@ -139,7 +144,7 @@
 </li>
 <li>
 <p><strong>server</strong></p>
-<p>Starts the built in web server as described (here)[running.md]. You can add the following arguments <em>start</em> or <em>stop</em> and <em>--port</em>.</p>
+<p>Starts the built in web server as described (here)[running.md]. You can add the following arguments <em>start</em> or <em>stop</em> and options <em>--port [-p]</em>, <em>--background [-b]</em>.</p>
 <p>Example: <code>php cli/app.php server start --port=9009</code></p>
 </li>
 <li>
@@ -174,7 +179,7 @@
 </li>
 <li><strong>reprocess</strong><br/>Reprocesses the completed or processed downloads. This is handy if you want to extract the downloads again.</li>
 </ul>
-<p>The status and the other actions do support a <em>--destination</em> (eg. --destination=demo) option. This options filters downloads by the destination string and runs the action only on that subset. The <em>--compact</em> (eg. --compact=1) option shows the status action in compact mode.</p>
+<p>The status and the other actions do support a <em>--destination</em> (eg. --destination=demo) option. This options filters downloads by the destination string and runs the action only on that subset. The <em>--compact</em> (eg. --compact) option shows the status action in compact mode.</p>
 <p>Example: <code>php cli/app.php download:control status destination=test</code></p>
 </li>
 <li>

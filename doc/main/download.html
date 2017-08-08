@@ -126,43 +126,34 @@
 
                 
                 <section class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="tartana">Tartana</h1>
-<p><a href="https://travis-ci.org/C-Sparrow/Tartana"><img src="https://img.shields.io/travis/C-Sparrow/Tartana/master.svg?style=flat-square" alt="Build Status" /></a>
-<a href="https://scrutinizer-ci.com/g/C-Sparrow/Tartana/code-structure"><img src="https://img.shields.io/scrutinizer/coverage/g/C-Sparrow/Tartana.svg?style=flat-square" alt="Coverage Status" /></a>
-<a href="https://scrutinizer-ci.com/g/C-Sparrow/Tartana"><img src="https://img.shields.io/scrutinizer/g/C-Sparrow/Tartana.svg?style=flat-square" alt="Quality Score" /></a>
-<a href="https://github.com/C-Sparrow/Tartana/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License" /></a>
-<a href="https://github.com/C-Sparrow/Tartana/releases"><img src="https://img.shields.io/github/tag/C-Sparrow/Tartana.svg?style=flat-square" alt="Latest Version" /></a>
-<a href="https://github.com/C-Sparrow/Tartana/releases/latest"><img src="https://img.shields.io/github/downloads/C-Sparrow/Tartana/total.svg?style=flat-square" alt="Downloads" /></a></p>
-<p>Open source PHP app which manages downloads for you on any PHP capable device (Raspberry Pi up to big servers). It supports link decryption as well as all important container formats like dlc or rsdf and automatic file extraction. It just works and makes fun!</p>
-<h2 id="installation">Installation</h2>
-<p>The installation is as simple as 123. Head on to the <a href="doc/main/installation.html">installation guide</a>.</p>
-<h2 id="features">Features</h2>
+                    <h1 id="tartana-downloads">Tartana Downloads</h1>
+<p>Tartana works the way that it scans a directory, specified in the <a href="configuration.html">configuration</a>, for files which do contain links to download. At the moment, Tartana supports the following file extensions:</p>
 <ul>
-<li>Runs on a simple low resource <a href="doc/main/requirements.html">environment</a>.</li>
-<li>Modern architecture with support for PHP 5.5 up to 7 and HHVM.</li>
-<li>Premium account support for <a href="doc/main/hosters.html">one click hosters</a>.</li>
-<li>Runs in <a href="doc/main/running.html">different modes</a>: command line, an existing web server infrastructure or as standalone web server.</li>
-<li>Scans a folder for link files and manages the downloads locally or trough a <a href="doc/main/synology.html">Synology Download Station</a>.</li>
-<li>Auto extract archive files which are downloaded.</li>
-<li>Made with stability in mind.</li>
+<li>txt: Text files where every line is a link</li>
+<li>dlc: Container files with links</li>
+<li>rsdf: Container files with links</li>
 </ul>
-<h2 id="screenshot">Screenshot</h2>
-<p><img src="doc/images/downloads-list.png" alt="Download list" title="Download list" /></p>
-<p><img src="doc/images/downloads-list-cli.png" alt="Download list command line" title="Download list command line" /></p>
-<h2 id="credits">Credits</h2>
-<p>This project is inspired by the popular [<a href="https://github.com/pyload/pyload">PyLoad app</a>] but it should be not so buggy, as it has a decent unit test code coverage. Beside that we would like to say thanks to the following projects:</p>
-<ul>
-<li><a href="https://symfony.com">Symfony</a></li>
-<li><a href="https://angularjs.org">Angular JS</a></li>
-<li><a href="https://jquery.com">jQuery</a></li>
-<li><a href="http://getbootstrap.com">Bootstrap</a></li>
-<li><a href="http://www.doctrine-project.org">Doctrine</a></li>
-<li><a href="http://flysystem.thephpleague.com">Flysystems</a></li>
-<li><a href="http://guzzlephp.org">Guzzle</a></li>
-<li><a href="https://github.com/Seldaek/monolog">Monolog</a></li>
-<li><a href="https://getcomposer.org">Composer</a></li>
-<li>And all the other Open Source projects we are using</li>
-</ul>
+<p>This means, every time the default command is invoked on the command line, the folder is checked if it contains files with links to download.</p>
+<h2 id="direct-upload">Direct upload</h2>
+<p>The most easy way is to directly upload files int the folder which get scanned. This can be done trough File Browsers, FTP, Samba Shares or whatever tool you prefer to access the Tartana folder.</p>
+<h2 id="upload-web-interface">Upload web interface</h2>
+<p>It is possible to upload files trough the web interface. How to access the web interface is described in this <a href="running.html">page</a>.</p>
+<h2 id="clickn-load">Click'n Load</h2>
+<p>Some one click hoster do have a convenient way to add files directly trough a click'n load button. This works out of the box for JDownloader, but for Tartana you need to set up your environment properly before you can use it.</p>
+<h3 id="run-the-tartana-server">Run the Tartana server</h3>
+<p>Start the built in web server as described <a href="running.html">here</a>. This is needed as Click'n Load needs a running web server to post the links to.</p>
+<h3 id="forward-ports">Forward ports</h3>
+<p>You need to forward the port of click'n load is calling on your local computer to the Tartana web server. If you Tartana server has the IP 192.168.1.50 and is running on port 8080, then you need to forward it from your local port 9666 to 196.168.1.50:8080. How to do that on your prefered OS, read the following chapters.</p>
+<h4 id="windows">Windows</h4>
+<p>On Windows you can do in the command shell as admin:</p>
+<p><code>netsh interface portproxy add v4tov4 listenport=9666 connectaddress=192.168.1.50 connectport=8080 listenaddress=127.0.0.1</code></p>
+<p>To stop it, run </p>
+<p><code>netsh interface portproxy delete v4tov4 listenport=9666 listenaddress=127.0.0.1</code>.</p>
+<h4 id="linux">Linux</h4>
+<p>On Linux you can do a port forwarding like:</p>
+<p><code>ssh -L 127.0.0.1:9666:192.168.1.50:8080 -N 127.0.0.1</code></p>
+<h4 id="proxy-apps">Proxy apps</h4>
+<p>There are various apps or applications out there which can do port forwarding trough a graphical interface on your device.</p>
                 </section>
 
             </div>
