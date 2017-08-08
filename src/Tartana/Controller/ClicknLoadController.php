@@ -30,11 +30,11 @@ class ClicknLoadController extends Controller
 
 		$key = hex2bin($matches[1]);
 
-		$cp = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
+		$cp = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
 		@mcrypt_generic_init($cp, $key, $key);
-		$dec = mdecrypt_generic($cp, base64_decode($request->get('crypted')));
-		mcrypt_generic_deinit($cp);
-		mcrypt_module_close($cp);
+		$dec = @mdecrypt_generic($cp, base64_decode($request->get('crypted')));
+		@mcrypt_generic_deinit($cp);
+		@mcrypt_module_close($cp);
 
 		$folder = $this->container->getParameter('tartana.config')['links']['folder'];
 		$folder = Util::realPath($folder);

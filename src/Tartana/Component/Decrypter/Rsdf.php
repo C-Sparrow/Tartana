@@ -6,10 +6,10 @@ class Rsdf extends BaseDecrypter
 
 	public function getLinks($content)
 	{
-		$key    = pack('H*', "8C35192D964DC3182C6F84F3252239EB4A320D2500000000");
-		$iv     = pack('H*', "a3d5a33cb95ac1f5cbdb1ad25cb0a7aa");
-		$cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CFB, '');
-		mcrypt_generic_init($cipher, $key, $iv);
+		$key = pack('H*', "8C35192D964DC3182C6F84F3252239EB4A320D2500000000");
+		$iv = pack('H*', "a3d5a33cb95ac1f5cbdb1ad25cb0a7aa");
+		$cipher = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CFB, '');
+		@mcrypt_generic_init($cipher, $key, $iv);
 
 		$content = @pack('H*', $content);
 

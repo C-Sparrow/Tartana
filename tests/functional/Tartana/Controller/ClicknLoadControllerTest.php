@@ -73,11 +73,11 @@ class ClicknLoadControllerTest extends WebTestCase
 	{
 		$key  = "1234567890987654";
 		$link = "http://example.com/dl/test";
-		$cp   = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
+		$cp   = @mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
 		@mcrypt_generic_init($cp, $key, $key);
-		$enc = mcrypt_generic($cp, $link);
-		mcrypt_generic_deinit($cp);
-		mcrypt_module_close($cp);
+		$enc = @mcrypt_generic($cp, $link);
+		@mcrypt_generic_deinit($cp);
+		@mcrypt_module_close($cp);
 		return base64_encode($enc);
 	}
 }
