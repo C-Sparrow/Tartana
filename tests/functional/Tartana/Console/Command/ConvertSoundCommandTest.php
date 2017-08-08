@@ -17,8 +17,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 	public function testConvertFile()
 	{
-		if (! (new Runner())->execute(new Command('which ffmpeg'))) {
-			$this->markTestSkipped('FFmpeg is not on the path!');
+		if (!(new Runner())->execute(new Command('which ffmpeg'))
+			&& !(new Runner())->execute(new Command('which avconv'))) {
+			$this->markTestSkipped('FFmpeg and avconv is not on the path!');
 			return;
 		}
 
@@ -33,9 +34,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 		$commandTester = new CommandTester($command);
 		$commandTester->execute(
 			[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
 			]
 		);
 
@@ -45,8 +46,9 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 
 	public function testConvertInvalidFile()
 	{
-		if (! (new Runner())->execute(new Command('which ffmpeg'))) {
-			$this->markTestSkipped('FFmpeg is not on the path!');
+		if (!(new Runner())->execute(new Command('which ffmpeg'))
+			&& !(new Runner())->execute(new Command('which avconv'))) {
+			$this->markTestSkipped('FFmpeg and avconv is not on the path!');
 			return;
 		}
 
@@ -56,26 +58,26 @@ class ConvertSoundCommandTest extends TartanaBaseTestCase
 			->with(
 				$this->equalTo('processing.completed'),
 				$this->callback(function (ProcessingCompletedEvent $event) {
-					return ! $event->isSuccess();
+					return !$event->isSuccess();
 				})
 			);
 
-				$fs = new Local(__DIR__);
-				$fs->write('test/test.mp4', 'invalid mp4 content', new Config());
-				$fs->createDir('test1', new Config());
+		$fs = new Local(__DIR__);
+		$fs->write('test/test.mp4', 'invalid mp4 content', new Config());
+		$fs->createDir('test1', new Config());
 
-				$command = new ConvertSoundCommand(new Runner('test'), $dispatcher);
-				$application = new Application();
-				$application->add($command);
+		$command     = new ConvertSoundCommand(new Runner('test'), $dispatcher);
+		$application = new Application();
+		$application->add($command);
 
-				$commandTester = new CommandTester($command);
-				$commandTester->execute(
-					[
-						'command' => $command->getName(),
-						'source' => $fs->applyPathPrefix('test'),
-						'destination' => $fs->applyPathPrefix('test1')
-					]
-				);
+		$commandTester = new CommandTester($command);
+		$commandTester->execute(
+			[
+				'command' => $command->getName(),
+				'source' => $fs->applyPathPrefix('test'),
+				'destination' => $fs->applyPathPrefix('test1')
+			]
+		);
 
 		$this->assertTrue($fs->has('test/test.mp4'));
 		$this->assertTrue($fs->has('test/test.mp4.out'));

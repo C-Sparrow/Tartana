@@ -27,7 +27,7 @@ class ConvertSoundCommand extends SymfonyCommand
 	{
 		parent::__construct('convert:sound');
 
-		$this->dispatcher = $dispatcher;
+		$this->dispatcher    = $dispatcher;
 		$this->commandRunner = $commandRunner;
 	}
 
@@ -52,21 +52,32 @@ class ConvertSoundCommand extends SymfonyCommand
 			return;
 		}
 
-		if (! $this->commandRunner->execute(new Command('which ffmpeg'))) {
-			$this->log("FFmpeg is not on the path, can't convert video files to mp3", Logger::INFO);
+		$binary = null;
+		if ($this->commandRunner->execute(new Command('which ffmpeg'))) {
+			$binary = 'ffmpeg';
+			$this->log("FFmpeg found", Logger::INFO);
+		}
+
+		if (!$binary && $this->commandRunner->execute(new Command('which avconv'))) {
+			$binary = 'avconv';
+			$this->log("Avconv found", Logger::INFO);
+		}
+
+		if ($binary == null) {
+			$this->log("FFmpeg and Avconv is not on the path, can't convert video files to mp3", Logger::INFO);
 			return;
 		}
 
 		$destination = new Local($destination);
-		$source = new Local($source);
+		$source      = new Local($source);
 
 		$success = true;
 		foreach ($source->listContents('', true) as $file) {
-			if (! Util::endsWith($file['path'], '.mp4')) {
+			if (!Util::endsWith($file['path'], '.mp4')) {
 				continue;
 			}
 
-			$command = new Command('ffmpeg');
+			$command = new Command($binary);
 			$command->setAsync(false);
 			$command->addArgument('-i');
 			$command->addArgument($source->applyPathPrefix($file['path']));
