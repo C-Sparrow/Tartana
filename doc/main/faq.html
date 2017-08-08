@@ -132,6 +132,8 @@
 <p>Tartana is executing long running processes when downloading large files or extracting them. It tries it's best to disable the execution time limit. But on some hardened environments it is not allowed to disable it in the code. The settings must be disabled manually in the configuration files. On the console run the command</p>
 <p><code>php --ini</code></p>
 <p>This command will show you what for ini files are loaded. In one of them, mostly the <em>php.ini</em> file, set eh variables <strong>max_execution_time</strong> and <strong>max_input_time</strong> to <strong>0</strong>.</p>
+<h3 id="call-to-undefined-function-pdpidn_to_ascii">Call to undefined function Pdp\idn_to_ascii()</h3>
+<p>On Synology, the default PHP binary on the command line has limited modules activated. You need to create symbolic links as described <a href="synology.html">here</a>.</p>
                 </section>
 
             </div>

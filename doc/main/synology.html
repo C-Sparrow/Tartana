@@ -135,6 +135,17 @@
 <li>In the download station application disable auto extract (it is buggy and Tartana will handle it for you anyway)</li>
 </ol>
 <p>Now you are able to add files with links to Tartana and Synology will download them for you.</p>
+<h3 id="php-version">PHP Version</h3>
+<p>The default PHP version on Synology has only limited modules activated (for security reasons, pfff). To run successfully Tartana on Synology from the command line you need to create two symbolic links as root. The following commands should be executed on a Shell (Putty).</p>
+<p>If you can't log in as root trough SSH, log in as an admin user first.</p>
+<ul>
+<li><code>ssh admin@nas-server</code> // Enter the admin password</li>
+<li><code>sudo su</code> // Enter again the admin password or the root one if it is a different user</li>
+</ul>
+<p>The following command points the PHP executable to the one from the app center which has the needed modules enabled when you are working on a shell:</p>
+<p><code>ln -s /usr/local/bin/php56 /sbin/php</code></p>
+<p>The following command points the PHP executable to the one from the app center which has the needed modules enabled when you use the task scheduler/cron:</p>
+<p><code>ln -s /usr/local/bin/php56 /usr/local/bin/php</code> // </p>
                 </section>
 
             </div>
